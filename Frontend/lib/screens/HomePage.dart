@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myfridgeapp/widget/NavBar.dart';
+import 'package:myfridgeapp/widget/CustomAppBar.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -16,23 +18,21 @@ class _HomePageState extends State<HomePage> {
       _counter++;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('MyFridge'),
+      appBar: CustomAppBar(
+        title: 'MyFridge',
       ),
+      bottomNavigationBar: const BottomNav(path: "/"),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            
             const Text(
               'This is a themed text in home page.',
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-                onPressed: () => context.go("/shoppinglist"), child: const Text('Themed Button')),
             SizedBox(height: 20),
             Text(
               'You have pushed the button this many times:',

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../screens/ShoppingListPage.dart';
-import '../screens/HomePage.dart';
+import 'package:myfridgeapp/screens/ShoppingListPage.dart';
+import 'package:myfridgeapp/screens/HomePage.dart';
+import 'package:myfridgeapp/screens/ProfilePage.dart';
+import 'package:myfridgeapp/screens/NotificationPage.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -10,6 +12,8 @@ final GoRouter router = GoRouter(
       builder: (context, state) => const HomePage(),
       routes: <RouteBase>[
         GoRoute(path: "shoppinglist", builder: (context, state) => const ShoppingListPage()),
+        GoRoute(path: "profile", builder: (context, state) => const ProfilePage()),
+        GoRoute(path: "notifications", builder: (context, state) => const NotificationPage()),
       ],
     ),
   ],
