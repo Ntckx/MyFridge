@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:myfridgeapp/screens/ShoppingListPage.dart';
-import 'package:myfridgeapp/screens/HomePage.dart';
-import 'package:myfridgeapp/screens/ProfilePage.dart';
-import 'package:myfridgeapp/screens/NotificationPage.dart';
+import 'package:myfridgeapp/screens/shopping_list_page.dart';
+import 'package:myfridgeapp/screens/home_page.dart';
+import 'package:myfridgeapp/screens/profile_page.dart';
+import 'package:myfridgeapp/screens/notification_page.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[

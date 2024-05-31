@@ -1,21 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/NavBar.dart';
-import 'package:myfridgeapp/widget/CustomAppBar.dart';
+import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
 
 class ProfilePage extends StatelessWidget {
-  const ProfilePage({Key? key}) : super(key: key);
+  const ProfilePage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return const Scaffold(
       appBar: CustomAppBar(
         title: 'Profile',
       ),
-      bottomNavigationBar: const BottomNav(path: "/profile"),
+      bottomNavigationBar: BottomNav(path: "/profile"),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: const [
+          children: [
             Text("This is the profile page"),
           ],
         ),
