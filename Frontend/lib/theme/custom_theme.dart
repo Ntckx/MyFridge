@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'color_theme.dart';
 
 class CustomTheme {
@@ -7,23 +8,92 @@ class CustomTheme {
   }
 
   static final ThemeData _customTheme = ThemeData(
-    // colorScheme: ColorScheme.fromSeed(
-    //     seedColor: AppColors.yellow, brightness: Brightness.light),
+    colorScheme: ColorScheme.fromSeed(
+        seedColor: AppColors.darkblue, brightness: Brightness.light),
     useMaterial3: true,
-    fontFamily: "Inter",
-    scaffoldBackgroundColor: AppColors.cream,
-    primaryColor: AppColors.yellow,
+    fontFamily: "Itim",
+    scaffoldBackgroundColor: AppColors.blue,
+    primaryColor: AppColors.darkblue,
     elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.all<Color>(
+          AppColors.darkblue,
+        ),
+        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        )),
+        foregroundColor: MaterialStatePropertyAll<Color>(
+          AppColors.cream,
+        ),
+        textStyle: MaterialStatePropertyAll<TextStyle>(
+          TextStyle(
+            color: AppColors.cream,
+          ),
+        ),
+      ),
+    ),
+
+    outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
       backgroundColor: MaterialStateProperty.all<Color>(
-        AppColors.yellow,
+        AppColors.cream,
       ),
+      side: MaterialStateProperty.all<BorderSide>(
+        BorderSide(color: AppColors.darkblue, width: 1),
+      ),
+      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(10),
+      )),
     )),
-    expansionTileTheme: const ExpansionTileThemeData(
-        shape: Border(), backgroundColor: Colors.white),
     appBarTheme: const AppBarTheme(
       centerTitle: true,
     ),
+    floatingActionButtonTheme: const FloatingActionButtonThemeData(
+        backgroundColor: AppColors.yellow,
+        iconSize: 50,
+        foregroundColor: AppColors.cream),
+    dialogTheme: const DialogTheme(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      backgroundColor: AppColors.cream,
+      titleTextStyle: TextStyle(
+        fontWeight: FontWeight.w600,
+        fontSize: 32,
+        color: AppColors.black,
+        fontFamily: 'Itim',
+      ),
+    ),
+    checkboxTheme: CheckboxThemeData(
+        fillColor: MaterialStateProperty.all<Color>(AppColors.cream),
+        checkColor: MaterialStateProperty.all<Color>(AppColors.black),
+        side: const BorderSide(color: Colors.transparent)),
+
+    textTheme: const TextTheme(
+      headlineLarge: TextStyle(fontSize: 50, color: AppColors.black),
+      headlineMedium: TextStyle(fontSize: 32, color: AppColors.black),
+      headlineSmall: TextStyle(fontSize: 24, color: AppColors.black),
+      bodyLarge: TextStyle(fontSize: 20, color: AppColors.black),
+      bodyMedium: TextStyle(fontSize: 16, color: AppColors.black),
+      bodySmall: TextStyle(fontSize: 14, color: AppColors.black),
+    ),
+
+    inputDecorationTheme: const InputDecorationTheme(
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      labelStyle: TextStyle(
+        color: AppColors.darkblue,
+      ),
+      hintStyle: TextStyle(
+        color: AppColors.darkblue,
+      ),
+      fillColor: AppColors.cream,
+      filled: true,
+    ),
+
+    // expansionTileTheme: const ExpansionTileThemeData(
+    //     shape: Border(), backgroundColor: Colors.white),
 
     //     elevatedButtonTheme: ElevatedButtonThemeData(
     //     style: ButtonStyle(
@@ -49,7 +119,7 @@ class CustomTheme {
     //     const Size.fromHeight(50),
     //   ),
     //   elevation:
-    //       WidgetStateProperty.all<double>(0), // Remove the elevation here
+    //       WidgetStateProperty.all<double>(0),
     // )),
     // outlinedButtonTheme: OutlinedButtonThemeData(
     //   style: ButtonStyle(
@@ -61,7 +131,6 @@ class CustomTheme {
     //       RoundedRectangleBorder(
     //         borderRadius: BorderRadius.circular(10),
     //         side: const BorderSide(
-    //           // Add this line to set border
     //           color: AppColors.lightGrey, // Set the color of the border
     //           width: 1, // Set the width of the border
     //         ),

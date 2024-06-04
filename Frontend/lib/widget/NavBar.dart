@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
 
 class NavItem {
   Widget icon;
@@ -55,14 +56,15 @@ class BottomNav extends StatelessWidget {
     }
 
     return BottomNavigationBar(
-      backgroundColor: Colors.blueGrey.shade700,
+      backgroundColor: AppColors.blue,
       items: <BottomNavigationBarItem>[
         for (NavItem i in paths)
           BottomNavigationBarItem(icon: i.icon, label: i.label)
       ],
       currentIndex: whichIndex(),
       showSelectedLabels: false,
-      selectedItemColor: Colors.orange,
+      selectedItemColor: AppColors.yellow,
+      unselectedItemColor: AppColors.white,
       showUnselectedLabels: false,
       onTap: onChangeRoute,
     );

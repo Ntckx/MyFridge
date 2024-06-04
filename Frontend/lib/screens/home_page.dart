@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/navbar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -25,7 +26,7 @@ class _HomePageState extends State<HomePage> {
         title: 'MyFridge',
       ),
       bottomNavigationBar: const BottomNav(path: "/"),
-      body: Center(
+      body: Wrapper(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -39,7 +40,20 @@ class _HomePageState extends State<HomePage> {
             Text(
               '$_counter',
               style: Theme.of(context).textTheme.headlineMedium,
-            )
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/shoppinglist');
+              },
+              child: const Text('Go to Shopping List'),
+            ),
+            SizedBox(height: 10),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.pushNamed(context, '/shoppinglist');
+              },
+              child: const Text('Go to Shopping List'),
+            ),
           ],
         ),
       ),

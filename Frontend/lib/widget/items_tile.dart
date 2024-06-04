@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
 
 class ItemsTile extends StatelessWidget {
   final String itemsName;
   final bool isChecked;
-  final String expirationDate;
-  final String description;
-  final String storageLocation;
+  final int quantity;
   Function(bool?)? onChanged;
   Function(BuildContext)? deleteItem;
 
@@ -14,16 +13,14 @@ class ItemsTile extends StatelessWidget {
       {super.key,
       required this.itemsName,
       required this.isChecked,
-      required this.expirationDate,
-      required this.description,
-      required this.storageLocation,
+      required this.quantity,
       required this.onChanged,
       required this.deleteItem});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 10, 25, 25),
+      padding: const EdgeInsets.fromLTRB(25, 5, 25, 25),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
@@ -34,64 +31,68 @@ class ItemsTile extends StatelessWidget {
               foregroundColor: Colors.white,
               backgroundColor: Colors.red.shade400,
               borderRadius: BorderRadius.circular(12),
-            ),
+            )
           ],
         ),
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: Colors.white,
+            color: AppColors.darkblue,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
               Checkbox(
-                  value: isChecked,
-                  onChanged: onChanged,
-                  activeColor: Colors.black),
-              const SizedBox(width: 8), // Adding space between checkbox and text
+                value: isChecked,
+                onChanged: onChanged,
+              ),
+              const SizedBox(width: 30),
               Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                child: Stack(
                   children: [
-                    Text(
-                      itemsName,
-                      style: TextStyle(
-                          decoration: isChecked
-                              ? TextDecoration.lineThrough
-                              : TextDecoration.none,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    const SizedBox(height: 4), // Adding space between lines
-                    Text(
-                      'Expiration Date: $expirationDate',
-                      style: TextStyle(
-                        decoration: isChecked
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
+                    Flexible(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Flexible(
+                            child: Text(
+                              quantity.toString(),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall!
+                                  .copyWith(
+                                    color: AppColors.cream,
+                                  ),
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Flexible(
+                            child: Text(
+                              itemsName,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyLarge!
+                                  .copyWith(
+                                    color: AppColors.cream,
+                                  ),
+                              overflow: TextOverflow.visible,
+                            ),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 4), 
-                    Text(
-                      'Description: $description',
-                      style: TextStyle(
-                        decoration: isChecked
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
+                    if (isChecked)
+                      Positioned.fill(
+                        child: Divider(
+                          color: AppColors.black,
+                          thickness: 0.5,
+                        ),
                       ),
-                    ),
-                    const SizedBox(height: 4), 
-                    Text(
-                      'Storage Location: $storageLocation',
-                      style: TextStyle(
-                        decoration: isChecked
-                            ? TextDecoration.lineThrough
-                            : TextDecoration.none,
-                      ),
-                    ),
                   ],
                 ),
-              ),
+              )
             ],
           ),
         ),

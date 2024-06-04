@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/navbar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
 
 class NotificationPage extends StatelessWidget {
   const NotificationPage({super.key});
@@ -12,7 +13,7 @@ class NotificationPage extends StatelessWidget {
         title: 'Notifications',
       ),
       bottomNavigationBar: BottomNav(path: "/notifications"),
-      body: Center(
+      body: Wrapper(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
