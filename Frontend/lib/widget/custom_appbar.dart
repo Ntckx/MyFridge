@@ -15,14 +15,14 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         style: Theme.of(context)
             .textTheme
             .headlineMedium!
-            .copyWith(color: AppColors.cream),
+            .copyWith(color: AppColors.white),
       ),
       actions: [
         IconButton(
           onPressed: () {
             GoRouter.of(context).go('/notifications');
           },
-          icon: const Icon(Icons.notifications, color: AppColors.cream),
+          icon: const Icon(Icons.notifications, color: AppColors.white),
         ),
       ],
       backgroundColor: AppColors.blue,

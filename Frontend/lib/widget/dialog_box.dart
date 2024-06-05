@@ -32,7 +32,6 @@ class DialogBox extends StatelessWidget {
                   "Create list",
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: AppColors.darkblue,
-                        fontWeight: FontWeight.bold,
                       ),
                 ),
                 const SizedBox(height: 20),
@@ -77,6 +76,9 @@ class DialogBox extends StatelessWidget {
                   children: [
                     OutlinedButton(
                       onPressed: onCanceled,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(width: 1),
+                      ),
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(

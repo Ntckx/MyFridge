@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'color_theme.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class CustomTheme {
   static ThemeData get customTheme {
@@ -11,7 +11,9 @@ class CustomTheme {
     colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.darkblue, brightness: Brightness.light),
     useMaterial3: true,
-    fontFamily: "Itim",
+    fontFamily: GoogleFonts.itim().fontFamily,
+
+    // fontFamily: "Itim",
     scaffoldBackgroundColor: AppColors.blue,
     primaryColor: AppColors.darkblue,
     elevatedButtonTheme: ElevatedButtonThemeData(
@@ -36,10 +38,10 @@ class CustomTheme {
     outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
       backgroundColor: MaterialStateProperty.all<Color>(
-        AppColors.cream,
+        AppColors.white,
       ),
       side: MaterialStateProperty.all<BorderSide>(
-        BorderSide(color: AppColors.darkblue, width: 1),
+        const BorderSide(color: AppColors.darkblue, width: 2),
       ),
       shape: MaterialStatePropertyAll(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -56,18 +58,20 @@ class CustomTheme {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.all(Radius.circular(20)),
       ),
-      backgroundColor: AppColors.cream,
+      backgroundColor: AppColors.white,
       titleTextStyle: TextStyle(
         fontWeight: FontWeight.w600,
         fontSize: 32,
-        color: AppColors.black,
+        color: AppColors.darkblue,
         fontFamily: 'Itim',
       ),
+      elevation: 0,
     ),
     checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.all<Color>(AppColors.cream),
-        checkColor: MaterialStateProperty.all<Color>(AppColors.black),
+        fillColor: MaterialStateProperty.all<Color>(AppColors.blue),
+        checkColor: MaterialStateProperty.all<Color>(AppColors.white),
         side: const BorderSide(color: Colors.transparent)),
+        
 
     textTheme: const TextTheme(
       headlineLarge: TextStyle(fontSize: 50, color: AppColors.black),
@@ -81,6 +85,7 @@ class CustomTheme {
     inputDecorationTheme: const InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide(color: AppColors.darkblue),
       ),
       labelStyle: TextStyle(
         color: AppColors.darkblue,
@@ -88,7 +93,7 @@ class CustomTheme {
       hintStyle: TextStyle(
         color: AppColors.darkblue,
       ),
-      fillColor: AppColors.cream,
+      fillColor: AppColors.grey,
       filled: true,
     ),
 
