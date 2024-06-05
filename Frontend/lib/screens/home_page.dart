@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/navbar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
-import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
+import '../widget/myfridge_item.dart';
+import '../theme/color_theme.dart';
+import '../widget/additem_homepage.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -11,56 +14,117 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  int _counter = 0;
+  final List<Map<String, dynamic>> items = [
+    {
+      "quantity": 1,
+      "itemName": "Egg",
+      "isExpired": false,
+      "expiryDate": "01/01/2001",
+      "description": "Amet ea nisi deserunt culpa ea anim",
+    },
+    {
+      "quantity": 100,
+      "itemName": "Milk",
+      "isExpired": true,
+      "expiryDate": "01/01/2023",
+      "description":
+          "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
+    },
+    // Add more items here
+  ];
 
-  void _incrementCounter() {
+  void deleteItem(int index) {
     setState(() {
-      _counter++;
+      items.removeAt(index);
     });
+  }
+
+  void _addItem(
+      String itemName, String expiryDate, int quantity, String description) {
+    setState(() {
+      items.add({
+        "quantity": quantity,
+        "itemName": itemName,
+        "isExpired": false, // Calculate based on expiryDate if needed
+        "expiryDate": expiryDate,
+        "description": description,
+      });
+    });
+  }
+
+  void _showAddItemDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AddItemToMyFridge(addItem: _addItem,);
+      },
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(
-        title: 'MyFridge',
-      ),
-      bottomNavigationBar: const BottomNav(path: "/"),
-      body: Wrapper(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Text(
-              'This is a themed text in home page.',
-            ),
-            const SizedBox(height: 20),
-            const Text(
-              'You have pushed the button this many times:',
-            ),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/shoppinglist');
-              },
-              child: const Text('Go to Shopping List'),
-            ),
-            SizedBox(height: 10),
-            OutlinedButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/shoppinglist');
-              },
-              child: const Text('Go to Shopping List'),
-            ),
-          ],
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Material(
+          elevation: 20.0,
+          shadowColor: Colors.black,
+          child: CustomAppBar(
+            title: 'MyFridge',
+          ),
         ),
       ),
+      bottomNavigationBar: const BottomNav(path: "/"),
+      backgroundColor: AppColors.blue, // Background color set to cream
+      body: ListView.builder(
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          final item = items[index];
+
+          return Slidable(
+            key: Key('$item'),
+            endActionPane: ActionPane(
+              motion: const ScrollMotion(),
+              children: [
+                SlidableAction(
+                  onPressed: (context) {
+                    // Implement share functionality here
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  backgroundColor: Colors.grey,
+                  icon: Icons.edit,
+                ),
+                SlidableAction(
+                  onPressed: (context) {
+                    setState(() {
+                      items.removeAt(index);
+                    });
+                  },
+                  borderRadius: BorderRadius.circular(10),
+                  backgroundColor: Colors.red,
+                  icon: Icons.delete,
+                ),
+              ],
+            ),
+            child: MyFridgeItemCard(
+              quantity: item['quantity'],
+              itemName: item['itemName'],
+              isExpired: item['isExpired'],
+              expiryDate: item['expiryDate'],
+              description: item['description'],
+              deleteItem: (context) => deleteItem(index),
+            ),
+          );
+        },
+      ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
+        onPressed: _showAddItemDialog,
+        backgroundColor: Color(0xFFF9DD6D),
+        child: Icon(
+          Icons.add,
+          color: Colors.white,
+          size: 32,
+        ),
       ),
     );
   }
