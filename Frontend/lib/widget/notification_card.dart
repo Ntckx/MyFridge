@@ -18,16 +18,17 @@ class NotificationCard extends StatelessWidget {
             borderRadius: BorderRadius.circular(30),
           ),
         ),
-        Container(
-          width: 370,
-          height: 80, // Set the desired width of the card
-          child: Card(
-            margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                notificationText,
-                style: TextStyle(fontSize: 16, color: Colors.black),
+        Expanded(
+          child: Container(
+            height: 80,
+            child: Card(
+              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Text(
+                  notificationText,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
               ),
             ),
           ),
