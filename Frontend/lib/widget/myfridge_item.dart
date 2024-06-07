@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../theme/color_theme.dart';
@@ -11,6 +10,7 @@ class MyFridgeItemCard extends StatefulWidget {
   final bool isExpired;
   final String description;
   final Function(BuildContext)? deleteItem;
+  final Function(BuildContext)? editItem;
 
   const MyFridgeItemCard({
     super.key,
@@ -20,6 +20,7 @@ class MyFridgeItemCard extends StatefulWidget {
     required this.expiryDate,
     required this.description,
     required this.deleteItem,
+    required this.editItem,
   });
 
   @override
@@ -29,21 +30,26 @@ class MyFridgeItemCard extends StatefulWidget {
 class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
   String getShortDescription(String fullDescription) {
     final words = fullDescription.split(' ');
-    if (words.length <= 10) return fullDescription;
-    return '${words.sublist(0, 10).join(' ')}...';
+    if (words.length <= 5) return fullDescription;
+    return '${words.sublist(0, 5).join(' ')}...';
   }
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 20),
+      margin: EdgeInsets.symmetric(vertical: 5),
       height: 200,
+      width: 450,
       child: Slidable(
         endActionPane: ActionPane(
           motion: ScrollMotion(),
           children: [
             SlidableAction(
-              onPressed: (context) {},
+              onPressed: (context) {
+                if (widget.editItem != null) {
+                  widget.editItem!(context);
+                }
+              },
               backgroundColor: Color(0xFF36454F),
               foregroundColor: Colors.white,
               icon: Icons.edit,
@@ -65,12 +71,12 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
           ],
         ),
         child: Card(
-          color: Color(0xFF92C4D4),
+          color: AppColors.whiteSmoke,
           shape: RoundedRectangleBorder(
-            side: BorderSide(
-              color: widget.isExpired ? Color(0xffB75050) : Colors.grey,
-              width: 2.0,
-            ),
+            // side: BorderSide(
+            //   color: widget.isExpired ? Color(0xffB75050) : Colors.grey,
+            //   width: 2.0,
+            // ),
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
           child: InkWell(
@@ -99,17 +105,21 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
       children: [
         Text(
           widget.quantity.toString(),
-          style: const TextStyle(color: Colors.white, fontSize: 30.0),
+          style: const TextStyle(color: AppColors.darkblue, fontSize: 30.0),
         ),
         const SizedBox(width: 20),
         Text(
           widget.itemName,
-          style: const TextStyle(color: Colors.white, fontSize: 30.0),
+          style: const TextStyle(color: AppColors.darkblue, fontSize: 30.0),
         ),
         const Spacer(),
         IconButton(
-          onPressed: () {},
-          icon: Icon(Icons.edit, color: Colors.white),
+          onPressed: () {
+            if (widget.editItem != null) {
+              widget.editItem!(context);
+            }
+          },
+          icon: Icon(Icons.edit, color: AppColors.green),
         )
       ],
     );
@@ -123,7 +133,7 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
           'EXP: ${widget.expiryDate}',
           style: TextStyle(
             fontSize: 20.0,
-            color: widget.isExpired ? Color(0xffB75050) : Colors.white,
+            color: widget.isExpired ? Color(0xffB75050) : AppColors.darkblue,
           ),
         ),
         if (widget.isExpired)
@@ -140,7 +150,7 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
         Flexible(
           child: Text(
             getShortDescription(widget.description),
-            style: const TextStyle(fontSize: 20.0, color: Colors.white),
+            style: const TextStyle(fontSize: 20.0, color: AppColors.green),
             softWrap: true,
           ),
         ),
@@ -153,7 +163,8 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
               style: TextStyle(fontSize: 25),
             ),
             style: ButtonStyle(
-              backgroundColor: MaterialStateProperty.all<Color>(AppColors.darkblue),
+              backgroundColor:
+                  MaterialStateProperty.all<Color>(AppColors.darkblue),
               foregroundColor:
                   MaterialStateProperty.all<Color>(AppColors.cream),
               splashFactory: NoSplash.splashFactory,

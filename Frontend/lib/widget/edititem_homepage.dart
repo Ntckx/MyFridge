@@ -3,22 +3,44 @@ import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 
-class AddItemToMyFridge extends StatefulWidget {
-  final Function(String, String, int, String) addItem;
+class EditItemInMyFridge extends StatefulWidget {
+  final Function(String, String, int, String) updateItem;
+  final String itemName;
+  final String expiryDate;
+  final int quantity;
+  final String description;
 
-  const AddItemToMyFridge({Key? key, required this.addItem}) : super(key: key);
+  const EditItemInMyFridge({
+    Key? key,
+    required this.updateItem,
+    required this.itemName,
+    required this.expiryDate,
+    required this.quantity,
+    required this.description,
+  }) : super(key: key);
 
   @override
-  _AddItemToMyFridgeState createState() => _AddItemToMyFridgeState();
+  _EditItemInMyFridgeState createState() => _EditItemInMyFridgeState();
 }
 
-class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
+class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
   final _formKey = GlobalKey<FormState>();
-  final _itemNameController = TextEditingController();
-  final _expiryDateController = TextEditingController();
-  final _quantityController = TextEditingController();
-  final _descriptionController = TextEditingController();
+  late TextEditingController _itemNameController;
+  late TextEditingController _expiryDateController;
+  late TextEditingController _quantityController;
+  late TextEditingController _descriptionController;
   int _quantity = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _itemNameController = TextEditingController(text: widget.itemName);
+    _expiryDateController = TextEditingController(text: widget.expiryDate);
+    _quantityController =
+        TextEditingController(text: widget.quantity.toString());
+    _descriptionController = TextEditingController(text: widget.description);
+    _quantity = widget.quantity;
+  }
 
   void _submitForm() {
     if (_formKey.currentState!.validate()) {
@@ -26,12 +48,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
       final expiryDate = _expiryDateController.text;
       final description = _descriptionController.text;
 
-      widget.addItem(itemName, expiryDate, _quantity, description);
-
-      _itemNameController.clear();
-      _expiryDateController.clear();
-      _quantityController.clear();
-      _descriptionController.clear();
+      widget.updateItem(itemName, expiryDate, _quantity, description);
 
       // Close the dialog
       Navigator.of(context).pop();
@@ -76,7 +93,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
               backgroundColor:
                   Colors.white, // Ensure the background color is set correctly
               title: Text(
-                'Create',
+                'Edit',
                 style: TextStyle(
                   fontWeight: FontWeight.w600,
                   fontSize: 32,
@@ -174,7 +191,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                                                 ),
                                               ),
                                               minVal: 1,
-                                              initVal: 0,
+                                              initVal: _quantity,
                                               onQtyChanged: (val) {
                                                 state.didChange(val);
                                                 setState(() {
@@ -295,7 +312,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                   child: ElevatedButton(
                     onPressed: _submitForm,
                     child: Text(
-                      'Add',
+                      'Update',
                       style: TextStyle(color: Colors.white),
                     ),
                   ),
