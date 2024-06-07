@@ -20,7 +20,7 @@ class ItemsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 5, 25, 25),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),

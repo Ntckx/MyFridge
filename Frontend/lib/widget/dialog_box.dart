@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 
 class DialogBox extends StatelessWidget {
@@ -77,7 +76,7 @@ class DialogBox extends StatelessWidget {
                     OutlinedButton(
                       onPressed: onCanceled,
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(width: 1),
+                        side: const BorderSide(width: 1, color: AppColors.darkblue),
                       ),
                       child: const Text('Cancel'),
                     ),

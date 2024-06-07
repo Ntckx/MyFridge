@@ -22,7 +22,7 @@ class BottomNav extends StatelessWidget {
   Widget build(BuildContext context) {
     final paths = [
       NavItem(
-        icon: const Icon(Icons.shopping_cart),
+        icon: const Icon(Icons.checklist),
         label: 'Shopping list',
         path: "/shoppinglist",
       ),
@@ -44,7 +44,7 @@ class BottomNav extends StatelessWidget {
           return i;
         }
       }
-      return 0;
+      return -1; // Return -1 if the path is not found
     }
 
     void onChangeRoute(int index) {
@@ -55,18 +55,24 @@ class BottomNav extends StatelessWidget {
       }
     }
 
+    int currentIndex = whichIndex();
+
     return BottomNavigationBar(
       backgroundColor: AppColors.blue,
       items: <BottomNavigationBarItem>[
         for (NavItem i in paths)
           BottomNavigationBarItem(icon: i.icon, label: i.label)
       ],
-      currentIndex: whichIndex(),
+      currentIndex: currentIndex >= 0 ? currentIndex : 0,
       showSelectedLabels: false,
-      selectedItemColor: AppColors.yellow,
+      selectedItemColor: currentIndex >= 0 ? AppColors.yellow : AppColors.white,
       unselectedItemColor: AppColors.white,
       showUnselectedLabels: false,
-      onTap: onChangeRoute,
+      onTap: (index) {
+        if (index != currentIndex) {
+          onChangeRoute(index);
+        }
+      },
     );
   }
 }

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/dialog_box.dart';
 import 'package:myfridgeapp/widget/items_tile.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 
@@ -99,7 +99,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.all(20),
+                      padding: const EdgeInsets.only(bottom: 10, right: 10),
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
@@ -123,21 +123,24 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                                 style: TextStyle(color: AppColors.darkblue),
                               ),
                             )
-                          : ListView.builder(
-                              itemCount: items.length,
-                              itemBuilder: (context, index) {
-                                return ItemsTile(
-                                  isChecked: items[index][0],
-                                  itemsName: items[index][1],
-                                  quantity: items[index][2],
-                                  onChanged: (value) {
-                                    checkBoxChanged(value, index);
-                                  },
-                                  deleteItem: (context) => deleteItem(index),
-                                );
-                              },
+                          : Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: ListView.builder(
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  return ItemsTile(
+                                    isChecked: items[index][0],
+                                    itemsName: items[index][1],
+                                    quantity: items[index][2],
+                                    onChanged: (value) {
+                                      checkBoxChanged(value, index);
+                                    },
+                                    deleteItem: (context) => deleteItem(index),
+                                  );
+                                },
+                              ),
                             ),
-                    ),
+                    )
                   ],
                 ),
               ),

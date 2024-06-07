@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 

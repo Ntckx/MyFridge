@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
@@ -38,6 +38,83 @@ class _ProfilePageState extends State<ProfilePage> {
       'email': 'john.doe@example.com',
     };
   }
+
+  void _showLogoutDialog() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        contentPadding: const EdgeInsets.all(20.0),
+        backgroundColor: AppColors.darkblue,
+        content: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(
+                Icons.logout,
+                size: 100.0,
+                color: AppColors.white,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Comeback soon",
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: AppColors.white,
+                    ),
+                // textAlign: TextAlign.center,
+              ),
+              const SizedBox(height: 5),
+              Text(
+                "Are you sure you want to log out?",
+                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                      color: AppColors.white,
+                    ),
+                // textAlign: TextAlign.center,
+              ),
+            ],
+          ),
+        ),
+        actionsAlignment: MainAxisAlignment.center,
+        actions: [
+          OutlinedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+                  side: MaterialStateProperty.all<BorderSide>(
+                    const BorderSide(color: AppColors.white),
+                  ),
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(AppColors.darkblue),
+                ),
+            child: Text("Cancel",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: AppColors.white)),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              // Perform logout operation here
+            },
+            style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(AppColors.white),
+                ),
+            child: Text(
+              "Log out",
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: AppColors.darkblue),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}
 
   @override
   Widget build(BuildContext context) {
@@ -90,7 +167,7 @@ class _ProfilePageState extends State<ProfilePage> {
               ),
               child: Wrapper(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(48, 20, 48, 20),
+                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -121,7 +198,7 @@ class _ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {},
+                          onPressed: _showLogoutDialog,
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.green,
                           ),

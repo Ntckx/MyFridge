@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import '../widget/myfridge_item.dart';

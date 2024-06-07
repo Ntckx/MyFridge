@@ -24,10 +24,10 @@ class CustomTheme {
         shape: MaterialStatePropertyAll(RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         )),
-        foregroundColor: MaterialStatePropertyAll<Color>(
+        foregroundColor: const MaterialStatePropertyAll<Color>(
           AppColors.cream,
         ),
-        textStyle: MaterialStatePropertyAll<TextStyle>(
+        textStyle: const MaterialStatePropertyAll<TextStyle>(
           TextStyle(
             color: AppColors.cream,
           ),
@@ -71,7 +71,6 @@ class CustomTheme {
         fillColor: MaterialStateProperty.all<Color>(AppColors.blue),
         checkColor: MaterialStateProperty.all<Color>(AppColors.white),
         side: const BorderSide(color: Colors.transparent)),
-        
 
     textTheme: const TextTheme(
       headlineLarge: TextStyle(fontSize: 50, color: AppColors.black),
@@ -85,7 +84,14 @@ class CustomTheme {
     inputDecorationTheme: const InputDecorationTheme(
       border: OutlineInputBorder(
         borderRadius: BorderRadius.all(Radius.circular(10)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
         borderSide: BorderSide(color: AppColors.darkblue),
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.all(Radius.circular(10)),
+        borderSide: BorderSide.none,
       ),
       labelStyle: TextStyle(
         color: AppColors.darkblue,
@@ -95,6 +101,7 @@ class CustomTheme {
       ),
       fillColor: AppColors.grey,
       filled: true,
+      contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
     ),
 
     // expansionTileTheme: const ExpansionTileThemeData(
