@@ -12,7 +12,8 @@ class Wrapper extends StatelessWidget {
             maxWidth: 576, minHeight: MediaQuery.of(context).size.height),
         child: Align(
           alignment: Alignment.topLeft,
-          child: Padding(
+          child: Container(
+          // child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: child,
           ),

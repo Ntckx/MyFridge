@@ -4,6 +4,7 @@ import 'package:myfridgeapp/screens/shopping_list_page.dart';
 import 'package:myfridgeapp/screens/home_page.dart';
 import 'package:myfridgeapp/screens/profile_page.dart';
 import 'package:myfridgeapp/screens/notification_page.dart';
+import 'package:myfridgeapp/screens/edit_profile_page.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -14,6 +15,7 @@ final GoRouter router = GoRouter(
         GoRoute(path: "shoppinglist", builder: (context, state) => const ShoppingListPage()),
         GoRoute(path: "profile", builder: (context, state) => const ProfilePage()),
         GoRoute(path: "notifications", builder: (context, state) => const NotificationPage()),
+        GoRoute(path: "editprofile", builder: (context, state) => const EditProfilePage()),
       ],
     ),
   ],

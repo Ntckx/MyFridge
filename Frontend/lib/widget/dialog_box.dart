@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 
 class DialogBox extends StatelessWidget {
@@ -32,7 +31,6 @@ class DialogBox extends StatelessWidget {
                   "Create list",
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: AppColors.darkblue,
-                        fontWeight: FontWeight.bold,
                       ),
                 ),
                 const SizedBox(height: 20),
@@ -77,6 +75,9 @@ class DialogBox extends StatelessWidget {
                   children: [
                     OutlinedButton(
                       onPressed: onCanceled,
+                      style: OutlinedButton.styleFrom(
+                        side: const BorderSide(width: 1, color: AppColors.darkblue),
+                      ),
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
@@ -85,7 +86,7 @@ class DialogBox extends StatelessWidget {
                           onSaved();
                         }
                       },
-                      child: const Text('Save'),
+                      child: Text('Add', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white)),
                     ),
                   ],
                 ),

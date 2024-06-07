@@ -20,7 +20,7 @@ class ItemsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.fromLTRB(25, 5, 25, 25),
+      padding: const EdgeInsets.fromLTRB(10, 5, 10, 10),
       child: Slidable(
         endActionPane: ActionPane(
           motion: const ScrollMotion(),
@@ -37,14 +37,18 @@ class ItemsTile extends StatelessWidget {
         child: Container(
           padding: const EdgeInsets.all(24),
           decoration: BoxDecoration(
-            color: AppColors.darkblue,
+            color: AppColors.grey,
             borderRadius: BorderRadius.circular(12),
           ),
           child: Row(
             children: [
-              Checkbox(
-                value: isChecked,
-                onChanged: onChanged,
+              Transform.scale(
+                scale: 1.5,
+                child: Checkbox(
+                  value: isChecked,
+                  onChanged: onChanged,
+                  visualDensity: VisualDensity.compact,
+                ),
               ),
               const SizedBox(width: 30),
               Expanded(
@@ -62,7 +66,7 @@ class ItemsTile extends StatelessWidget {
                                   .textTheme
                                   .headlineSmall!
                                   .copyWith(
-                                    color: AppColors.cream,
+                                    color: AppColors.darkblue,
                                   ),
                               overflow: TextOverflow.visible,
                             ),
@@ -75,7 +79,7 @@ class ItemsTile extends StatelessWidget {
                                   .textTheme
                                   .bodyLarge!
                                   .copyWith(
-                                    color: AppColors.cream,
+                                    color: AppColors.darkblue,
                                   ),
                               overflow: TextOverflow.visible,
                             ),

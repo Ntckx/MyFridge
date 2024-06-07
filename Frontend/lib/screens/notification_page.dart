@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import '../theme/color_theme.dart';
 import '../widget/notification_card.dart'; // Import the NotificationCard widget

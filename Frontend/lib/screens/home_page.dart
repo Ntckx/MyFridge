@@ -3,7 +3,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/myfridge_item.dart';
-import 'package:myfridgeapp/widget/navbar.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
 
