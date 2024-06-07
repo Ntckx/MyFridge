@@ -22,7 +22,7 @@ class NotificationPage extends StatelessWidget {
             const Size.fromHeight(80.0), // Set your desired height here
         child: CustomAppBar(
           title: 'MyFridge',
-          height: 80.0, // Ensure the height is set here as well
+          // height: 80.0, // Ensure the height is set here as well
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/notifications"),

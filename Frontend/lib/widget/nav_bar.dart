@@ -44,7 +44,7 @@ class BottomNav extends StatelessWidget {
           return i;
         }
       }
-      return -1; // Return -1 if the path is not found
+      return -1;
     }
 
     void onChangeRoute(int index) {
