@@ -86,7 +86,7 @@ class DialogBox extends StatelessWidget {
                           onSaved();
                         }
                       },
-                      child: const Text('Save'),
+                      child: Text('Add', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white)),
                     ),
                   ],
                 ),

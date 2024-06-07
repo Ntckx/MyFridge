@@ -58,15 +58,15 @@ class BottomNav extends StatelessWidget {
     int currentIndex = whichIndex();
 
     return BottomNavigationBar(
-      backgroundColor: AppColors.blue,
+      backgroundColor: AppColors.white,
       items: <BottomNavigationBarItem>[
         for (NavItem i in paths)
           BottomNavigationBarItem(icon: i.icon, label: i.label)
       ],
       currentIndex: currentIndex >= 0 ? currentIndex : 0,
       showSelectedLabels: false,
-      selectedItemColor: currentIndex >= 0 ? AppColors.yellow : AppColors.white,
-      unselectedItemColor: AppColors.white,
+      selectedItemColor: currentIndex >= 0 ? AppColors.yellow : AppColors.darkblue,
+      unselectedItemColor: AppColors.darkblue,
       showUnselectedLabels: false,
       onTap: (index) {
         if (index != currentIndex) {

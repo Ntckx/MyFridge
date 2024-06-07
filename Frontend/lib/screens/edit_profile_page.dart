@@ -17,15 +17,15 @@ class EditProfilePage extends StatelessWidget {
       bottomNavigationBar: const BottomNav(path: "/editprofile"),
       body: Wrapper(
           child: Stack(children: [
-        Positioned(
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Image.asset(
-              'assets/LogoMyFridge.png',
-              scale: 1.5,
-            ),
-          ),
-        ),
+        // Positioned(
+        //   child: Align(
+        //     alignment: Alignment.bottomRight,
+        //     child: Image.asset(
+        //       'assets/LogoMyFridge.png',
+        //       scale: 1.5,
+        //     ),
+        //   ),
+        // ),
         Column(
           children: [
             Padding(
@@ -78,15 +78,6 @@ class EditProfilePage extends StatelessWidget {
             const Spacer(),
           ],
         ),
-        // Positioned(
-        //   bottom: 0,
-        //   right: 0,
-        //   child: Image.asset(
-        //     'assets/LogoMyFridge.png',
-        //     width: 200,
-        //     height: 200,
-        //   ),
-        // ),
       ])),
     );
   }
