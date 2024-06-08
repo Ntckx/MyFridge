@@ -88,7 +88,7 @@ class ItemsTile extends StatelessWidget {
                       ),
                     ),
                     if (isChecked)
-                      Positioned.fill(
+                      const Positioned.fill(
                         child: Divider(
                           color: AppColors.black,
                           thickness: 0.5,
