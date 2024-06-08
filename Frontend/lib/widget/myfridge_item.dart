@@ -1,10 +1,11 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'eaten_card.dart';
 import '../theme/color_theme.dart';
 
 class MyFridgeItemCard extends StatefulWidget {
-  final int quantity;
+  final int initialQuantity;
   final String itemName;
   final String expiryDate;
   final bool isExpired;
@@ -14,7 +15,7 @@ class MyFridgeItemCard extends StatefulWidget {
 
   const MyFridgeItemCard({
     super.key,
-    required this.quantity,
+    required this.initialQuantity,
     required this.itemName,
     required this.isExpired,
     required this.expiryDate,
@@ -28,6 +29,14 @@ class MyFridgeItemCard extends StatefulWidget {
 }
 
 class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
+  late int quantity;
+
+  @override
+  void initState() {
+    super.initState();
+    quantity = widget.initialQuantity;
+  }
+
   String getShortDescription(String fullDescription) {
     final words = fullDescription.split(' ');
     if (words.length <= 5) return fullDescription;
@@ -73,10 +82,6 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
         child: Card(
           color: AppColors.whiteSmoke,
           shape: RoundedRectangleBorder(
-            // side: BorderSide(
-            //   color: widget.isExpired ? Color(0xffB75050) : Colors.grey,
-            //   width: 2.0,
-            // ),
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
           child: InkWell(
@@ -104,7 +109,7 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
     return Row(
       children: [
         Text(
-          widget.quantity.toString(),
+          quantity.toString(),
           style: const TextStyle(color: AppColors.darkblue, fontSize: 30.0),
         ),
         const SizedBox(width: 20),
@@ -157,7 +162,9 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
         Visibility(
           visible: !widget.isExpired,
           child: ElevatedButton(
-            onPressed: () {},
+            onPressed: () {
+              _showEatenCard(context);
+            },
             child: Text(
               'Eaten',
               style: TextStyle(fontSize: 25),
@@ -180,6 +187,27 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
     );
   }
 
+  void _showEatenCard(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return EatenCard(
+          initialQuantity: 1,
+          onEaten: (int qtyEaten) {
+            setState(() {
+              // Ensure the quantity does not go below zero
+              if (quantity - qtyEaten < 0) {
+                quantity = 0;
+              } else {
+                quantity -= qtyEaten;
+              }
+            });
+          },
+        );
+      },
+    );
+  }
+
   void _showItemDetails(BuildContext context) {
     showDialog(
       context: context,
@@ -193,7 +221,7 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Quantity: ${widget.quantity.toString()}',
+                  'Quantity: ${quantity.toString()}',
                   style: const TextStyle(color: Colors.black, fontSize: 20.0),
                 ),
                 Text(

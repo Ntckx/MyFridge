@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
     {
       "quantity": 100,
       "itemName": "Milk",
-      "isExpired": true,
+      "isExpired": false,
       "expiryDate": "01/01/2023",
       "description":
           "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
@@ -165,7 +165,7 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           SlidableAction(
                             onPressed: (context) {
-                              // _showEditItemDialog(index, item);
+                              _showEditItemDialog(index, item);
                             },
                             borderRadius: BorderRadius.circular(10),
                             backgroundColor: Colors.grey,
@@ -182,7 +182,7 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       child: MyFridgeItemCard(
-                        quantity: item['quantity'],
+                        initialQuantity: item['quantity'],
                         itemName: item['itemName'],
                         isExpired: item['isExpired'],
                         expiryDate: item['expiryDate'],
