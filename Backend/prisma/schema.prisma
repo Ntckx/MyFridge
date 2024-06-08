@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -13,36 +7,34 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  UserID    Int      @id @default(autoincrement())
-  Username  String
-  Email     String   @unique
-  Password  String
-  Items     Item[]
-  ShoppingLists ShoppingList[]
-}
-
 model Item {
-  ItemID         Int      @id @default(autoincrement())
+  ItemID         Int       @id @default(autoincrement())
   UserID         Int
-  ItemName       String
+  ItemName       String    @db.VarChar(255)
   Quantity       Int
-  ExpirationDate DateTime?
-  Description    String?
+  ExpirationDate DateTime? @db.DateTime(0)
+  Description    String?   @db.VarChar(255)
+  User           User      @relation(fields: [UserID], references: [UserID], map: "Item_ibfk_1")
 
-  User User @relation(fields: [UserID], references: [UserID])
-
-  @@index([UserID])
+  @@index([UserID], map: "Item_UserID_index")
 }
 
 model ShoppingList {
-  ListID    Int      @id @default(autoincrement())
+  ListID    Int     @id @default(autoincrement())
   UserID    Int
-  ListName  String
+  ListName  String  @db.VarChar(255)
   Quantity  Int
-  isChecked Boolean  @default(false)
+  isChecked Boolean @default(false)
+  User      User    @relation(fields: [UserID], references: [UserID], map: "ShoppingList_ibfk_1")
 
-  User User @relation(fields: [UserID], references: [UserID])
+  @@index([UserID], map: "ShoppingList_UserID_index")
+}
 
-  @@index([UserID])
+model User {
+  UserID       Int            @id @default(autoincrement())
+  Username     String         @db.VarChar(255)
+  Email        String         @unique(map: "User_Email_unique") @db.VarChar(255)
+  Password     String         @db.VarChar(255)
+  Item         Item[]
+  ShoppingList ShoppingList[]
 }
