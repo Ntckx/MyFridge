@@ -239,6 +239,12 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                                       if (value == null || value.isEmpty) {
                                         return 'Please enter the expiration date';
                                       }
+                                      try {
+                                        DateTime.parse(
+                                            value); // Ensure the date can be parsed
+                                      } catch (_) {
+                                        return 'Invalid date format';
+                                      }
                                       return null;
                                     },
                                   ),

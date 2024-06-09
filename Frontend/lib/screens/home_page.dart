@@ -31,23 +31,6 @@ class _HomePageState extends State<HomePage> {
       "description":
           "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
     },
-    {
-      "quantity": 100,
-      "itemName": "Milk",
-      "isExpired": true,
-      "expiryDate": "01/01/2023",
-      "description":
-          "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
-    },
-    {
-      "quantity": 100,
-      "itemName": "Milk",
-      "isExpired": true,
-      "expiryDate": "01/01/2023",
-      "description":
-          "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
-    },
-    // Add more items here
   ];
 
   void deleteItem(int index) {
@@ -58,11 +41,14 @@ class _HomePageState extends State<HomePage> {
 
   void _addItem(
       String itemName, String expiryDate, int quantity, String description) {
+    final currentDate = DateTime.now();
+    final expDate = DateTime.parse(expiryDate);
+
     setState(() {
       items.add({
         "quantity": quantity,
         "itemName": itemName,
-        "isExpired": false, // Calculate based on expiryDate if needed
+        "isExpired": expDate.isBefore(currentDate),
         "expiryDate": expiryDate,
         "description": description,
       });
@@ -71,11 +57,14 @@ class _HomePageState extends State<HomePage> {
 
   void _updateItem(int index, String itemName, String expiryDate, int quantity,
       String description) {
+    final currentDate = DateTime.now();
+    final expDate = DateTime.parse(expiryDate);
+
     setState(() {
       items[index] = {
         "quantity": quantity,
         "itemName": itemName,
-        "isExpired": false, // Calculate based on expiryDate if needed
+        "isExpired": expDate.isBefore(currentDate),
         "expiryDate": expiryDate,
         "description": description,
       };
