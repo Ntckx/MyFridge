@@ -67,13 +67,11 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     });
   }
 
-
   void clearAllItems() {
     setState(() {
       items.clear();
     });
   }
-
 
   void _showClearDialog() {
     showDialog(
@@ -119,7 +117,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             ElevatedButton(
               onPressed: () {
                 clearAllItems();
-                // Perform logout operation here
+                Navigator.of(context).pop();
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
@@ -138,6 +136,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
       },
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

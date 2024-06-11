@@ -48,11 +48,8 @@ class EditProfilePage extends StatelessWidget {
                       height: 3,
                     ),
                     TextFormField(
+                      style: const TextStyle(color: AppColors.darkblue),
                       decoration: const InputDecoration(
-                        // labelText: 'Username',
-                        // labelStyle: TextStyle(
-                        //   color: AppColors.darkblue,
-                        // ),
                         hintText: 'Enter your username',
                       ),
                     ),
