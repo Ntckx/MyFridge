@@ -67,12 +67,77 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     });
   }
 
+
   void clearAllItems() {
     setState(() {
       items.clear();
     });
   }
 
+
+  void _showClearDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(20.0),
+          backgroundColor: AppColors.darkblue,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 5),
+                Text(
+                  "Are you sure you want to clear all the list?",
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: AppColors.white,
+                      ),
+                  // textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(color: AppColors.white),
+                    ),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                  ),
+              child: Text("Cancel",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: AppColors.white)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                clearAllItems();
+                // Perform logout operation here
+              },
+              style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(AppColors.white),
+                  ),
+              child: Text(
+                "Clear all",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: AppColors.darkblue),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -103,7 +168,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                       child: Align(
                         alignment: Alignment.centerRight,
                         child: ElevatedButton(
-                            onPressed: clearAllItems,
+                            onPressed: _showClearDialog,
                             child: Text(
                               'clear all',
                               style: Theme.of(context)

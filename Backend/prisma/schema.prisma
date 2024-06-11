@@ -35,6 +35,20 @@ model User {
   Username     String         @db.VarChar(255)
   Email        String         @unique(map: "User_Email_unique") @db.VarChar(255)
   Password     String         @db.VarChar(255)
+  isPremium    Boolean?       @default(false)
   Item         Item[]
+  Payment      Payment[]
   ShoppingList ShoppingList[]
+}
+
+model Payment {
+  PaymentID   Int       @id @default(autoincrement())
+  UserID      Int?
+  Amount      Decimal   @db.Decimal(10, 2)
+  Currency    String    @db.VarChar(10)
+  PaymentDate DateTime? @default(now()) @db.Timestamp(0)
+  Status      String    @db.VarChar(50)
+  User        User?     @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "Payment_ibfk_1")
+
+  @@index([UserID], map: "UserID")
 }

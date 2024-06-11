@@ -4,6 +4,7 @@ import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -40,81 +41,81 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   void _showLogoutDialog() {
-  showDialog(
-    context: context,
-    builder: (BuildContext context) {
-      return AlertDialog(
-        contentPadding: const EdgeInsets.all(20.0),
-        backgroundColor: AppColors.darkblue,
-        content: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(
-                Icons.logout,
-                size: 100.0,
-                color: AppColors.white,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                "Comeback soon",
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: AppColors.white,
-                    ),
-                // textAlign: TextAlign.center,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                "Are you sure you want to log out?",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      color: AppColors.white,
-                    ),
-                // textAlign: TextAlign.center,
-              ),
-            ],
-          ),
-        ),
-        actionsAlignment: MainAxisAlignment.center,
-        actions: [
-          OutlinedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-            },
-            style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                  side: MaterialStateProperty.all<BorderSide>(
-                    const BorderSide(color: AppColors.white),
-                  ),
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.darkblue),
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          contentPadding: const EdgeInsets.all(20.0),
+          backgroundColor: AppColors.darkblue,
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Icon(
+                  Icons.logout,
+                  size: 100.0,
+                  color: AppColors.white,
                 ),
-            child: Text("Cancel",
+                const SizedBox(height: 5),
+                Text(
+                  "Comeback soon",
+                  style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                        color: AppColors.white,
+                      ),
+                  // textAlign: TextAlign.center,
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  "Are you sure you want to log out?",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: AppColors.white,
+                      ),
+                  // textAlign: TextAlign.center,
+                ),
+              ],
+            ),
+          ),
+          actionsAlignment: MainAxisAlignment.center,
+          actions: [
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
+                    side: MaterialStateProperty.all<BorderSide>(
+                      const BorderSide(color: AppColors.white),
+                    ),
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                  ),
+              child: Text("Cancel",
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: AppColors.white)),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+                // Perform logout operation here
+              },
+              style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(AppColors.white),
+                  ),
+              child: Text(
+                "Log out",
                 style: Theme.of(context)
                     .textTheme
                     .bodyLarge!
-                    .copyWith(color: AppColors.white)),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              Navigator.of(context).pop();
-              // Perform logout operation here
-            },
-            style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
-                  backgroundColor:
-                      MaterialStateProperty.all<Color>(AppColors.white),
-                ),
-            child: Text(
-              "Log out",
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: AppColors.darkblue),
+                    .copyWith(color: AppColors.darkblue),
+              ),
             ),
-          ),
-        ],
-      );
-    },
-  );
-}
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -129,29 +130,24 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Stack(
         children: [
           Wrapper(
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      username,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: AppColors.white,
-                              ),
-                    ),
-                    Text(
-                      email,
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: AppColors.darkblue,
-                          ),
-                    ),
-                  ],
-                ),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                  Text(
+                    email,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: AppColors.darkblue,
+                        ),
+                  ),
+                ],
               ),
             ),
           ),
@@ -182,6 +178,29 @@ class _ProfilePageState extends State<ProfilePage> {
                               SizedBox(width: 30),
                               Text(
                                 'Edit Profile',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(
+                                      color: AppColors.darkblue,
+                                    ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      SizedBox(
+                        height: 45,
+                        width: double.infinity,
+                        child: OutlinedButton(
+                          onPressed: () => context.go("/payment"),
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.crown),
+                              SizedBox(width: 30),
+                              Text(
+                                'Upgrade Plan',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
