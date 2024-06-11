@@ -26,6 +26,8 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     [false, "Cheese", 2],
   ];
 
+  bool isPremium = false; // Assume this value is fetched from the backend
+
   void checkBoxChanged(bool? value, int index) {
     setState(() {
       items[index][0] = value;
@@ -33,6 +35,28 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   }
 
   void saveNewItem() {
+    if (!isPremium && items.length >= 5) {
+      // Show alert if the user is not premium and has reached the limit
+      showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Limit Reached"),
+            content: Text(
+                "You have reached the limit of 5 items. Upgrade to premium to add more items."),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                child: Text("OK"),
+              ),
+            ],
+          );
+        },
+      );
+      return;
+    }
     setState(() {
       items.add([
         false,

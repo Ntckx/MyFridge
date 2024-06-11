@@ -6,6 +6,7 @@ import 'package:myfridgeapp/widget/myfridge_item.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
+import '../api_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -15,60 +16,76 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final List<Map<String, dynamic>> items = [
-    {
-      "quantity": 1,
-      "itemName": "Egg",
-      "isExpired": false,
-      "expiryDate": "01/01/2001",
-      "description": "Amet ea nisi deserunt culpa ea anim",
-    },
-    {
-      "quantity": 100,
-      "itemName": "Milk",
-      "isExpired": false,
-      "expiryDate": "01/01/2023",
-      "description":
-          "Lorem Ea sunt elit sunt nulla elit reprehenderit excepteur. Exercitation in laborum excepteur aliquip esse ullamco eiusmod id cillum.",
-    },
-  ];
+  final ApiService _apiService = ApiService();
+  List<Map<String, dynamic>> items = [];
 
-  void deleteItem(int index) {
-    setState(() {
-      items.removeAt(index);
-    });
+  @override
+  void initState() {
+    super.initState();
+    _fetchItems();
   }
 
-  void _addItem(
-      String itemName, String expiryDate, int quantity, String description) {
+  Future<void> _fetchItems() async {
+    try {
+      final fetchedItems = await _apiService.getAllItems();
+      setState(() {
+        items = fetchedItems;
+      });
+    } catch (e) {
+      print('Error fetching items: $e');
+    }
+  }
+
+  void deleteItem(int index) async {
+    try {
+      await _apiService.deleteItem(items[index]['ItemID']);
+      setState(() {
+        items.removeAt(index);
+      });
+    } catch (e) {
+      print('Error deleting item: $e');
+    }
+  }
+
+  void _addItem(String itemName, String expiryDate, int quantity,
+      String description) async {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
-    setState(() {
-      items.add({
-        "quantity": quantity,
-        "itemName": itemName,
-        "isExpired": expDate.isBefore(currentDate),
-        "expiryDate": expiryDate,
-        "description": description,
-      });
-    });
+    final newItem = {
+      "ItemName": itemName,
+      "Quantity": quantity,
+      "ExpirationDate": expiryDate,
+      "Description": description,
+      "UserID": 1 // Set the UserID accordingly
+    };
+
+    try {
+      await _apiService.createItem(newItem);
+      _fetchItems();
+    } catch (e) {
+      print('Error adding item: $e');
+    }
   }
 
   void _updateItem(int index, String itemName, String expiryDate, int quantity,
-      String description) {
+      String description) async {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
-    setState(() {
-      items[index] = {
-        "quantity": quantity,
-        "itemName": itemName,
-        "isExpired": expDate.isBefore(currentDate),
-        "expiryDate": expiryDate,
-        "description": description,
-      };
-    });
+    final updatedItem = {
+      "ItemName": itemName,
+      "Quantity": quantity,
+      "ExpirationDate": expiryDate,
+      "Description": description
+    };
+
+    try {
+      await _apiService.updateItem(items[index]['ItemID'], updatedItem);
+      _fetchItems();
+    } catch (e) {
+      print('Error updating item: $e');
+    }
   }
 
   void _showAddItemDialog() {
@@ -88,10 +105,10 @@ class _HomePageState extends State<HomePage> {
           updateItem: (itemName, expiryDate, quantity, description) {
             _updateItem(index, itemName, expiryDate, quantity, description);
           },
-          itemName: item['itemName'],
-          expiryDate: item['expiryDate'],
-          quantity: item['quantity'],
-          description: item['description'],
+          itemName: item['ItemName'],
+          expiryDate: item['ExpirationDate'],
+          quantity: item['Quantity'],
+          description: item['Description'],
         );
       },
     );
@@ -101,11 +118,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(80.0), // Set your desired height here
+        preferredSize: const Size.fromHeight(80.0),
         child: CustomAppBar(
           title: 'MyFridge',
-          // height: 80.0, // Ensure the height is set here as well
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/"),
@@ -116,27 +131,24 @@ class _HomePageState extends State<HomePage> {
             color: AppColors.blue,
           ),
           Positioned(
-            top:
-                50, // Adjust this value to position the white container correctly
+            top: 50,
             left: 0,
             right: 0,
             child: Container(
               decoration: BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(
-                      60.0), // Change this to your desired radius
+                  top: Radius.circular(60.0),
                 ),
               ),
-              height: MediaQuery.of(context).size.height -
-                  50, // Adjust height as needed
+              height: MediaQuery.of(context).size.height - 50,
             ),
           ),
           Positioned(
-            top: 0, // Adjust this value to position the list correctly
+            top: 0,
             left: 0,
             right: 0,
-            bottom: 0, // Set bottom to 0 to fill the remaining space
+            bottom: 0,
             child: ListView.builder(
               itemCount: items.length,
               itemBuilder: (context, index) {
@@ -144,9 +156,8 @@ class _HomePageState extends State<HomePage> {
 
                 return Center(
                   child: Container(
-                    width: 350, // Set a fixed width to center the card
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10), // Add vertical margin for spacing
+                    width: 350,
+                    margin: const EdgeInsets.symmetric(vertical: 10),
                     child: Slidable(
                       key: Key('$item'),
                       endActionPane: ActionPane(
@@ -171,11 +182,11 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       child: MyFridgeItemCard(
-                        initialQuantity: item['quantity'],
-                        itemName: item['itemName'],
-                        isExpired: item['isExpired'],
-                        expiryDate: item['expiryDate'],
-                        description: item['description'],
+                        initialQuantity: item['Quantity'],
+                        itemName: item['ItemName'],
+                        isExpired: item['isExpired'] ?? false,
+                        expiryDate: item['ExpirationDate'],
+                        description: item['Description'],
                         deleteItem: (context) => deleteItem(index),
                         editItem: (context) => _showEditItemDialog(index, item),
                       ),

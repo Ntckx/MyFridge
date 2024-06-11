@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:intl/intl.dart';
 import 'eaten_card.dart';
 import '../theme/color_theme.dart';
 
@@ -131,11 +132,17 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
   }
 
   Row _buildExpiryRow() {
+    // Parse the date string to DateTime object
+    final expirationDate = DateTime.parse(widget.expiryDate);
+
+    // Format the date to show only the date part
+    final formattedDate = DateFormat('yyyy-MM-dd').format(expirationDate);
+
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       children: [
         Text(
-          'EXP: ${widget.expiryDate}',
+          'EXP: $formattedDate',
           style: TextStyle(
             fontSize: 20.0,
             color: widget.isExpired ? Color(0xffB75050) : AppColors.darkblue,
