@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
+
 
 class ItemsTile extends StatelessWidget {
   final String itemsName;
@@ -9,13 +12,14 @@ class ItemsTile extends StatelessWidget {
   Function(bool?)? onChanged;
   Function(BuildContext)? deleteItem;
 
-  ItemsTile(
-      {super.key,
-      required this.itemsName,
-      required this.isChecked,
-      required this.quantity,
-      required this.onChanged,
-      required this.deleteItem});
+  ItemsTile({
+    Key? key,
+    required this.itemsName,
+    required this.isChecked,
+    required this.quantity,
+    required this.onChanged,
+    required this.deleteItem,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,41 +58,37 @@ class ItemsTile extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              quantity.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    color: AppColors.darkblue,
-                                  ),
-                              overflow: TextOverflow.visible,
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          quantity.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: AppColors.darkblue,
+                              ),
+                          overflow: TextOverflow.visible,
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Text(
+                            itemsName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  color: AppColors.darkblue,
+                                ),
+                            overflow: TextOverflow.visible,
                           ),
-                          const SizedBox(width: 20),
-                          Flexible(
-                            child: Text(
-                              itemsName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: AppColors.darkblue,
-                                  ),
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     if (isChecked)
-                      const Positioned.fill(
+                      Positioned.fill(
                         child: Divider(
                           color: AppColors.black,
                           thickness: 0.5,
@@ -96,7 +96,7 @@ class ItemsTile extends StatelessWidget {
                       ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

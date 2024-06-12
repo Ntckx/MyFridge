@@ -5,6 +5,8 @@ import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:logging/logging.dart';
+import 'package:dio/dio.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -14,8 +16,8 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late String username;
-  late String email;
+  String username = '';
+  String email = '';
 
   @override
   void initState() {
@@ -23,21 +25,27 @@ class _ProfilePageState extends State<ProfilePage> {
     fetchUserData();
   }
 
-  void fetchUserData() {
-    // Simulate fetching data from a backend
-    Map<String, String> userData = getMockUserData();
-    setState(() {
-      username = userData['username']!;
-      email = userData['email']!;
-    });
-  }
-
-  Map<String, String> getMockUserData() {
-    // Mock user data
-    return {
-      'username': 'JohnDoe',
-      'email': 'john.doe@example.com',
-    };
+  final Logger _logger = Logger('ProfilePage');
+  void fetchUserData() async {
+    try {
+      final response = await Dio().post(
+        'http://localhost:8000/getUser',
+        // Waiting For UserID
+        data: {'UserID': 1},
+      );
+      final userData = response.data;
+      if (response.statusCode == 200) {
+        setState(() {
+          username = userData['Username'];
+          email = userData['Email'];
+        });
+      }
+      _logger.info('User data fetched successfully');
+      print('User data fetched successfully');
+    } catch (e) {
+      _logger.severe('Error fetching user data: $e');
+      print('Error fetching user data');
+    }
   }
 
   void _showLogoutDialog() {
@@ -70,7 +78,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AppColors.white,
                       ),
-                  // textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -174,8 +182,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () => context.go("/editprofile"),
                           child: Row(
                             children: [
-                              Icon(Icons.edit),
-                              SizedBox(width: 30),
+                              const Icon(Icons.edit),
+                              const SizedBox(width: 30),
                               Text(
                                 'Edit Profile',
                                 style: Theme.of(context)
@@ -189,7 +197,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 45,
                         width: double.infinity,
@@ -197,8 +205,8 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () => context.go("/payment"),
                           child: Row(
                             children: [
-                              Icon(FontAwesomeIcons.crown),
-                              SizedBox(width: 30),
+                              const Icon(FontAwesomeIcons.crown),
+                              const SizedBox(width: 30),
                               Text(
                                 'Upgrade Plan',
                                 style: Theme.of(context)
@@ -212,7 +220,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       SizedBox(
                         height: 45,
                         width: double.infinity,

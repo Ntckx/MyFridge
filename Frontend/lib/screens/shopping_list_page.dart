@@ -5,10 +5,11 @@ import 'package:myfridgeapp/widget/items_tile.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
 
 class ShoppingListPage extends StatefulWidget {
   const ShoppingListPage({super.key});
-
   @override
   _ShoppingListPageState createState() => _ShoppingListPageState();
 }
@@ -16,32 +17,81 @@ class ShoppingListPage extends StatefulWidget {
 class _ShoppingListPageState extends State<ShoppingListPage> {
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();
+  late List<Map<String, dynamic>> items = [];
 
-  List items = [
-    [false, "Milk", 2],
-    [true, "Apples", 1],
-    [true, "Eggs", 12],
-    [false, "Bread", 1],
-    [false, "Butter", 1],
-    [false, "Cheese", 2],
-  ];
-
-  void checkBoxChanged(bool? value, int index) {
-    setState(() {
-      items[index][0] = value;
-    });
+  @override
+  void initState() {
+    super.initState();
+    fetchListData();
   }
 
-  void saveNewItem() {
-    setState(() {
-      items.add([
-        false,
-        _itemNameController.text,
-        int.parse(_quantityController.text),
-      ]);
-      _itemNameController.clear();
-      _quantityController.clear();
-    });
+  final Logger _logger = Logger('ShoppingListPage');
+  void fetchListData() async {
+    try {
+      final response = await Dio().post(
+        'http://localhost:8000/allList',
+        // Waiting For UserID
+        data: {'UserID': 1},
+      );
+      final listData = response.data;
+      if (response.statusCode == 200) {
+        setState(() {
+          items = List<Map<String, dynamic>>.from(listData);
+        });
+      }
+      _logger.info('User data fetched successfully');
+      print('User data fetched successfully');
+    } catch (e) {
+      _logger.severe('Error fetching user data: $e');
+      print('Error fetching user data');
+    }
+  }
+
+  void checkBoxChanged(bool? value, int index) async {
+    try {
+      final response = await Dio().patch(
+        'http://localhost:8000/updateList',
+        data: {
+          'ListId': items[index]['ListID'],
+          'isChecked': value,
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          items[index]['isChecked'] = value;
+        });
+        print('Checkbox changed successfully');
+      } else {
+        print('Failed to update checkbox: ${response.data}');
+      }
+    } catch (e) {
+      print('Error updating checkbox: $e');
+    }
+  }
+
+  void saveNewItem() async {
+    try {
+      final response = await Dio().post(
+        'http://localhost:8000/createList',
+        data: {
+          // Waiting For UserID
+          'UserId': 1,
+          'Listname': _itemNameController.text,
+          'Quantity': int.parse(_quantityController.text),
+          'isChecked': false,
+        },
+      );
+      if (response.statusCode == 200) {
+        fetchListData();
+        _itemNameController.clear();
+        _quantityController.clear();
+        print('New item created successfully');
+      } else {
+        print('Failed to create new item: ${response.data}');
+      }
+    } catch (e) {
+      print('Error creating new item: $e');
+    }
     Navigator.of(context).pop();
   }
 
@@ -61,16 +111,48 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     );
   }
 
-  void deleteItem(int index) {
-    setState(() {
-      items.removeAt(index);
-    });
+  void deleteItem(int index) async {
+    try {
+      final response = await Dio().delete(
+        'http://localhost:8000/deleteList',
+        data: {
+          // Waiting For UserID
+          'ListId': items[index]['ListID'],
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          items.removeAt(index);
+        });
+        print('Item deleted successfully');
+      } else {
+        print('Failed to delete item: ${response.data}');
+      }
+    } catch (e) {
+      print('Error deleting item: $e');
+    }
   }
 
-  void clearAllItems() {
-    setState(() {
-      items.clear();
-    });
+  void clearAllItems() async{
+     try {
+    final response = await Dio().delete(
+      'http://localhost:8000/deleteAllList',
+      data: {
+        // Waiting For UserID
+        'UserId': 1,
+      },
+    );
+    if (response.statusCode == 200) {
+      setState(() {
+        items.clear();
+      });
+      print('All items deleted successfully');
+    } else {
+      print('Failed to delete all items: ${response.data}');
+    }
+  } catch (e) {
+    print('Error deleting all items: $e');
+  }
   }
 
   void _showClearDialog() {
@@ -90,7 +172,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: AppColors.white,
                       ),
-                  // textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -165,37 +247,38 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, right: 10),
                       child: Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                            onPressed: _showClearDialog,
-                            child: Text(
-                              'clear all',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: AppColors.white,
-                                  ),
-                            )),
+                        alignment: Alignment.topRight,
+                        child: items.isNotEmpty
+                            ? ElevatedButton(
+                                onPressed: _showClearDialog,
+                                child: Text(
+                                  'clear all',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: AppColors.white),
+                                ),
+                              )
+                            : SizedBox(),
                       ),
                     ),
-                    Expanded(
-                      child: items.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No items in the list. Add some items!!',
-                                style: TextStyle(color: AppColors.darkblue),
-                              ),
-                            )
-                          : Padding(
+                    items.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No items in the list. Add some items!!',
+                              style: TextStyle(color: AppColors.darkblue),
+                            ),
+                          )
+                        : Expanded(
+                            child: Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: ListView.builder(
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
                                   return ItemsTile(
-                                    isChecked: items[index][0],
-                                    itemsName: items[index][1],
-                                    quantity: items[index][2],
+                                    isChecked: items[index]['isChecked'],
+                                    itemsName: items[index]['ListName'],
+                                    quantity: items[index]['Quantity'],
                                     onChanged: (value) {
                                       checkBoxChanged(value, index);
                                     },
@@ -204,7 +287,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                                 },
                               ),
                             ),
-                    )
+                          )
                   ],
                 ),
               ),
