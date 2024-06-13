@@ -133,26 +133,26 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     }
   }
 
-  void clearAllItems() async{
-     try {
-    final response = await Dio().delete(
-      'http://localhost:8000/deleteAllList',
-      data: {
-        // Waiting For UserID
-        'UserId': 1,
-      },
-    );
-    if (response.statusCode == 200) {
-      setState(() {
-        items.clear();
-      });
-      print('All items deleted successfully');
-    } else {
-      print('Failed to delete all items: ${response.data}');
+  void clearAllItems() async {
+    try {
+      final response = await Dio().delete(
+        'http://localhost:8000/deleteAllList',
+        data: {
+          // Waiting For UserID
+          'UserId': 1,
+        },
+      );
+      if (response.statusCode == 200) {
+        setState(() {
+          items.clear();
+        });
+        print('All items deleted successfully');
+      } else {
+        print('Failed to delete all items: ${response.data}');
+      }
+    } catch (e) {
+      print('Error deleting all items: $e');
     }
-  } catch (e) {
-    print('Error deleting all items: $e');
-  }
   }
 
   void _showClearDialog() {

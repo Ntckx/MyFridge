@@ -4,10 +4,83 @@ import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/plan_list.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
+import 'package:http/http.dart' as http;
+import 'package:dio/dio.dart';
+import 'dart:convert';
 
 class PaymentPage extends StatelessWidget {
-  const PaymentPage({Key? key}) : super(key: key);
+  const PaymentPage({super.key});
+
+  createPaymentIntent(String amount, String currency) async {
+    try {
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'currency': currency,
+      };
+
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET_KEY']}',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      return json.decode(response.body);
+    } catch (err) {
+      throw Exception(err.toString());
+    }
+  }
+
+  Future<void> initPaymentSheet(Map<String, dynamic> paymentIntent) async {
+    try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent['client_secret'],
+          style: ThemeMode.light,
+          merchantDisplayName: 'MyFridgeApp',
+          googlePay: const PaymentSheetGooglePay(
+            merchantCountryCode: 'TH',
+            currencyCode: 'THB',
+            testEnv: true,
+          ),
+        ),
+      );
+    } catch (e) {
+      print('Error initializing payment sheet: $e');
+    }
+  }
+
+  displayPaymentSheet() async {
+    try {
+      await Stripe.instance.presentPaymentSheet().then((value) {
+        print("Payment Successfully");
+        updateUserPremiumStatus();
+      });
+    } catch (e) {
+      print('$e');
+    }
+  }
+
+  void updateUserPremiumStatus() async {
+    try {
+      final response = await Dio().patch(
+        'http://localhost:8000/updatePremium',
+        data: {
+          // Waiting For UserID
+          'UserId': 1,
+          'isPremium': true,
+        },
+      );
+      print('User premium status updated successfully');
+    } catch (e) {
+      print('Error updating user premium status: $e');
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +93,7 @@ class PaymentPage extends StatelessWidget {
         children: [
           Wrapper(
               child: Padding(
-            padding: const EdgeInsets.fromLTRB(20,50,0,0),
+            padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
             child: Column(children: [
               Text(
                 'Upgrade',
@@ -64,7 +137,8 @@ class PaymentPage extends StatelessWidget {
                           ),
                           PlanList(
                             iconData: Icons.check_circle_rounded,
-                            text: 'Unlocked all features choco signature layer custom',
+                            text:
+                                'Unlocked all features choco signature layer custom',
                           ),
                           PlanList(
                             iconData: Icons.check_circle_rounded,
@@ -77,8 +151,36 @@ class PaymentPage extends StatelessWidget {
                         height: 45,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: () {
-                            context.go('/');
+                          onPressed: () async {
+                            try {
+                              var paymentIntent =
+                                  await createPaymentIntent('5000', 'thb');
+                              var currentContext = context;
+                              if (kIsWeb) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'Payment available only in the mobile app.'),
+                                    duration: Duration(seconds: 3),
+                                  ),
+                                );
+                              } else {
+                                await initPaymentSheet(paymentIntent);
+                                await displayPaymentSheet();
+
+                                if (currentContext.mounted) {
+                                  currentContext.go('/profile');
+                                }
+                              }
+                            } catch (e) {
+                              print('Error: $e');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Payment failed'),
+                                  duration: Duration(seconds: 3),
+                                ),
+                              );
+                            }
                           },
                           child: Text(
                             '50 baht/month after*',

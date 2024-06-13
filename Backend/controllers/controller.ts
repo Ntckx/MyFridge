@@ -87,6 +87,22 @@ export const updateUsername = async (req: Request, res: Response) => {
     }
 }
 
+export const updatePremium = async (req: Request, res: Response) => {
+    const { UserId, isPremium } = req.body;
+    try {
+        const updatedUser = await prisma.user.update({
+            where: { UserID: UserId },
+            data: {
+                isPremium: isPremium,
+            },
+        });
+        return res.json(updatedUser);
+    } catch (e) {
+        console.log(e);
+        return res.status(500).json(e);
+    }
+}
+
 // DELETE METHOD
 export const deleteListByListId = async (req: Request, res: Response) => {
     const { ListId } = req.body;
