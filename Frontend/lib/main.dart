@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
 import 'package:myfridgeapp/theme/custom_theme.dart';
-import 'package:myfridgeapp/routes/router.dart';
-import 'package:myfridgeapp/services/service.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-
+import 'package:myfridgeapp/services/service.dart';
+import 'package:myfridgeapp/routes/router.dart';
+import 'package:flutter/material.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await dotenv.load(fileName: ".env");

@@ -1,84 +1,46 @@
-import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/nav_bar.dart';
+
 import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/services/service.dart';
 import 'package:myfridgeapp/widget/plan_list.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
-import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:flutter_stripe/flutter_stripe.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:flutter/foundation.dart';
 import 'package:go_router/go_router.dart';
-import 'package:http/http.dart' as http;
-import 'package:dio/dio.dart';
-import 'dart:convert';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
-class PaymentPage extends StatelessWidget {
-  const PaymentPage({super.key});
 
-  createPaymentIntent(String amount, String currency) async {
-    try {
-      Map<String, dynamic> body = {
-        'amount': amount,
-        'currency': currency,
-      };
+class PaymentPage extends StatefulWidget {
+  @override
+  _PaymentPageState createState() => _PaymentPageState();
+}
 
-      var response = await http.post(
-        Uri.parse('https://api.stripe.com/v1/payment_intents'),
-        headers: {
-          'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET_KEY']}',
-          'Content-Type': 'application/x-www-form-urlencoded'
-        },
-        body: body,
-      );
-      return json.decode(response.body);
-    } catch (err) {
-      throw Exception(err.toString());
-    }
+class _PaymentPageState extends State<PaymentPage> {
+  final Service _service = Service();
+  final Logger _logger = Logger('PaymentPage');
+
+  @override
+  void initState() {
+    super.initState();
   }
 
-  Future<void> initPaymentSheet(Map<String, dynamic> paymentIntent) async {
+  Future<void> _handlePayment() async {
     try {
-      await Stripe.instance.initPaymentSheet(
-        paymentSheetParameters: SetupPaymentSheetParameters(
-          paymentIntentClientSecret: paymentIntent['client_secret'],
-          style: ThemeMode.light,
-          merchantDisplayName: 'MyFridgeApp',
-          googlePay: const PaymentSheetGooglePay(
-            merchantCountryCode: 'TH',
-            currencyCode: 'THB',
-            testEnv: true,
-          ),
+      // Create a payment intent
+      final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
+      // Initialize the payment sheet
+      await _service.initPaymentSheet(paymentIntent);
+      // Display the payment sheet
+      await _service.displayPaymentSheet();
+    } catch (e) {
+      _logger.severe('Error handling payment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Payment failed: $e'),
+          duration: const Duration(seconds: 3),
         ),
       );
-    } catch (e) {
-      print('Error initializing payment sheet: $e');
-    }
-  }
-
-  displayPaymentSheet() async {
-    try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        print("Payment Successfully");
-        updateUserPremiumStatus();
-      });
-    } catch (e) {
-      print('$e');
-    }
-  }
-
-  void updateUserPremiumStatus() async {
-    try {
-      final response = await Dio().patch(
-        'http://localhost:8000/updatePremium',
-        data: {
-          // Waiting For UserID
-          'UserId': 1,
-          'isPremium': true,
-        },
-      );
-      print('User premium status updated successfully');
-    } catch (e) {
-      print('Error updating user premium status: $e');
     }
   }
 
@@ -153,9 +115,6 @@ class PaymentPage extends StatelessWidget {
                         child: ElevatedButton(
                           onPressed: () async {
                             try {
-                              var paymentIntent =
-                                  await createPaymentIntent('5000', 'thb');
-                              var currentContext = context;
                               if (kIsWeb) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
@@ -165,18 +124,17 @@ class PaymentPage extends StatelessWidget {
                                   ),
                                 );
                               } else {
-                                await initPaymentSheet(paymentIntent);
-                                await displayPaymentSheet();
+                                await _handlePayment();
 
-                                if (currentContext.mounted) {
-                                  currentContext.go('/profile');
+                                if (mounted) {
+                                  context.go('/profile');
                                 }
                               }
                             } catch (e) {
-                              print('Error: $e');
+                              _logger.severe('Payment failed: $e');
                               ScaffoldMessenger.of(context).showSnackBar(
                                 const SnackBar(
-                                  content: Text('Payment failed'),
+                                  content: Text('Payment failed. Please try again.'),
                                   duration: Duration(seconds: 3),
                                 ),
                               );

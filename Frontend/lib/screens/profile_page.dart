@@ -1,12 +1,12 @@
-import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/nav_bar.dart';
-import 'package:myfridgeapp/widget/custom_appbar.dart';
-import 'package:myfridgeapp/widget/wrapper.dart';
-import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/services/service.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
-import 'package:dio/dio.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -16,35 +16,27 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
+  final Service _service = Service();
   String username = '';
   String email = '';
+    final Logger _logger = Logger('ProfilePage');
+
 
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    _fetchUserData();
   }
 
-  final Logger _logger = Logger('ProfilePage');
-  void fetchUserData() async {
+  Future<void> _fetchUserData() async {
     try {
-      final response = await Dio().post(
-        'http://localhost:8000/getUser',
-        // Waiting For UserID
-        data: {'UserID': 1},
-      );
-      final userData = response.data;
-      if (response.statusCode == 200) {
-        setState(() {
-          username = userData['Username'];
-          email = userData['Email'];
-        });
-      }
-      _logger.info('User data fetched successfully');
-      print('User data fetched successfully');
+      final userData = await _service.fetchUserData(_service.userId);
+      setState(() {
+        username = userData['Username'];
+        email = userData['Email'];
+      });
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
-      print('Error fetching user data');
     }
   }
 
@@ -90,11 +82,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -109,7 +101,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Log out",

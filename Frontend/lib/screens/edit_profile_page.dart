@@ -1,78 +1,60 @@
-import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
-import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/services/service.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:go_router/go_router.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
   @override
   _EditProfilePageState createState() => _EditProfilePageState();
 }
 
 class _EditProfilePageState extends State<EditProfilePage> {
+  final Service _service = Service();
+  final Logger _logger = Logger('EditProfilePage');
   String _username = '';
-
-  void fetchUserData() async {
-    try {
-      final response = await Dio().post(
-        'http://localhost:8000/getUser',
-        // Waiting For UserID
-        data: {'UserID': 1},
-      );
-      final userData = response.data;
-      if (response.statusCode == 200) {
-        setState(() {
-          _username = userData['Username'] ?? '';
-          _usernameController.text = _username;
-        });
-      }
-      print('User data fetched successfully');
-    } catch (e) {
-      print('Error fetching user data $e');
-    }
-  }
 
   @override
   void initState() {
-    fetchUserData();
     super.initState();
+    _fetchUserData();
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final userData = await _service.fetchUserData(_service.userId);
+      setState(() {
+        _username = userData['Username'];
+        _usernameController.text = _username;
+      });
+    } catch (e) {
+      _logger.severe('Error fetching user data: $e');
+    }
   }
 
   final _usernameController = TextEditingController();
 
   void updateUserProfile(String username) async {
     try {
-      final response = await Dio().patch(
-        'http://localhost:8000/updateUsername',
-        data: {
-          // Waiting For UserID
-          'UserId': 1,
-          'Username': username,
-        },
-      );
-      if (response.statusCode == 200) {
-        GoRouter.of(context).go('/profile');
-        // _logger.info('User data updated successfully');
-        print('Updated user data successfully');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Failed to update username. Please try again.'),
-          ),
-        );
-      }
+      await _service.updateUserProfile(username);
+      GoRouter.of(context).go('/profile');
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('An error occurred. Please try again later.'),
+          content: Text('Failed to update username. Please try again.'),
         ),
       );
-      // _logger.severe('Error patch user data: $e');
-      print('Error update username $e');
+       _logger.severe('Error updating username: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    super.dispose();
   }
 
   @override

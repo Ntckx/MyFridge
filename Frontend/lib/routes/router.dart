@@ -31,10 +31,10 @@ final GoRouter router = GoRouter(
             builder: (context, state) => const NotificationPage()),
         GoRoute(
             path: "editprofile",
-            builder: (context, state) => const EditProfilePage()),
+            builder: (context, state) => EditProfilePage()),
         GoRoute(
           path: "payment",
-          builder: (context, state) => const PaymentPage(),
+          builder: (context, state) => PaymentPage(),
         ),
       ],
     ),

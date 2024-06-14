@@ -1,11 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/dialog_box.dart';
 import 'package:myfridgeapp/widget/items_tile.dart';
+import 'package:myfridgeapp/services/service.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
-import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
-import 'package:dio/dio.dart';
+import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class ShoppingListPage extends StatefulWidget {
@@ -15,6 +15,7 @@ class ShoppingListPage extends StatefulWidget {
 }
 
 class _ShoppingListPageState extends State<ShoppingListPage> {
+  final Service _service = Service();
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();
   late List<Map<String, dynamic>> items = [];
@@ -22,77 +23,43 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
   @override
   void initState() {
     super.initState();
-    fetchListData();
+    _fetchListData();
   }
 
   final Logger _logger = Logger('ShoppingListPage');
-  void fetchListData() async {
+  void _fetchListData() async {
     try {
-      final response = await Dio().post(
-        'http://localhost:8000/allList',
-        // Waiting For UserID
-        data: {'UserID': 1},
-      );
-      final listData = response.data;
-      if (response.statusCode == 200) {
-        setState(() {
-          items = List<Map<String, dynamic>>.from(listData);
-        });
-      }
-      _logger.info('User data fetched successfully');
-      print('User data fetched successfully');
+      final items = await _service.fetchListData();
+      setState(() {
+        this.items = items;
+      });
     } catch (e) {
-      _logger.severe('Error fetching user data: $e');
-      print('Error fetching user data');
+      _logger.severe('Error fetching list data: $e');
     }
   }
 
-  void checkBoxChanged(bool? value, int index) async {
+  void _checkBoxChanged(bool? value, int index) async {
     try {
-      final response = await Dio().patch(
-        'http://localhost:8000/updateList',
-        data: {
-          'ListId': items[index]['ListID'],
-          'isChecked': value,
-        },
-      );
-      if (response.statusCode == 200) {
-        setState(() {
-          items[index]['isChecked'] = value;
-        });
-        print('Checkbox changed successfully');
-      } else {
-        print('Failed to update checkbox: ${response.data}');
-      }
+      await _service.checkBoxChanged(items[index]['ListID'], value);
+      setState(() {
+        items[index]['isChecked'] = value;
+      });
     } catch (e) {
-      print('Error updating checkbox: $e');
+      _logger.severe('Error updating check box: $e');
     }
   }
 
-  void saveNewItem() async {
+  void _saveNewItem() async {
     try {
-      final response = await Dio().post(
-        'http://localhost:8000/createList',
-        data: {
-          // Waiting For UserID
-          'UserId': 1,
-          'Listname': _itemNameController.text,
-          'Quantity': int.parse(_quantityController.text),
-          'isChecked': false,
-        },
-      );
-      if (response.statusCode == 200) {
-        fetchListData();
-        _itemNameController.clear();
-        _quantityController.clear();
-        print('New item created successfully');
-      } else {
-        print('Failed to create new item: ${response.data}');
-      }
+      await _service.saveNewItem(
+          _itemNameController.text, int.parse(_quantityController.text));
+      _fetchListData();
+      _itemNameController.clear();
+      _quantityController.clear();
+      Navigator.of(context).pop();
     } catch (e) {
-      print('Error creating new item: $e');
+      _logger.severe('Error creating new item: $e');
     }
-    Navigator.of(context).pop();
   }
 
   void createNewItem() {
@@ -102,7 +69,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         return DialogBox(
           itemNameController: _itemNameController,
           quantityController: _quantityController,
-          onSaved: saveNewItem,
+          onSaved:  _saveNewItem,
           onCanceled: () {
             Navigator.of(context).pop();
           },
@@ -111,47 +78,25 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     );
   }
 
-  void deleteItem(int index) async {
+  void _deleteItem(int index) async {
     try {
-      final response = await Dio().delete(
-        'http://localhost:8000/deleteList',
-        data: {
-          // Waiting For UserID
-          'ListId': items[index]['ListID'],
-        },
-      );
-      if (response.statusCode == 200) {
-        setState(() {
-          items.removeAt(index);
-        });
-        print('Item deleted successfully');
-      } else {
-        print('Failed to delete item: ${response.data}');
-      }
+      await _service.deleteItem(items[index]['ListID']);
+      setState(() {
+        items.removeAt(index);
+      });
     } catch (e) {
-      print('Error deleting item: $e');
+      _logger.severe('Error deleting item: $e');
     }
   }
 
-  void clearAllItems() async {
+  void _clearAllItems() async {
     try {
-      final response = await Dio().delete(
-        'http://localhost:8000/deleteAllList',
-        data: {
-          // Waiting For UserID
-          'UserId': 1,
-        },
-      );
-      if (response.statusCode == 200) {
-        setState(() {
-          items.clear();
-        });
-        print('All items deleted successfully');
-      } else {
-        print('Failed to delete all items: ${response.data}');
-      }
+      await _service.clearAllItems();
+      setState(() {
+        items.clear();
+      });
     } catch (e) {
-      print('Error deleting all items: $e');
+      _logger.severe('Error deleting all items: $e');
     }
   }
 
@@ -184,11 +129,11 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -198,12 +143,12 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                clearAllItems();
+                _clearAllItems();
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Clear all",
@@ -259,7 +204,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                                       .copyWith(color: AppColors.white),
                                 ),
                               )
-                            : SizedBox(),
+                            : const SizedBox(),
                       ),
                     ),
                     items.isEmpty
@@ -280,9 +225,9 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                                     itemsName: items[index]['ListName'],
                                     quantity: items[index]['Quantity'],
                                     onChanged: (value) {
-                                      checkBoxChanged(value, index);
+                                      _checkBoxChanged(value, index);
                                     },
-                                    deleteItem: (context) => deleteItem(index),
+                                    deleteItem: (context) => _deleteItem(index),
                                   );
                                 },
                               ),

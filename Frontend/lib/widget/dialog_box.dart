@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:input_quantity/input_quantity.dart';
 
@@ -42,7 +41,7 @@ class _DialogBoxState extends State<DialogBox> {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  style: TextStyle(color: AppColors.darkblue),
+                  style: const TextStyle(color: AppColors.darkblue),
                   controller: widget.itemNameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
@@ -117,33 +116,13 @@ class _DialogBoxState extends State<DialogBox> {
                             child: Text(
                               state.errorText!,
                               style:
-                                  TextStyle(color: AppColors.red),
+                                  const TextStyle(color: AppColors.red),
                             ),
                           ),
                       ],
                     );
                   },
                 ),
-                // TextFormField(
-                //   controller: widget.quantityController,
-                //   keyboardType: TextInputType.number,
-                //   decoration: const InputDecoration(
-                //     border: OutlineInputBorder(),
-                //     labelText: 'Quantity',
-                //     hintText: 'e.g. 1',
-                //   ),
-                //   validator: (value) {
-                //     if (value!.isEmpty) {
-                //       return 'Please enter a quantity.';
-                //     }
-                //     try {
-                //       int.parse(value);
-                //       return null;
-                //     } catch (e) {
-                //       return 'Please input a number only.';
-                //     }
-                //   },
-                // ),
                 const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,

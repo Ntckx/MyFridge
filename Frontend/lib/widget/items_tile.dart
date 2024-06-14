@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:dio/dio.dart';
-import 'package:logging/logging.dart';
-
 
 class ItemsTile extends StatelessWidget {
   final String itemsName;
@@ -88,7 +85,7 @@ class ItemsTile extends StatelessWidget {
                       ],
                     ),
                     if (isChecked)
-                      Positioned.fill(
+                      const Positioned.fill(
                         child: Divider(
                           color: AppColors.black,
                           thickness: 0.5,
