@@ -7,6 +7,7 @@ import { updateUsername } from "../controllers/controller";
 import { updatePremium } from "../controllers/controller";
 import { deleteListByListId } from "../controllers/controller";
 import { deleteAllList } from "../controllers/controller";
+import { createUser } from "../controllers/authen";
 const router = Router();
 
 //GET METHOD
@@ -15,6 +16,7 @@ const router = Router();
 router.post("/allList", getMyAllList);
 router.post("/getUser", getUserByUserId);
 router.post("/createList", createList);
+router.post("/users", createUser);
 
 //PUT METHOD
 router.patch("/updateList", updateListByListId);

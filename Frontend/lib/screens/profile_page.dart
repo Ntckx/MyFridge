@@ -104,7 +104,7 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.go('/welcome');
                 // Perform logout operation here
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
