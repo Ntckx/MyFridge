@@ -104,3 +104,38 @@ export const deleteItem = async (req: Request, res: Response) => {
     return res.status(500).json(e);
   }
 };
+export const markItemAsEaten = async (req: Request, res: Response) => {
+  try {
+    const { id } = req.params;
+    const { QuantityEaten } = req.body;
+
+    if (!QuantityEaten || QuantityEaten < 1) {
+      return res.status(400).json({ error: "Invalid quantity eaten" });
+    }
+
+    const item = await prisma.item.findUnique({
+      where: { ItemID: parseInt(id) },
+    });
+
+    if (!item) {
+      return res.status(404).json({ error: "Item not found" });
+    }
+
+    const updatedQuantity = item.Quantity - QuantityEaten;
+
+    const updatedItem = await prisma.item.update({
+      where: { ItemID: parseInt(id) },
+      data: { Quantity: updatedQuantity < 0 ? 0 : updatedQuantity },
+    });
+
+    // Fetch and return the updated item
+    const refreshedItem = await prisma.item.findUnique({
+      where: { ItemID: parseInt(id) },
+    });
+
+    return res.json(refreshedItem);
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json(e);
+  }
+};
