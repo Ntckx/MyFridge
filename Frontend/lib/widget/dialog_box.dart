@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:input_quantity/input_quantity.dart';
 
-class DialogBox extends StatelessWidget {
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+class DialogBox extends StatefulWidget {
   final TextEditingController itemNameController;
   final TextEditingController quantityController;
   VoidCallback onSaved;
@@ -16,6 +17,12 @@ class DialogBox extends StatelessWidget {
     required this.onCanceled,
   });
 
+  @override
+  _DialogBoxState createState() => _DialogBoxState();
+}
+
+class _DialogBoxState extends State<DialogBox> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
@@ -35,7 +42,8 @@ class DialogBox extends StatelessWidget {
                 ),
                 const SizedBox(height: 20),
                 TextFormField(
-                  controller: itemNameController,
+                  style: TextStyle(color: AppColors.darkblue),
+                  controller: widget.itemNameController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(),
                     labelText: "Item name",
@@ -49,44 +57,116 @@ class DialogBox extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 15),
-                TextFormField(
-                  controller: quantityController,
-                  keyboardType: TextInputType.number,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Quantity',
-                    hintText: 'e.g. 1',
-                  ),
+                FormField<int>(
+                  initialValue: int.tryParse(widget.quantityController.text),
                   validator: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter a quantity.';
+                    if (value == null || value <= 0) {
+                      return 'Invalid quantity';
                     }
-                    try {
-                      int.parse(value);
-                      return null;
-                    } catch (e) {
-                      return 'Please input a number only.';
-                    }
+                    return null;
+                  },
+                  builder: (FormFieldState<int> state) {
+                    return Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 120,
+                          height: 50,
+                          child: InputQty.int(
+                            qtyFormProps: const QtyFormProps(
+                                cursorColor: AppColors.darkblue,
+                                style: TextStyle(
+                                  color: AppColors.darkblue,
+                                )),
+                            decoration: QtyDecorationProps(
+                              qtyStyle: QtyStyle.btnOnRight,
+                              orientation: ButtonOrientation.vertical,
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide(
+                                  color: state.hasError
+                                      ? AppColors.red
+                                      : AppColors.darkblue,
+                                ),
+                              ),
+                              btnColor: AppColors.darkblue,
+                              fillColor: AppColors.grey,
+                              borderShape: BorderShapeBtn.square,
+                              plusBtn: const Icon(
+                                Icons.arrow_drop_up_rounded,
+                                color: AppColors.darkblue,
+                              ),
+                              minusBtn: const Icon(
+                                Icons.arrow_drop_down_rounded,
+                                color: AppColors.darkblue,
+                              ),
+                            ),
+                            minVal: 1,
+                            initVal:
+                                int.tryParse(widget.quantityController.text) ?? 0,
+                            onQtyChanged: (val) {
+                              state.didChange(val);
+                              setState(() {
+                                widget.quantityController.text = val.toString();
+                              });
+                            },
+                          ),
+                        ),
+                        if (state.hasError)
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 12),
+                            child: Text(
+                              state.errorText!,
+                              style:
+                                  TextStyle(color: AppColors.red),
+                            ),
+                          ),
+                      ],
+                    );
                   },
                 ),
+                // TextFormField(
+                //   controller: widget.quantityController,
+                //   keyboardType: TextInputType.number,
+                //   decoration: const InputDecoration(
+                //     border: OutlineInputBorder(),
+                //     labelText: 'Quantity',
+                //     hintText: 'e.g. 1',
+                //   ),
+                //   validator: (value) {
+                //     if (value!.isEmpty) {
+                //       return 'Please enter a quantity.';
+                //     }
+                //     try {
+                //       int.parse(value);
+                //       return null;
+                //     } catch (e) {
+                //       return 'Please input a number only.';
+                //     }
+                //   },
+                // ),
                 const SizedBox(height: 15),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     OutlinedButton(
-                      onPressed: onCanceled,
+                      onPressed: widget.onCanceled,
                       style: OutlinedButton.styleFrom(
-                        side: const BorderSide(width: 1, color: AppColors.darkblue),
+                        side: const BorderSide(
+                            width: 1, color: AppColors.darkblue),
                       ),
                       child: const Text('Cancel'),
                     ),
                     ElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          onSaved();
+                          widget.onSaved();
                         }
                       },
-                      child: Text('Add', style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: AppColors.white)),
+                      child: Text('Add',
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(color: AppColors.white)),
                     ),
                   ],
                 ),

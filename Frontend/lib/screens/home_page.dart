@@ -28,6 +28,7 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchItems() async {
     try {
       final fetchedItems = await _apiService.getAllItems();
+      print('Fetched items: $fetchedItems');
       setState(() {
         items = fetchedItems;
       });
@@ -62,7 +63,7 @@ class _HomePageState extends State<HomePage> {
 
     try {
       await _apiService.createItem(newItem);
-      _fetchItems();
+      _fetchItems(); // Refetch items after adding
     } catch (e) {
       print('Error adding item: $e');
     }
@@ -82,7 +83,7 @@ class _HomePageState extends State<HomePage> {
 
     try {
       await _apiService.updateItem(items[index]['ItemID'], updatedItem);
-      _fetchItems();
+      _fetchItems(); // Refetch items after updating
     } catch (e) {
       print('Error updating item: $e');
     }
@@ -153,6 +154,7 @@ class _HomePageState extends State<HomePage> {
               itemCount: items.length,
               itemBuilder: (context, index) {
                 final item = items[index];
+                print('Rendering item: $item');
 
                 return Center(
                   child: Container(
@@ -182,13 +184,15 @@ class _HomePageState extends State<HomePage> {
                         ],
                       ),
                       child: MyFridgeItemCard(
-                        initialQuantity: item['Quantity'],
-                        itemName: item['ItemName'],
+                        itemId: item['ItemID'], // Pass itemId
+                        initialQuantity: item['Quantity'] ?? 0,
+                        itemName: item['ItemName'] ?? '',
                         isExpired: item['isExpired'] ?? false,
-                        expiryDate: item['ExpirationDate'],
-                        description: item['Description'],
+                        expiryDate: item['ExpirationDate'] ?? '',
+                        description: item['Description'] ?? '',
                         deleteItem: (context) => deleteItem(index),
                         editItem: (context) => _showEditItemDialog(index, item),
+                        fetchItems: _fetchItems, // Pass the fetchItems method
                       ),
                     ),
                   ),

@@ -39,9 +39,12 @@ dependencies:
   go_router: ^14.0.1
   flutter_slidable: ^3.0.1
   input_quantity: ^2.3.4
+  font_awesome_flutter: ^10.7.0
   dio: ^5.4.3+1
   intl: ^0.19.0
   in_app_purchase: ^3.2.0
+  logger: ^2.3.0
+  pushy_flutter: ^2.0.20
 
 dev_dependencies:
   flutter_test:

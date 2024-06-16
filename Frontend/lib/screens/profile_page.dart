@@ -4,6 +4,8 @@ import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:go_router/go_router.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../api_service.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -13,9 +15,11 @@ class ProfilePage extends StatefulWidget {
 }
 
 class _ProfilePageState extends State<ProfilePage> {
-  late String username;
-  late String email;
-  bool isPremium = false; // Assume this value is fetched from the backend
+  String? username;
+  String? email;
+  bool isPremium = false;
+  final ApiService _apiService = ApiService();
+  final int _userId = 1; // Use a mock user ID for testing
 
   @override
   void initState() {
@@ -23,23 +27,17 @@ class _ProfilePageState extends State<ProfilePage> {
     fetchUserData();
   }
 
-  void fetchUserData() {
-    // Simulate fetching data from a backend
-    Map<String, String> userData = getMockUserData();
-    setState(() {
-      username = userData['username']!;
-      email = userData['email']!;
-      isPremium = userData['isPremium'] == 'true';
-    });
-  }
-
-  Map<String, String> getMockUserData() {
-    // Mock user data
-    return {
-      'username': 'JohnDoe',
-      'email': 'john.doe@example.com',
-      'isPremium': 'false',
-    };
+  Future<void> fetchUserData() async {
+    try {
+      final userData = await _apiService.getUserById(_userId);
+      setState(() {
+        username = userData['Username'];
+        email = userData['Email'];
+        isPremium = userData['isPremium'] == true;
+      });
+    } catch (e) {
+      print('Error fetching user data: $e');
+    }
   }
 
   void _showLogoutDialog() {
@@ -117,14 +115,6 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  void _upgradeToPremium() {
-    // Handle the upgrade to premium logic here
-    // For now, we just set isPremium to true for demonstration
-    setState(() {
-      isPremium = true;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -135,30 +125,38 @@ class _ProfilePageState extends State<ProfilePage> {
       body: Stack(
         children: [
           Wrapper(
-            child: SizedBox(
-              width: double.infinity,
-              height: double.infinity,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  if (username != null && email != null) ...[
                     Text(
-                      username,
-                      style:
-                          Theme.of(context).textTheme.headlineMedium!.copyWith(
-                                color: AppColors.white,
-                              ),
+                      username!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(color: AppColors.white),
                     ),
                     Text(
-                      email,
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: AppColors.darkblue,
-                          ),
+                      email!,
+                      style: Theme.of(context)
+                          .textTheme
+                          .bodyLarge!
+                          .copyWith(color: AppColors.darkblue),
                     ),
-                    const SizedBox(height: 20),
+                  ] else ...[
+                    CircularProgressIndicator(),
+                    SizedBox(height: 16),
+                    Text(
+                      'Loading...',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineMedium!
+                          .copyWith(color: AppColors.white),
+                    ),
                   ],
-                ),
+                ],
               ),
             ),
           ),
@@ -192,35 +190,34 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(
-                                      color: AppColors.darkblue,
-                                    ),
+                                    .copyWith(color: AppColors.darkblue),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      const SizedBox(height: 20),
+                      SizedBox(height: 20),
                       SizedBox(
                         height: 45,
                         width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: isPremium ? null : _upgradeToPremium,
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: AppColors.green,
-                          ),
-                          child: Text(
-                            isPremium
-                                ? 'You are a Premium user'
-                                : 'Upgrade to Premium',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(color: AppColors.white),
+                        child: OutlinedButton(
+                          onPressed: () => context.go("/payment"),
+                          child: Row(
+                            children: [
+                              Icon(FontAwesomeIcons.crown),
+                              SizedBox(width: 30),
+                              Text(
+                                'Upgrade Plan',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodyLarge!
+                                    .copyWith(color: AppColors.darkblue),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                      const Spacer(),
+                      Spacer(),
                       SizedBox(
                         height: 45,
                         width: double.infinity,
@@ -231,10 +228,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Text(
                             'Log out',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(color: AppColors.white),
                           ),
                         ),
                       ),

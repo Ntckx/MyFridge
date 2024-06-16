@@ -4,8 +4,10 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'eaten_card.dart';
 import '../theme/color_theme.dart';
+import '../api_service.dart';
 
 class MyFridgeItemCard extends StatefulWidget {
+  final int itemId; // Add itemId
   final int initialQuantity;
   final String itemName;
   final String expiryDate;
@@ -13,9 +15,11 @@ class MyFridgeItemCard extends StatefulWidget {
   final String description;
   final Function(BuildContext)? deleteItem;
   final Function(BuildContext)? editItem;
+  final Future<void> Function() fetchItems; // Add fetchItems as a parameter
 
   const MyFridgeItemCard({
     super.key,
+    required this.itemId, // Initialize itemId
     required this.initialQuantity,
     required this.itemName,
     required this.isExpired,
@@ -23,6 +27,7 @@ class MyFridgeItemCard extends StatefulWidget {
     required this.description,
     required this.deleteItem,
     required this.editItem,
+    required this.fetchItems, // Initialize the fetchItems parameter
   });
 
   @override
@@ -31,6 +36,7 @@ class MyFridgeItemCard extends StatefulWidget {
 
 class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
   late int quantity;
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -170,7 +176,7 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
           visible: !widget.isExpired,
           child: ElevatedButton(
             onPressed: () {
-              _showEatenCard(context);
+              _showEatenCard();
             },
             child: Text(
               'Eaten',
@@ -194,21 +200,20 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
     );
   }
 
-  void _showEatenCard(BuildContext context) {
+  void _showEatenCard() {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return EatenCard(
           initialQuantity: 1,
-          onEaten: (int qtyEaten) {
-            setState(() {
-              // Ensure the quantity does not go below zero
-              if (quantity - qtyEaten < 0) {
-                quantity = 0;
-              } else {
-                quantity -= qtyEaten;
-              }
-            });
+          onEaten: (int qtyEaten) async {
+            try {
+              await _apiService.markItemAsEaten(widget.itemId, qtyEaten);
+              await widget
+                  .fetchItems(); // Refetch items to get the updated data
+            } catch (e) {
+              print('Error marking item as eaten: $e');
+            }
           },
         );
       },

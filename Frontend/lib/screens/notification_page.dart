@@ -1,28 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
-import '../theme/color_theme.dart';
-import '../widget/notification_card.dart'; // Import the NotificationCard widget
+import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/widget/notification_card.dart';
+import 'package:myfridgeapp/api_service.dart';
 
-class NotificationPage extends StatelessWidget {
+class NotificationPage extends StatefulWidget {
   const NotificationPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // Mocked notifications data
-    final List<String> notifications = [
-      'Your milk is about to expire in 2 days.',
-      'Your egg is about to expire in 1 day',
-      'Your meat is about to expire in 5 days',
-    ];
+  _NotificationPageState createState() => _NotificationPageState();
+}
 
+class _NotificationPageState extends State<NotificationPage> {
+  late Future<List<Map<String, dynamic>>> notifications;
+
+  @override
+  void initState() {
+    super.initState();
+    notifications = ApiService().getNotifications(ApiService().testUserId);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(80.0), // Set your desired height here
+        preferredSize: const Size.fromHeight(80.0),
         child: CustomAppBar(
           title: 'MyFridge',
-          // height: 80.0, // Ensure the height is set here as well
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/notifications"),
@@ -32,39 +37,53 @@ class NotificationPage extends StatelessWidget {
           Container(
             color: AppColors.blue,
             alignment: Alignment.topCenter,
-            padding: const EdgeInsets.only(
-                top: 10), // Add padding to position the text
+            padding: const EdgeInsets.only(top: 10),
             child: const Text(
               'Notification',
               style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
             ),
           ),
           Positioned(
-            top: 60, // Adjust this value to increase the blue area
+            top: 60,
             left: 0,
             right: 0,
             bottom: 0,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(
-                      60.0), // Change this to your desired radius
+                  top: Radius.circular(60.0),
                 ),
               ),
-              height: MediaQuery.of(context).size.height -
-                  150, // Adjust height as needed
+              height: MediaQuery.of(context).size.height - 150,
               child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: notifications.length,
-                  itemBuilder: (context, index) {
-                    return NotificationCard(
-                        notificationText: notifications[index]);
+                padding: const EdgeInsets.symmetric(
+                    vertical: 50.0, horizontal: 20.0),
+                child: FutureBuilder<List<Map<String, dynamic>>>(
+                  future: notifications,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    } else if (snapshot.hasError) {
+                      return Center(child: Text('Error: ${snapshot.error}'));
+                    } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                      return const Center(
+                          child: Text('No notifications found.'));
+                    } else {
+                      return ListView.builder(
+                        itemCount: snapshot.data!.length,
+                        itemBuilder: (context, index) {
+                          final notification = snapshot.data![index];
+                          return NotificationCard(
+                            notificationText: notification['message'],
+                          );
+                        },
+                      );
+                    }
                   },
                 ),
               ),
