@@ -46,6 +46,8 @@ dependencies:
   http: ^1.2.1
   flutter_stripe_web: ^6.0.0-dev.0
   flutter_dotenv: ^5.1.0
+  shared_preferences: ^2.0.13
+  jwt_decoder:
 
 dev_dependencies:
   flutter_test:
