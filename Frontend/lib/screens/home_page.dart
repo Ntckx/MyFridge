@@ -6,15 +6,19 @@ import 'package:myfridgeapp/widget/myfridge_item.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final String token;
+  const HomePage({Key? key, required this.token}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
+  late String email;
+
   final List<Map<String, dynamic>> items = [
     {
       "quantity": 1,
@@ -33,14 +37,20 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    email = jwtDecodedToken['email'];
+  }
+
   void deleteItem(int index) {
     setState(() {
       items.removeAt(index);
     });
   }
 
-  void _addItem(
-      String itemName, String expiryDate, int quantity, String description) {
+  void _addItem(String itemName, String expiryDate, int quantity, String description) {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
@@ -55,8 +65,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _updateItem(int index, String itemName, String expiryDate, int quantity,
-      String description) {
+  void _updateItem(int index, String itemName, String expiryDate, int quantity, String description) {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
@@ -101,11 +110,9 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize:
-            const Size.fromHeight(80.0), // Set your desired height here
+        preferredSize: const Size.fromHeight(80.0), // Set your desired height here
         child: CustomAppBar(
-          title: 'MyFridge',
-          // height: 80.0, // Ensure the height is set here as well
+          title: email,
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/"),
@@ -116,20 +123,17 @@ class _HomePageState extends State<HomePage> {
             color: AppColors.blue,
           ),
           Positioned(
-            top:
-                50, // Adjust this value to position the white container correctly
+            top: 50, // Adjust this value to position the white container correctly
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.vertical(
-                  top: Radius.circular(
-                      60.0), // Change this to your desired radius
+                  top: Radius.circular(60.0), // Change this to your desired radius
                 ),
               ),
-              height: MediaQuery.of(context).size.height -
-                  50, // Adjust height as needed
+              height: MediaQuery.of(context).size.height - 50, // Adjust height as needed
             ),
           ),
           Positioned(
@@ -145,8 +149,7 @@ class _HomePageState extends State<HomePage> {
                 return Center(
                   child: Container(
                     width: 350, // Set a fixed width to center the card
-                    margin: const EdgeInsets.symmetric(
-                        vertical: 10), // Add vertical margin for spacing
+                    margin: const EdgeInsets.symmetric(vertical: 10), // Add vertical margin for spacing
                     child: Slidable(
                       key: Key('$item'),
                       endActionPane: ActionPane(

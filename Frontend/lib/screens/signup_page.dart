@@ -45,7 +45,7 @@ class _SignupState extends State<SignUpPage> {
 
       try {
         Response response = await Dio().post(
-          'http://10.0.2.2:8000/users',
+          'http://localhost:8000/users',
           data: jsonEncode(regBody),
           options: Options(
             headers: {"content-type": "application/json"},

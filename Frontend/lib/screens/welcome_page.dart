@@ -35,7 +35,7 @@ class WelcomePage extends StatelessWidget {
                   height: 45,
                   width: double.infinity,
                   child: ElevatedButton(
-                    onPressed: () {
+                   onPressed: () {
                       context.go('/signin');
                     },
                     style: ElevatedButton.styleFrom(
