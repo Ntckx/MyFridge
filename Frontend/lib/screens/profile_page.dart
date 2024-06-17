@@ -12,15 +12,15 @@ class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class ProfilePageState extends State<ProfilePage> {
   final Service _service = Service();
   String username = '';
   String email = '';
-    final Logger _logger = Logger('ProfilePage');
-
+  bool isPremium = false;
+  final Logger _logger = Logger('ProfilePage');
 
   @override
   void initState() {
@@ -34,6 +34,7 @@ class _ProfilePageState extends State<ProfilePage> {
       setState(() {
         username = userData['Username'];
         email = userData['Email'];
+        isPremium = userData['isPremium'];
       });
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
@@ -135,11 +136,22 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    username,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: AppColors.white,
-                        ),
+                  Row(
+                    children: [
+                      Text(
+                        username,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: AppColors.white,
+                            ),
+                      ),
+                      const SizedBox(width: 10),
+                      if (isPremium == true)
+                        const Icon(FontAwesomeIcons.crown,
+                            color: AppColors.yellow),
+                    ],
                   ),
                   Text(
                     email,

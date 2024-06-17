@@ -5,10 +5,10 @@ import 'package:input_quantity/input_quantity.dart';
 class DialogBox extends StatefulWidget {
   final TextEditingController itemNameController;
   final TextEditingController quantityController;
-  VoidCallback onSaved;
-  VoidCallback onCanceled;
+  final VoidCallback onSaved;
+  final VoidCallback onCanceled;
 
-  DialogBox({
+  const DialogBox({
     super.key,
     required this.itemNameController,
     required this.quantityController,
@@ -17,10 +17,10 @@ class DialogBox extends StatefulWidget {
   });
 
   @override
-  _DialogBoxState createState() => _DialogBoxState();
+  DialogBoxState createState() => DialogBoxState();
 }
 
-class _DialogBoxState extends State<DialogBox> {
+class DialogBoxState extends State<DialogBox> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   @override
   Widget build(BuildContext context) {

@@ -11,10 +11,10 @@ import 'package:logging/logging.dart';
 class ShoppingListPage extends StatefulWidget {
   const ShoppingListPage({super.key});
   @override
-  _ShoppingListPageState createState() => _ShoppingListPageState();
+  ShoppingListPageState createState() => ShoppingListPageState();
 }
 
-class _ShoppingListPageState extends State<ShoppingListPage> {
+class ShoppingListPageState extends State<ShoppingListPage> {
   final Service _service = Service();
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();

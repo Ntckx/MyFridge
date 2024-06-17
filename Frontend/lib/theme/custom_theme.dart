@@ -18,16 +18,16 @@ class CustomTheme {
     primaryColor: AppColors.darkblue,
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.all<Color>(
+        backgroundColor: WidgetStateProperty.all<Color>(
           AppColors.darkblue,
         ),
-        shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+        shape: WidgetStatePropertyAll(RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(10),
         )),
-        foregroundColor: const MaterialStatePropertyAll<Color>(
+        foregroundColor: const WidgetStatePropertyAll<Color>(
           AppColors.cream,
         ),
-        textStyle: const MaterialStatePropertyAll<TextStyle>(
+        textStyle: const WidgetStatePropertyAll<TextStyle>(
           TextStyle(
             color: AppColors.cream,
           ),
@@ -37,13 +37,13 @@ class CustomTheme {
 
     outlinedButtonTheme: OutlinedButtonThemeData(
         style: ButtonStyle(
-      backgroundColor: MaterialStateProperty.all<Color>(
+      backgroundColor: WidgetStateProperty.all<Color>(
         AppColors.white,
       ),
-      side: MaterialStateProperty.all<BorderSide>(
+      side: WidgetStateProperty.all<BorderSide>(
         const BorderSide(color: AppColors.darkblue, width: 2),
       ),
-      shape: MaterialStatePropertyAll(RoundedRectangleBorder(
+      shape: WidgetStatePropertyAll(RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
       )),
     )),
@@ -68,8 +68,8 @@ class CustomTheme {
       elevation: 0,
     ),
     checkboxTheme: CheckboxThemeData(
-        fillColor: MaterialStateProperty.all<Color>(AppColors.blue),
-        checkColor: MaterialStateProperty.all<Color>(AppColors.white),
+        fillColor: WidgetStateProperty.all<Color>(AppColors.blue),
+        checkColor: WidgetStateProperty.all<Color>(AppColors.white),
         side: const BorderSide(color: Colors.transparent)),
 
     textTheme: const TextTheme(
@@ -103,76 +103,5 @@ class CustomTheme {
       filled: true,
       contentPadding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
     ),
-
-    // expansionTileTheme: const ExpansionTileThemeData(
-    //     shape: Border(), backgroundColor: Colors.white),
-
-    //     elevatedButtonTheme: ElevatedButtonThemeData(
-    //     style: ButtonStyle(
-    //   backgroundColor: WidgetStateProperty.all<Color>(
-    //     AppColors.yellow,
-    //   ),
-    //   foregroundColor: WidgetStateProperty.all<Color>(
-    //     AppColors.white,
-    //   ),
-    //   shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-    //     RoundedRectangleBorder(
-    //       borderRadius: BorderRadius.circular(10),
-    //     ),
-    //   ),
-    //   textStyle: WidgetStateProperty.all<TextStyle>(
-    //     const TextStyle(
-    //       fontWeight: FontWeight.w800,
-    //       fontSize: 18,
-    //       color: AppColors.white,
-    //     ),
-    //   ),
-    //   fixedSize: WidgetStateProperty.all<Size>(
-    //     const Size.fromHeight(50),
-    //   ),
-    //   elevation:
-    //       WidgetStateProperty.all<double>(0),
-    // )),
-    // outlinedButtonTheme: OutlinedButtonThemeData(
-    //   style: ButtonStyle(
-    //     backgroundColor: WidgetStateProperty.all<Color>(AppColors.white),
-    //     foregroundColor: WidgetStateProperty.all<Color>(
-    //       AppColors.darkGrey,
-    //     ),
-    //     shape: WidgetStateProperty.all<RoundedRectangleBorder>(
-    //       RoundedRectangleBorder(
-    //         borderRadius: BorderRadius.circular(10),
-    //         side: const BorderSide(
-    //           color: AppColors.lightGrey, // Set the color of the border
-    //           width: 1, // Set the width of the border
-    //         ),
-    //       ),
-    //     ),
-    //     textStyle: WidgetStateProperty.all<TextStyle>(
-    //       const TextStyle(
-    //         fontWeight: FontWeight.w500,
-    //         fontSize: 18,
-    //         color: AppColors.darkGrey,
-    //       ),
-    //     ),
-    //     fixedSize: WidgetStateProperty.all<Size>(const Size.fromHeight(50)),
-    //     elevation:
-    //         WidgetStateProperty.all<double>(0), // Remove the elevation here
-    //   ),
-    // ),
-    // textTheme: const TextTheme(
-    //   headlineLarge: TextStyle(
-    //       fontWeight: FontWeight.w600, fontSize: 40, color: AppColors.darkGrey),
-    //   headlineMedium: TextStyle(
-    //       fontWeight: FontWeight.w600, fontSize: 20, color: AppColors.darkGrey),
-    //   headlineSmall: TextStyle(
-    //       fontWeight: FontWeight.w600, fontSize: 20, color: AppColors.darkGrey),
-    //   bodyLarge: TextStyle(
-    //       fontWeight: FontWeight.w500, fontSize: 20, color: AppColors.darkGrey),
-    //   bodyMedium: TextStyle(
-    //       fontWeight: FontWeight.w500, fontSize: 18, color: AppColors.darkGrey),
-    //   bodySmall: TextStyle(
-    //       fontWeight: FontWeight.w400, fontSize: 14, color: AppColors.darkGrey),
-    // ),
   );
 }

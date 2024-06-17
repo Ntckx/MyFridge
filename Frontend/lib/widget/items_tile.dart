@@ -6,17 +6,17 @@ class ItemsTile extends StatelessWidget {
   final String itemsName;
   final bool isChecked;
   final int quantity;
-  Function(bool?)? onChanged;
-  Function(BuildContext)? deleteItem;
+  final Function(bool?)? onChanged;
+  final Function(BuildContext)? deleteItem;
 
-  ItemsTile({
-    Key? key,
+  const ItemsTile({
+    super.key,
     required this.itemsName,
     required this.isChecked,
     required this.quantity,
     required this.onChanged,
     required this.deleteItem,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {

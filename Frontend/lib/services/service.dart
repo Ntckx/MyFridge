@@ -1,8 +1,10 @@
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:go_router/go_router.dart';
 import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import 'package:logging/logging.dart';
+import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
@@ -15,7 +17,7 @@ void setupLogging() {
 
 class Service {
   final String _baseUrl;
-  final int _userId = 2;
+  final int _userId = 1;
   final Logger _logger = Logger('Service');
 
   Service() : _baseUrl = _getBaseUrl();
@@ -163,7 +165,7 @@ class Service {
   }
 
   // For payment_page
-  Future<void> updateUserPremiumStatus() async {
+  Future<bool> updateUserPremiumStatus() async {
     try {
       final response = await _dio.patch(
         '/updatePremium',
@@ -174,12 +176,15 @@ class Service {
       );
       if (response.statusCode == 200) {
         _logger.info('User premium status updated successfully');
+        return true;
       } else {
         _logger.warning(
             'Failed to update user premium status with status: ${response.statusCode}');
+        return false;
       }
     } catch (e) {
       _logger.severe('Error updating user premium status: $e');
+      return false;
     }
   }
 
@@ -224,12 +229,17 @@ class Service {
     }
   }
 
-  displayPaymentSheet() async {
+  Future<void> displayPaymentSheet(BuildContext context) async {
     try {
-      await Stripe.instance.presentPaymentSheet().then((value) {
-        updateUserPremiumStatus();
-        _logger.info('Payment Successfully');
-      });
+      await Stripe.instance.presentPaymentSheet();
+      bool isUpdated = await updateUserPremiumStatus();
+      if (isUpdated) {
+        _logger.info(
+            'Payment successfully completed and user premium status updated');
+        context.go("/profile");
+      } else {
+        _logger.warning('Payment completed but failed to update user status');
+      }
     } catch (e) {
       _logger.severe('Error display payment sheet: $e');
     }

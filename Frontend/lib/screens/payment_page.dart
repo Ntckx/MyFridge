@@ -1,4 +1,3 @@
-
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/services/service.dart';
@@ -6,33 +5,31 @@ import 'package:myfridgeapp/widget/plan_list.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:flutter/foundation.dart';
-import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
-
 class PaymentPage extends StatefulWidget {
+  const PaymentPage({super.key});
   @override
-  _PaymentPageState createState() => _PaymentPageState();
+  PaymentPageState createState() => PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> {
+class PaymentPageState extends State<PaymentPage> {
   final Service _service = Service();
   final Logger _logger = Logger('PaymentPage');
+  bool isPremium = false;
 
   @override
   void initState() {
     super.initState();
+    _fetchUserData();
   }
 
-  Future<void> _handlePayment() async {
+  Future<void> _handlePayment(BuildContext context) async {
     try {
-      // Create a payment intent
       final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
-      // Initialize the payment sheet
       await _service.initPaymentSheet(paymentIntent);
-      // Display the payment sheet
-      await _service.displayPaymentSheet();
+      await _service.displayPaymentSheet(context);
     } catch (e) {
       _logger.severe('Error handling payment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -41,6 +38,17 @@ class _PaymentPageState extends State<PaymentPage> {
           duration: const Duration(seconds: 3),
         ),
       );
+    }
+  }
+
+  Future<void> _fetchUserData() async {
+    try {
+      final userData = await _service.fetchUserData(_service.userId);
+      setState(() {
+        isPremium = userData['isPremium'];
+      });
+    } catch (e) {
+      _logger.severe('Error fetching user data: $e');
     }
   }
 
@@ -109,46 +117,78 @@ class _PaymentPageState extends State<PaymentPage> {
                         ],
                       ),
                       const Spacer(),
-                      SizedBox(
-                        height: 45,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: () async {
-                            try {
-                              if (kIsWeb) {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text(
-                                        'Payment available only in the mobile app.'),
-                                    duration: Duration(seconds: 3),
-                                  ),
-                                );
-                              } else {
-                                await _handlePayment();
-
-                                if (mounted) {
-                                  context.go('/profile');
-                                }
-                              }
-                            } catch (e) {
-                              _logger.severe('Payment failed: $e');
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('Payment failed. Please try again.'),
-                                  duration: Duration(seconds: 3),
+                      isPremium == true
+                          ? SizedBox(
+                              height: 55,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                  onPressed: null,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Premium Member',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                              color: AppColors.white,
+                                            ),
+                                      ),
+                                      Text(
+                                        'You are currently in a premium plan.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: AppColors.blue,
+                                            ),
+                                      ),
+                                    ],
+                                  )),
+                            )
+                          : SizedBox(
+                              height: 45,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  try {
+                                    if (kIsWeb) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Payment available only in the mobile app.'),
+                                          duration: Duration(seconds: 3),
+                                        ),
+                                      );
+                                    } else {
+                                      await _handlePayment(context);
+                                    }
+                                  } catch (e) {
+                                    _logger.severe('Payment failed: $e');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Payment failed. Please try again.'),
+                                        duration: Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  '50 baht',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        color: AppColors.white,
+                                      ),
                                 ),
-                              );
-                            }
-                          },
-                          child: Text(
-                            '50 baht/month after*',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      color: AppColors.white,
-                                    ),
-                          ),
-                        ),
-                      ),
+                              ),
+                            ),
                     ],
                   ),
                 ),

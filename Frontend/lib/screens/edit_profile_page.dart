@@ -8,11 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class EditProfilePage extends StatefulWidget {
+  const EditProfilePage({super.key});
   @override
-  _EditProfilePageState createState() => _EditProfilePageState();
+  EditProfilePageState createState() => EditProfilePageState();
 }
 
-class _EditProfilePageState extends State<EditProfilePage> {
+class EditProfilePageState extends State<EditProfilePage> {
   final Service _service = Service();
   final Logger _logger = Logger('EditProfilePage');
   String _username = '';
