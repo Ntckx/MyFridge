@@ -11,8 +11,6 @@ void main() async {
   Stripe.publishableKey = dotenv.env['STRIPE_PUBLISHABLE_KEY']!;
   setupLogging();
   runApp(const MyApp());
-
-  
 }
 
 class MyApp extends StatelessWidget {

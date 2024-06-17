@@ -1,73 +1,9 @@
-import 'dart:convert';
-import 'package:go_router/go_router.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-import 'package:myfridgeapp/screens/home_page.dart';
 
-class SignInPage extends StatefulWidget {
-  @override
-  _SignInState createState() => _SignInState();
-}
-
-class _SignInState extends State<SignInPage> {
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  bool _isNotValidate = false;
-  late SharedPreferences prefs;
-
-  @override
-  void initState() {
-    super.initState();
-    initSharedPref();
-  }
-
-  void initSharedPref() async {
-    prefs = await SharedPreferences.getInstance();
-  }
-
-  Future<void> signin() async {
-    if (emailController.text.isNotEmpty && passwordController.text.isNotEmpty) {
-      var regBody = {
-        "email": emailController.text,
-        "password": passwordController.text
-      };
-      try {
-        Response response = await Dio().post(
-          'http://localhost:8000/login',
-          data: jsonEncode(regBody),
-          options: Options(
-            headers: {"content-type": "application/json"},
-            validateStatus: (status) {
-              // Allow status codes < 500 to be considered valid responses
-              return status != null && status < 500;
-            },
-          ),
-        );
-        if (response.statusCode == 200) {
-          var jsonResponse = response.data;
-          if (jsonResponse['status']) {
-            var myToken = jsonResponse['token'];
-            prefs.setString('token', myToken);
-            context.go('/home', extra: myToken);
-          } else {
-            print('Something went wrong: ${jsonResponse['message']}');
-          }
-        } else {
-          print('Failed with status code: ${response.statusCode}');
-          print('Response data: ${response.data}');
-        }
-      } catch (e) {
-        print('Error occurred: $e');
-      }
-    } else {
-      setState(() {
-        _isNotValidate = true;
-      });
-    }
-  }
+class SignInPage extends StatelessWidget {
+  const SignInPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +51,7 @@ class _SignInState extends State<SignInPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Email",
+                        "Username",
                         style: Theme.of(context)
                             .textTheme
                             .bodyMedium!
@@ -124,14 +60,7 @@ class _SignInState extends State<SignInPage> {
                       const SizedBox(
                         height: 2,
                       ),
-                      TextFormField(
-                        controller: emailController,
-                        keyboardType: TextInputType.emailAddress,
-                        decoration: InputDecoration(
-                          hintText: "email",
-                          errorText: _isNotValidate ? "Enter Proper Info" : null,
-                        ),
-                      ),
+                      TextFormField(),
                       const SizedBox(
                         height: 15,
                         width: double.infinity,
@@ -146,15 +75,7 @@ class _SignInState extends State<SignInPage> {
                       const SizedBox(
                         height: 2,
                       ),
-                      TextFormField(
-                        controller: passwordController,
-                        obscureText: true,
-                        keyboardType: TextInputType.text,
-                        decoration: InputDecoration(
-                          hintText: "password",
-                          errorText: _isNotValidate ? "Enter Proper Info" : null,
-                        ),
-                      ),
+                      TextFormField(),
                       const SizedBox(
                         height: 30,
                       ),
@@ -162,7 +83,7 @@ class _SignInState extends State<SignInPage> {
                         height: 45,
                         width: double.infinity,
                         child: ElevatedButton(
-                          onPressed: signin,
+                          onPressed: () {},
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.darkblue,
                           ),
