@@ -100,28 +100,28 @@ class PushyService {
       );
 
       // Display the device token in a dialog or snackbar for easy copying
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (navigatorKey.currentContext != null) {
-          showDialog(
-            context: navigatorKey.currentContext!,
-            builder: (context) => AlertDialog(
-              title: Text('Pushy Device Token'),
-              content: SelectableText(
-                  deviceToken), // Allow the token to be selectable for easy copying
-              actions: <Widget>[
-                TextButton(
-                  child: const Text('OK'),
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                ),
-              ],
-            ),
-          );
-        } else {
-          print('Navigator context is null');
-        }
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   if (navigatorKey.currentContext != null) {
+      //     showDialog(
+      //       context: navigatorKey.currentContext!,
+      //       builder: (context) => AlertDialog(
+      //         title: Text('Pushy Device Token'),
+      //         content: SelectableText(
+      //             deviceToken), // Allow the token to be selectable for easy copying
+      //         actions: <Widget>[
+      //           TextButton(
+      //             child: const Text('OK'),
+      //             onPressed: () {
+      //               Navigator.of(context).pop();
+      //             },
+      //           ),
+      //         ],
+      //       ),
+      //     );
+      //   } else {
+      //     print('Navigator context is null');
+      //   }
+      // });
 
       // Set notification listeners
       Pushy.setNotificationListener(backgroundNotificationListener);
