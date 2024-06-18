@@ -1,30 +1,55 @@
 import { Router } from "express";
-import { getUserById } from "../controllers/user";
+import { getMyAllList } from "../controllers/controller";
+import { getUserByUserId } from "../controllers/controller";
+import { createList } from "../controllers/controller";
+import { updateListByListId } from "../controllers/controller";
+import { updateUsername } from "../controllers/controller";
+import { updatePremium } from "../controllers/controller";
+import { deleteListByListId } from "../controllers/controller";
+import { deleteAllList } from "../controllers/controller";
+import { createUser } from "../controllers/authen";
 import {
   getAllItems,
   getItemById,
   createItem,
   updateItem,
   deleteItem,
-  markItemAsEaten
+  markItemAsEaten,
 } from "../controllers/item";
 import { getNotifications } from "../controllers/notificationController";
 import { startScheduler } from "../controllers/notification";
 import { registerDevice } from "../controllers/registerController";
 
+
+
 const router = Router();
 
-router.get("/users/:id", getUserById);
+//GET METHOD
 router.get("/items", getAllItems);
-router.post("/items", createItem);
 router.get("/items/:id", getItemById);
-router.put("/items/:id", updateItem);
-router.put("/items/eaten/:id", markItemAsEaten);
-router.delete("/items/:id", deleteItem);
 router.get("/notifications/:userId", getNotifications);
+//POST METHOD
+router.post("/allList", getMyAllList);
+router.post("/getUser", getUserByUserId);
+router.post("/createList", createList);
+router.post("/users", createUser);
+router.post("/items", createItem);
 router.post("/register", registerDevice);
 
-// Start the scheduler
+//PUT METHOD
+router.patch("/updateList", updateListByListId);
+router.patch("/updateUsername", updateUsername);
+router.patch("/updatePremium", updatePremium);
+router.put("/items/:id", updateItem);
+router.put("/items/eaten/:id", markItemAsEaten);
+
+//DELETE METHOD
+router.delete("/deleteList", deleteListByListId);
+router.delete("/deleteAllList", deleteAllList);
+router.delete("/items/:id", deleteItem);
+
 startScheduler();
+
+
 
 export default router;

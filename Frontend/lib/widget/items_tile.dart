@@ -6,16 +6,17 @@ class ItemsTile extends StatelessWidget {
   final String itemsName;
   final bool isChecked;
   final int quantity;
-  Function(bool?)? onChanged;
-  Function(BuildContext)? deleteItem;
+  final Function(bool?)? onChanged;
+  final Function(BuildContext)? deleteItem;
 
-  ItemsTile(
-      {super.key,
-      required this.itemsName,
-      required this.isChecked,
-      required this.quantity,
-      required this.onChanged,
-      required this.deleteItem});
+  const ItemsTile({
+    super.key,
+    required this.itemsName,
+    required this.isChecked,
+    required this.quantity,
+    required this.onChanged,
+    required this.deleteItem,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -54,38 +55,34 @@ class ItemsTile extends StatelessWidget {
               Expanded(
                 child: Stack(
                   children: [
-                    Flexible(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Flexible(
-                            child: Text(
-                              quantity.toString(),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .headlineSmall!
-                                  .copyWith(
-                                    color: AppColors.darkblue,
-                                  ),
-                              overflow: TextOverflow.visible,
-                            ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Text(
+                          quantity.toString(),
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineSmall!
+                              .copyWith(
+                                color: AppColors.darkblue,
+                              ),
+                          overflow: TextOverflow.visible,
+                        ),
+                        const SizedBox(width: 20),
+                        Expanded(
+                          child: Text(
+                            itemsName,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(
+                                  color: AppColors.darkblue,
+                                ),
+                            overflow: TextOverflow.visible,
                           ),
-                          const SizedBox(width: 20),
-                          Flexible(
-                            child: Text(
-                              itemsName,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge!
-                                  .copyWith(
-                                    color: AppColors.darkblue,
-                                  ),
-                              overflow: TextOverflow.visible,
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                     if (isChecked)
                       const Positioned.fill(
@@ -96,7 +93,7 @@ class ItemsTile extends StatelessWidget {
                       ),
                   ],
                 ),
-              )
+              ),
             ],
           ),
         ),

@@ -1,72 +1,65 @@
-import 'package:flutter/material.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/dialog_box.dart';
 import 'package:myfridgeapp/widget/items_tile.dart';
+import 'package:myfridgeapp/services/service.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
-import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class ShoppingListPage extends StatefulWidget {
   const ShoppingListPage({super.key});
-
   @override
-  _ShoppingListPageState createState() => _ShoppingListPageState();
+  ShoppingListPageState createState() => ShoppingListPageState();
 }
 
-class _ShoppingListPageState extends State<ShoppingListPage> {
+class ShoppingListPageState extends State<ShoppingListPage> {
+  final Service _service = Service();
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();
+  late List<Map<String, dynamic>> items = [];
 
-  List items = [
-    [false, "Milk", 2],
-    [true, "Apples", 1],
-    [true, "Eggs", 12],
-    [false, "Bread", 1],
-    [false, "Butter", 1],
-    [false, "Cheese", 2],
-  ];
-
-  bool isPremium = false; // Assume this value is fetched from the backend
-
-  void checkBoxChanged(bool? value, int index) {
-    setState(() {
-      items[index][0] = value;
-    });
+  @override
+  void initState() {
+    super.initState();
+    _fetchListData();
   }
 
-  void saveNewItem() {
-    if (!isPremium && items.length >= 5) {
-      // Show alert if the user is not premium and has reached the limit
-      showDialog(
-        context: context,
-        builder: (context) {
-          return AlertDialog(
-            title: Text("Limit Reached"),
-            content: Text(
-                "You have reached the limit of 5 items. Upgrade to premium to add more items."),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text("OK"),
-              ),
-            ],
-          );
-        },
-      );
-      return;
+  final Logger _logger = Logger('ShoppingListPage');
+  void _fetchListData() async {
+    try {
+      final items = await _service.fetchListData();
+      setState(() {
+        this.items = items;
+      });
+    } catch (e) {
+      _logger.severe('Error fetching list data: $e');
     }
-    setState(() {
-      items.add([
-        false,
-        _itemNameController.text,
-        int.parse(_quantityController.text),
-      ]);
+  }
+
+  void _checkBoxChanged(bool? value, int index) async {
+    try {
+      await _service.checkBoxChanged(items[index]['ListID'], value);
+      setState(() {
+        items[index]['isChecked'] = value;
+      });
+    } catch (e) {
+      _logger.severe('Error updating check box: $e');
+    }
+  }
+
+  void _saveNewItem() async {
+    try {
+      await _service.saveNewItem(
+          _itemNameController.text, int.parse(_quantityController.text));
+      _fetchListData();
       _itemNameController.clear();
       _quantityController.clear();
-    });
-    Navigator.of(context).pop();
+      Navigator.of(context).pop();
+    } catch (e) {
+      _logger.severe('Error creating new item: $e');
+    }
   }
 
   void createNewItem() {
@@ -76,7 +69,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         return DialogBox(
           itemNameController: _itemNameController,
           quantityController: _quantityController,
-          onSaved: saveNewItem,
+          onSaved:  _saveNewItem,
           onCanceled: () {
             Navigator.of(context).pop();
           },
@@ -85,16 +78,26 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
     );
   }
 
-  void deleteItem(int index) {
-    setState(() {
-      items.removeAt(index);
-    });
+  void _deleteItem(int index) async {
+    try {
+      await _service.deleteItem(items[index]['ListID']);
+      setState(() {
+        items.removeAt(index);
+      });
+    } catch (e) {
+      _logger.severe('Error deleting item: $e');
+    }
   }
 
-  void clearAllItems() {
-    setState(() {
-      items.clear();
-    });
+  void _clearAllItems() async {
+    try {
+      await _service.clearAllItems();
+      setState(() {
+        items.clear();
+      });
+    } catch (e) {
+      _logger.severe('Error deleting all items: $e');
+    }
   }
 
   void _showClearDialog() {
@@ -114,7 +117,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                         color: AppColors.white,
                       ),
-                  // textAlign: TextAlign.center,
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -126,11 +129,11 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -140,12 +143,12 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
             ),
             ElevatedButton(
               onPressed: () {
-                clearAllItems();
+                _clearAllItems();
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Clear all",
@@ -189,46 +192,47 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                     Padding(
                       padding: const EdgeInsets.only(bottom: 10, right: 10),
                       child: Align(
-                        alignment: Alignment.centerRight,
-                        child: ElevatedButton(
-                            onPressed: _showClearDialog,
-                            child: Text(
-                              'clear all',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall!
-                                  .copyWith(
-                                    color: AppColors.white,
-                                  ),
-                            )),
+                        alignment: Alignment.topRight,
+                        child: items.isNotEmpty
+                            ? ElevatedButton(
+                                onPressed: _showClearDialog,
+                                child: Text(
+                                  'clear all',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(color: AppColors.white),
+                                ),
+                              )
+                            : const SizedBox(),
                       ),
                     ),
-                    Expanded(
-                      child: items.isEmpty
-                          ? const Center(
-                              child: Text(
-                                'No items in the list. Add some items!!',
-                                style: TextStyle(color: AppColors.darkblue),
-                              ),
-                            )
-                          : Padding(
+                    items.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No items in the list. Add some items!!',
+                              style: TextStyle(color: AppColors.darkblue),
+                            ),
+                          )
+                        : Expanded(
+                            child: Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: ListView.builder(
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
                                   return ItemsTile(
-                                    isChecked: items[index][0],
-                                    itemsName: items[index][1],
-                                    quantity: items[index][2],
+                                    isChecked: items[index]['isChecked'],
+                                    itemsName: items[index]['ListName'],
+                                    quantity: items[index]['Quantity'],
                                     onChanged: (value) {
-                                      checkBoxChanged(value, index);
+                                      _checkBoxChanged(value, index);
                                     },
-                                    deleteItem: (context) => deleteItem(index),
+                                    deleteItem: (context) => _deleteItem(index),
                                   );
                                 },
                               ),
                             ),
-                    )
+                          )
                   ],
                 ),
               ),

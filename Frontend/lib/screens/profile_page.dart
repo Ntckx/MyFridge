@@ -1,42 +1,43 @@
-import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/nav_bar.dart';
-import 'package:myfridgeapp/widget/custom_appbar.dart';
-import 'package:myfridgeapp/widget/wrapper.dart';
-import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:go_router/go_router.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import '../api_service.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/services/service.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
+import 'package:go_router/go_router.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  ProfilePageState createState() => ProfilePageState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
-  String? username;
-  String? email;
+class ProfilePageState extends State<ProfilePage> {
+  final Service _service = Service();
+  String username = '';
+  String email = '';
   bool isPremium = false;
-  final ApiService _apiService = ApiService();
-  final int _userId = 1; // Use a mock user ID for testing
+  final Logger _logger = Logger('ProfilePage');
 
   @override
   void initState() {
     super.initState();
-    fetchUserData();
+    _fetchUserData();
   }
 
-  Future<void> fetchUserData() async {
+  Future<void> _fetchUserData() async {
     try {
-      final userData = await _apiService.getUserById(_userId);
+      final userData = await _service.fetchUserData(_service.userId);
       setState(() {
         username = userData['Username'];
         email = userData['Email'];
-        isPremium = userData['isPremium'] == true;
+        isPremium = userData['isPremium'];
       });
     } catch (e) {
-      print('Error fetching user data: $e');
+      _logger.severe('Error fetching user data: $e');
     }
   }
 
@@ -62,6 +63,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: AppColors.white,
                       ),
+                  // textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -69,6 +71,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: AppColors.white,
                       ),
+                  textAlign: TextAlign.center,
                 ),
               ],
             ),
@@ -80,11 +83,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -94,12 +97,12 @@ class _ProfilePageState extends State<ProfilePage> {
             ),
             ElevatedButton(
               onPressed: () {
-                Navigator.of(context).pop();
+                context.go('/welcome');
                 // Perform logout operation here
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Log out",
@@ -117,6 +120,9 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    String username = this.username;
+    String email = this.email;
+
     return Scaffold(
       appBar: const CustomAppBar(
         title: '',
@@ -130,32 +136,29 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  if (username != null && email != null) ...[
-                    Text(
-                      username!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium!
-                          .copyWith(color: AppColors.white),
-                    ),
-                    Text(
-                      email!,
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyLarge!
-                          .copyWith(color: AppColors.darkblue),
-                    ),
-                  ] else ...[
-                    CircularProgressIndicator(),
-                    SizedBox(height: 16),
-                    Text(
-                      'Loading...',
-                      style: Theme.of(context)
-                          .textTheme
-                          .headlineMedium!
-                          .copyWith(color: AppColors.white),
-                    ),
-                  ],
+                  Row(
+                    children: [
+                      Text(
+                        username,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: AppColors.white,
+                            ),
+                      ),
+                      const SizedBox(width: 10),
+                      if (isPremium == true)
+                        const Icon(FontAwesomeIcons.crown,
+                            color: AppColors.yellow),
+                    ],
+                  ),
+                  Text(
+                    email,
+                    style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                          color: AppColors.darkblue,
+                        ),
+                  ),
                 ],
               ),
             ),
@@ -190,13 +193,15 @@ class _ProfilePageState extends State<ProfilePage> {
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(color: AppColors.darkblue),
+                                    .copyWith(
+                                      color: AppColors.darkblue,
+                                    ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      SizedBox(height: 20),
+                      const SizedBox(height: 20),
                       SizedBox(
                         height: 45,
                         width: double.infinity,
@@ -204,20 +209,22 @@ class _ProfilePageState extends State<ProfilePage> {
                           onPressed: () => context.go("/payment"),
                           child: Row(
                             children: [
-                              Icon(FontAwesomeIcons.crown),
-                              SizedBox(width: 30),
+                              const Icon(FontAwesomeIcons.crown),
+                              const SizedBox(width: 30),
                               Text(
                                 'Upgrade Plan',
                                 style: Theme.of(context)
                                     .textTheme
                                     .bodyLarge!
-                                    .copyWith(color: AppColors.darkblue),
+                                    .copyWith(
+                                      color: AppColors.darkblue,
+                                    ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      Spacer(),
+                      const Spacer(),
                       SizedBox(
                         height: 45,
                         width: double.infinity,
@@ -228,10 +235,10 @@ class _ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Text(
                             'Log out',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge!
-                                .copyWith(color: AppColors.white),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge!.copyWith(
+                                      color: AppColors.white,
+                                    ),
                           ),
                         ),
                       ),

@@ -1,136 +1,87 @@
-import 'package:flutter/material.dart';
-import 'package:in_app_purchase/in_app_purchase.dart';
-import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
+import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/services/service.dart';
 import 'package:myfridgeapp/widget/plan_list.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
-import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:go_router/go_router.dart';
-import 'package:logger/logger.dart';
-import '../api_service.dart';
+import 'package:myfridgeapp/widget/nav_bar.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:logging/logging.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({Key? key}) : super(key: key);
-
+  const PaymentPage({super.key});
   @override
-  _PaymentPageState createState() => _PaymentPageState();
+  PaymentPageState createState() => PaymentPageState();
 }
 
-class _PaymentPageState extends State<PaymentPage> {
-  late InAppPurchase _inAppPurchase;
-  late Stream<List<PurchaseDetails>> _purchaseUpdates;
-  final Set<String> _kIds = {'premium_upgrade'};
-  final ApiService _apiService = ApiService();
-  // final PaymentService _paymentService = PaymentService();
-  late int _userId;
-
-  final Logger _logger = Logger();
+class PaymentPageState extends State<PaymentPage> {
+  final Service _service = Service();
+  final Logger _logger = Logger('PaymentPage');
+  bool isPremium = false;
 
   @override
   void initState() {
     super.initState();
-    _inAppPurchase = InAppPurchase.instance;
-    _purchaseUpdates = _inAppPurchase.purchaseStream;
-    _purchaseUpdates.listen((purchaseDetailsList) {
-      _listenToPurchaseUpdated(purchaseDetailsList);
-    });
-    _fetchUserId();
+    _fetchUserData();
   }
 
-  Future<void> _fetchUserId() async {
-    try {
-      final user = await _apiService.getUserById(_apiService.testUserId);
-      setState(() {
-        _userId = user['UserID'];
-      });
-      _logger.i('User ID fetched: $_userId');
-    } catch (e) {
-      _logger.e('Error fetching user ID: $e');
-    }
-  }
+Future<void> _handlePayment(BuildContext context) async {
+  _logger.info('Starting payment process');
+  try {
+    _logger.info('Creating payment intent');
+    final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
+    _logger.info('Payment intent created: $paymentIntent');
 
-  Future<void> _buyPremium() async {
-    try {
-      _logger.i('Querying product details...');
-      final ProductDetailsResponse response =
-          await _inAppPurchase.queryProductDetails(_kIds);
-      if (response.notFoundIDs.isNotEmpty) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Product not found.')),
-        );
-        return;
-      }
-      final List<ProductDetails> products = response.productDetails;
-      if (products.isNotEmpty) {
-        final ProductDetails productDetails = products[0];
-        final PurchaseParam purchaseParam =
-            PurchaseParam(productDetails: productDetails);
-        _logger.i('Initiating purchase...');
-        _inAppPurchase.buyNonConsumable(purchaseParam: purchaseParam);
-      }
-    } catch (e) {
-      _logger.e('Error during purchase: $e');
-    }
-  }
+    _logger.info('Initializing payment sheet');
+    await _service.initPaymentSheet(paymentIntent);
+    _logger.info('Payment sheet initialized');
 
-  void _listenToPurchaseUpdated(List<PurchaseDetails> purchaseDetailsList) {
-    for (var purchaseDetails in purchaseDetailsList) {
-      if (purchaseDetails.status == PurchaseStatus.purchased) {
-        _handleSuccessfulPurchase();
-      } else if (purchaseDetails.status == PurchaseStatus.error) {
-        _handleError(purchaseDetails.error!);
-      }
-      if (purchaseDetails.pendingCompletePurchase) {
-        InAppPurchase.instance.completePurchase(purchaseDetails);
-      }
-    }
-  }
-
-  void _handleSuccessfulPurchase() async {
+    _logger.info('Displaying payment sheet');
+    await _service.displayPaymentSheet(context);
+    _logger.info('Payment process completed');
+  } catch (e) {
+    _logger.severe('Error handling payment: $e');
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-          content: Text('Purchase successful. You are now a premium user!')),
+        content: Text('Payment failed: $e'),
+        duration: const Duration(seconds: 3),
+      ),
     );
-
-    try {
-      _logger.i('Updating backend with payment information...');
-      // await _paymentService.createPayment(_userId, 50.0, 'THB');
-      _logger.i('Backend update successful. Redirecting...');
-      context.go('/');
-    } catch (e) {
-      _logger.e('Error updating user to premium: $e');
-    }
   }
+}
 
-  void _handleError(IAPError error) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Purchase failed. Please try again.')),
-    );
-    _logger.e('Purchase error: ${error.message}');
+  Future<void> _fetchUserData() async {
+    try {
+      final userData = await _service.fetchUserData(_service.userId);
+      setState(() {
+        isPremium = userData['isPremium'];
+      });
+    } catch (e) {
+      _logger.severe('Error fetching user data: $e');
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const CustomAppBar(title: ''),
+      appBar: const CustomAppBar(
+        title: '',
+      ),
       bottomNavigationBar: const BottomNav(path: "/payment"),
       body: Stack(
         children: [
           Wrapper(
-            child: Padding(
-              padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
-              child: Column(
-                children: [
-                  Text(
-                    'Upgrade',
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: AppColors.white,
-                        ),
-                  ),
-                ],
+              child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+            child: Column(children: [
+              Text(
+                'Upgrade',
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: AppColors.white,
+                    ),
               ),
-            ),
-          ),
+            ]),
+          )),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -175,26 +126,89 @@ class _PaymentPageState extends State<PaymentPage> {
                         ],
                       ),
                       const Spacer(),
-                      SizedBox(
-                        height: 45,
-                        width: double.infinity,
-                        child: ElevatedButton(
-                          onPressed: _buyPremium,
-                          child: Text(
-                            '50 baht',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      color: AppColors.white,
-                                    ),
-                          ),
-                        ),
-                      ),
+                      isPremium == true
+                          ? SizedBox(
+                              height: 55,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                  onPressed: null,
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        'Premium Member',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodyLarge!
+                                            .copyWith(
+                                              color: AppColors.white,
+                                            ),
+                                      ),
+                                      Text(
+                                        'You are currently in a premium plan.',
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .bodySmall!
+                                            .copyWith(
+                                              color: AppColors.blue,
+                                            ),
+                                      ),
+                                    ],
+                                  )),
+                            )
+                          : SizedBox(
+                              height: 45,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  _logger.info('ElevatedButton pressed');
+                                  print('ElevatedButton pressed');
+                                  try {
+                                    if (kIsWeb) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                          content: Text(
+                                              'Payment available only in the mobile app.'),
+                                          duration: Duration(seconds: 3),
+                                        ),
+                                      );
+                                    } else {
+                                      _logger.info('Calling _handlePayment');
+                                      print('Calling _handlePayment');
+                                      await _handlePayment(context);
+                                    }
+                                  } catch (e) {
+                                    _logger.severe('Payment failed: $e');
+                                    print('Payment failed: $e');
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(
+                                        content: Text(
+                                            'Payment failed. Please try again.'),
+                                        duration: Duration(seconds: 3),
+                                      ),
+                                    );
+                                  }
+                                },
+                                child: Text(
+                                  '50 baht',
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodyLarge!
+                                      .copyWith(
+                                        color: AppColors.white,
+                                      ),
+                                ),
+                              ),
+                            ),
                     ],
                   ),
                 ),
               ),
             ),
-          ),
+          )
         ],
       ),
     );
