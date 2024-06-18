@@ -36,6 +36,7 @@ model User {
   Email        String         @unique(map: "User_Email_unique") @db.VarChar(255)
   Password     String         @db.VarChar(255)
   isPremium    Boolean?       @default(false)
+  pushyToken   String?        @db.VarChar(255)
   Item         Item[]
   Payment      Payment[]
   ShoppingList ShoppingList[]
@@ -51,4 +52,13 @@ model Payment {
   User        User?     @relation(fields: [UserID], references: [UserID], onDelete: NoAction, onUpdate: NoAction, map: "Payment_ibfk_1")
 
   @@index([UserID], map: "UserID")
+}
+
+model Notification {
+  NotificationID Int      @id @default(autoincrement())
+  ItemID         Int
+  UserID         Int
+  message        String   @db.VarChar(255)
+  sendAt         DateTime @db.DateTime(0)
+  isSent         Boolean? @default(false)
 }
