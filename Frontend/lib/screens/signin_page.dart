@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:myfridgeapp/screens/home_page.dart';
 
 class SignInPage extends StatefulWidget {
   @override
@@ -41,7 +40,6 @@ class _SignInState extends State<SignInPage> {
           options: Options(
             headers: {"content-type": "application/json"},
             validateStatus: (status) {
-              // Allow status codes < 500 to be considered valid responses
               return status != null && status < 500;
             },
           ),

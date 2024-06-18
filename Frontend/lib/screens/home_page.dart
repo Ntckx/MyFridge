@@ -1,23 +1,25 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/myfridge_item.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
-  final String token;
-  const HomePage({Key? key, required this.token}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
+  
 }
-
 class _HomePageState extends State<HomePage> {
-  late String email;
+late String token;
+
 
   final List<Map<String, dynamic>> items = [
     {
@@ -37,12 +39,20 @@ class _HomePageState extends State<HomePage> {
     },
   ];
 
-  @override
+    @override
   void initState() {
     super.initState();
-    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    email = jwtDecodedToken['email'];
+    _getToken();
   }
+
+  Future<void> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token')!;
+      print("TokenData: $token");
+    });
+  }
+
 
   void deleteItem(int index) {
     setState(() {
@@ -50,7 +60,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _addItem(String itemName, String expiryDate, int quantity, String description) {
+  void _addItem(
+      String itemName, String expiryDate, int quantity, String description) {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
@@ -65,7 +76,8 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  void _updateItem(int index, String itemName, String expiryDate, int quantity, String description) {
+  void _updateItem(int index, String itemName, String expiryDate, int quantity,
+      String description) {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
@@ -110,9 +122,10 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0), // Set your desired height here
+        preferredSize:
+            const Size.fromHeight(80.0), // Set your desired height here
         child: CustomAppBar(
-          title: email,
+          title: 'Myfridge',
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/"),

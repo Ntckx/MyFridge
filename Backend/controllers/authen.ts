@@ -123,9 +123,9 @@ export const createLogin = async (req: Request, res: Response) => {
             return res.status(400).json({msg:"Incorrect password"});
         }
                 
-        const tokenData = { _id: user.UserID, email: user.Email};
+        const tokenData = { _id: user.UserID, email: user.Email, username: user.Username};
         const token = await Userservice.generateToken(tokenData, "secretkey", '1h');
-        res.status(200).json({ status: true, token: token });
+        res.status(200).json({ status: true, token: token, user: user.UserID, username: user.Username});
     
     } catch (e) {
         console.error(e);

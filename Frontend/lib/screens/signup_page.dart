@@ -209,7 +209,7 @@ class _SignupState extends State<SignUpPage> {
                                         r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$',
                                       );
                                       if (!passwordRegExp.hasMatch(value)) {
-                                        return 'Password must include at least one letter, one number, and one special character';
+                                        return 'Must include special character but no _';
                                       }
                                       return null;
                                     },

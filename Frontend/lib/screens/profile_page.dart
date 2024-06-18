@@ -7,6 +7,7 @@ import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:go_router/go_router.dart';
 import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -20,12 +21,13 @@ class _ProfilePageState extends State<ProfilePage> {
   String username = '';
   String email = '';
     final Logger _logger = Logger('ProfilePage');
+    late String token;
 
 
   @override
   void initState() {
     super.initState();
-    _fetchUserData();
+    _fetchUserData();_getToken();
   }
 
   Future<void> _fetchUserData() async {
@@ -39,6 +41,16 @@ class _ProfilePageState extends State<ProfilePage> {
       _logger.severe('Error fetching user data: $e');
     }
   }
+
+
+  Future<void> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token')!;
+      print("TokenData: $token");
+    });
+  }
+
 
   void _showLogoutDialog() {
     showDialog(
