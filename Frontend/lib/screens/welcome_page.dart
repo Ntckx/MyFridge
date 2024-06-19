@@ -14,71 +14,73 @@ class WelcomePage extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: Wrapper(
-          child: Padding(
-            padding: const EdgeInsets.fromLTRB(48, 20, 48, 20),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text(
-                  'MyFridge',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontSize: 50, color: Color(0xFFFFFFFF)),
-                ),
-                const SizedBox(height: 50),
-                Image(
-                  image: const AssetImage('assets/LogoMyFridge.png'),
-                  height: isSmallScreen ? 200 : 400,
-                  width: isSmallScreen ? 200 : 400,
-                ),
-                const SizedBox(height: 50),
-                SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      debugPrint('Navigating to Signin');
-                      try {
-                        context.go('/signin');
-                      } catch (e) {
-                        debugPrint('Error during navigation: $e');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkblue,
-                    ),
-                    child: Text(
-                      'Sign in',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: AppColors.white,
-                          ),
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(48, 20, 48, 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text(
+                    'MyFridge',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 50, color: Color(0xFFFFFFFF)),
+                  ),
+                  const SizedBox(height: 50),
+                  Image(
+                    image: const AssetImage('assets/LogoMyFridge.png'),
+                    height: isSmallScreen ? 200 : 400,
+                    width: isSmallScreen ? 200 : 400,
+                  ),
+                  const SizedBox(height: 50),
+                  SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        debugPrint('Navigating to Signin');
+                        try {
+                          context.go('/signin');
+                        } catch (e) {
+                          debugPrint('Error during navigation: $e');
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.darkblue,
+                      ),
+                      child: Text(
+                        'Sign in',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: AppColors.white,
+                            ),
+                      ),
                     ),
                   ),
-                ),
-                const SizedBox(height: 20),
-                SizedBox(
-                  height: 45,
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: () {
-                      debugPrint('Navigating to Signup');
-                      try {
-                        context.go('/signup');
-                      } catch (e) {
-                        debugPrint('Error during navigation: $e');
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.grey,
-                    ),
-                    child: Text(
-                      'Sign up',
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: AppColors.darkblue,
-                          ),
+                  const SizedBox(height: 20),
+                  SizedBox(
+                    height: 45,
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        debugPrint('Navigating to Signup');
+                        try {
+                          context.go('/signup');
+                        } catch (e) {
+                          debugPrint('Error during navigation: $e');
+                        }
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: AppColors.grey,
+                      ),
+                      child: Text(
+                        'Sign up',
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                              color: AppColors.darkblue,
+                            ),
+                      ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         ),

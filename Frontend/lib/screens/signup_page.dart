@@ -185,6 +185,9 @@ class _SignupState extends State<SignUpPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   const SizedBox(height: 15),
                                   Text(
@@ -212,6 +215,9 @@ class _SignupState extends State<SignUpPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   const SizedBox(height: 15),
                                   Text(
@@ -241,6 +247,9 @@ class _SignupState extends State<SignUpPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   const SizedBox(height: 15),
                                   Text(
@@ -267,6 +276,9 @@ class _SignupState extends State<SignUpPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   const SizedBox(height: 15),
                                   Row(

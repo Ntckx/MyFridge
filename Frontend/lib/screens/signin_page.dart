@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/services/api_service.dart';
@@ -131,7 +132,7 @@ class _SignInState extends State<SignInPage> {
                                   TextFormField(
                                     controller: emailController,
                                     keyboardType: TextInputType.emailAddress,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Email",
                                     ),
                                     validator: (value) {
@@ -145,6 +146,9 @@ class _SignInState extends State<SignInPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   const SizedBox(height: 15),
                                   Text(
@@ -168,6 +172,9 @@ class _SignInState extends State<SignInPage> {
                                       }
                                       return null;
                                     },
+                                    style: const TextStyle(
+                                    color: AppColors.darkblue,
+                                    ),
                                   ),
                                   if (_errorMessage.isNotEmpty)
                                     Padding(

@@ -29,7 +29,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: CustomAppBar(
-          title: 'MyFridge',
+          title: ' ',
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/notifications"),
@@ -38,14 +38,13 @@ class _NotificationPageState extends State<NotificationPage> {
         children: [
           Container(
             color: AppColors.blue,
-            alignment: Alignment.topCenter,
-            padding: const EdgeInsets.only(top: 10),
+            alignment: Alignment.topLeft,
+            padding: const EdgeInsets.only(left: 40, bottom:50),
             child: const Text(
               'Notification',
               style: TextStyle(
                 color: Colors.white,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+                fontSize: 32,
               ),
             ),
           ),
@@ -74,7 +73,8 @@ class _NotificationPageState extends State<NotificationPage> {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
-                          child: Text('No notifications found.'));
+                          child: Text('No notifications found.',
+                          style: TextStyle(color: AppColors.darkblue),));
                     } else {
                       return ListView.builder(
                         itemCount: snapshot.data!.length,

@@ -152,11 +152,12 @@ Future<void> _fetchUserData() async {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
         child: CustomAppBar(
-          title: 'MyFridge',
+          title:'Your inventory',
         ),
+        
       ),
       bottomNavigationBar: const BottomNav(path: "/"),
       backgroundColor: AppColors.blue,
