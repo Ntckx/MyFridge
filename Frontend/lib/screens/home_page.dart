@@ -242,8 +242,6 @@ Future<void> _fetchUserData() async {
         backgroundColor: const Color(0xFFF9DD6D),
         child: const Icon(
           Icons.add,
-          color: Colors.white,
-          size: 32,
         ),
       ),
     );

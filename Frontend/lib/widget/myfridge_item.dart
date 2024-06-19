@@ -189,6 +189,9 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
             onPressed: () {
               _showEatenCard();
             },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.green,
+            ),
             child: Text(
               'Eaten',
               style: Theme.of(context)
