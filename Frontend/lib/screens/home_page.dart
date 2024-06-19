@@ -7,6 +7,7 @@ import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
 import '../services/api_service.dart';
+import 'package:myfridgeapp/services/service.dart';
 
 class HomePage extends StatefulWidget {
   final int userId;
@@ -18,7 +19,9 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final ApiService _apiService = ApiService();
+  final Service _service = Service();
   List<Map<String, dynamic>> items = [];
+  bool isPremium = false;
 
   @override
   void initState() {
@@ -87,14 +90,47 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _showAddItemDialog() {
+  void _showAddItemDialog() async {
+  try {
+    // Fetch the latest user data and update the state
+     await _fetchUserData();
+    
+
+    if (!isPremium && items.length >= 5) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Non-premium users can only add up to 5 items. Upgrade to premium for unlimited items.'),
+        ),
+      );
+      return;
+    }
+
+    // Show the dialog to add a new item
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return AddItemToMyFridge(addItem: _addItem);
       },
     );
+  } catch (e) {
+    print('Error fetching user data: $e');
   }
+}
+
+Future<void> _fetchUserData() async {
+  try {
+    // Assume this function fetches the user data and updates the isPremium variable
+    final userData = await _service.fetchUserData(widget.userId);
+    
+    // Update the state with the latest user data
+    setState(() {
+      isPremium = userData['isPremium'];
+      // Update other user-related state if necessary
+    });
+  } catch (e) {
+    print('Error fetching user data: $e');
+  }
+}
 
   void _showEditItemDialog(int index, Map<String, dynamic> item) {
     showDialog(

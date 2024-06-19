@@ -242,7 +242,7 @@ class Service {
       bool isUpdated = await updateUserPremiumStatus(userId);
       if (isUpdated) {
         _logger.info('Payment successfully completed and user premium status updated');
-        context.go("/home/profile", extra: userId);
+       GoRouter.of(context).go('/home/profile', extra: userId);
       } else {
         _logger.warning('Payment completed but failed to update user status');
       }

@@ -56,9 +56,9 @@ class BottomNav extends StatelessWidget {
     void onChangeRoute(int index) async {
       final userId = await _getUserId();
       if (paths[index].isGo) {
-        context.go(paths[index].path, extra: userId);
+        GoRouter.of(context).go(paths[index].path, extra: userId);
       } else {
-        context.push(paths[index].path, extra: userId);
+       GoRouter.of(context).push(paths[index].path, extra: userId);
       }
     }
 
