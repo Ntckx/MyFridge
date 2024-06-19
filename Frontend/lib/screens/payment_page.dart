@@ -28,19 +28,10 @@ class PaymentPageState extends State<PaymentPage> {
   }
 
   Future<void> _handlePayment(BuildContext context) async {
-    _logger.info('Starting payment process');
     try {
-      _logger.info('Creating payment intent');
       final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
-      _logger.info('Payment intent created: $paymentIntent');
-
-      _logger.info('Initializing payment sheet');
       await _service.initPaymentSheet(paymentIntent);
-      _logger.info('Payment sheet initialized');
-
-      _logger.info('Displaying payment sheet');
       await _service.displayPaymentSheet(context, widget.userId);
-      _logger.info('Payment process completed');
     } catch (e) {
       _logger.severe('Error handling payment: $e');
       ScaffoldMessenger.of(context).showSnackBar(
@@ -54,13 +45,10 @@ class PaymentPageState extends State<PaymentPage> {
 
   Future<void> _fetchUserData() async {
     try {
-      _logger.info('Fetching user data for userId: ${widget.userId}');
       final userData = await _service.fetchUserData(widget.userId);
-      _logger.info('Fetched user data: $userData');
       setState(() {
-        isPremium = userData['isPremium'] ?? false;
+        isPremium = userData['isPremium'];
       });
-      _logger.info('User isPremium status: $isPremium');
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
     }
@@ -169,8 +157,6 @@ class PaymentPageState extends State<PaymentPage> {
                               width: double.infinity,
                               child: ElevatedButton(
                                 onPressed: () async {
-                                  _logger.info('ElevatedButton pressed');
-                                  print('ElevatedButton pressed');
                                   try {
                                     if (kIsWeb) {
                                       ScaffoldMessenger.of(context).showSnackBar(
@@ -180,13 +166,10 @@ class PaymentPageState extends State<PaymentPage> {
                                         ),
                                       );
                                     } else {
-                                      _logger.info('Calling _handlePayment');
-                                      print('Calling _handlePayment');
                                       await _handlePayment(context);
                                     }
                                   } catch (e) {
                                     _logger.severe('Payment failed: $e');
-                                    print('Payment failed: $e');
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
                                         content: Text('Payment failed. Please try again.'),
