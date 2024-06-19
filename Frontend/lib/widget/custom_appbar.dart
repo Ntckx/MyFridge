@@ -1,11 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
 
   const CustomAppBar({super.key, required this.title});
+
+  Future<int> _getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('userId') ?? 0;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,8 +37,9 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       ),
       actions: [
         IconButton(
-          onPressed: () {
-            GoRouter.of(context).go('/notifications');
+          onPressed: () async {
+            final userId = await _getUserId();
+            GoRouter.of(context).go('/home/notifications', extra: userId);
           },
           icon: const Icon(Icons.notifications, color: AppColors.white),
         ),

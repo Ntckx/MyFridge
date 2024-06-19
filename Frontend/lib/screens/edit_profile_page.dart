@@ -8,7 +8,9 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class EditProfilePage extends StatefulWidget {
-  const EditProfilePage({super.key});
+  final int userId;
+  const EditProfilePage({super.key, required this.userId});
+  
   @override
   EditProfilePageState createState() => EditProfilePageState();
 }
@@ -26,7 +28,7 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   Future<void> _fetchUserData() async {
     try {
-      final userData = await _service.fetchUserData(_service.userId);
+      final userData = await _service.fetchUserData(widget.userId);
       setState(() {
         _username = userData['Username'];
         _usernameController.text = _username;
@@ -40,8 +42,8 @@ class EditProfilePageState extends State<EditProfilePage> {
 
   void updateUserProfile(String username) async {
     try {
-      await _service.updateUserProfile(username);
-      GoRouter.of(context).go('/profile');
+      await _service.updateUserProfile(widget.userId, username);
+      GoRouter.of(context).go('/home/profile', extra: widget.userId);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(

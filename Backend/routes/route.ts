@@ -19,7 +19,7 @@ import {
 import { getNotifications } from "../controllers/notificationController";
 import { startScheduler } from "../controllers/notification";
 import { registerDevice } from "../controllers/registerController";
-
+import { createLogin } from "../controllers/authen";
 
 
 const router = Router();
@@ -35,6 +35,7 @@ router.post("/createList", createList);
 router.post("/users", createUser);
 router.post("/items", createItem);
 router.post("/register", registerDevice);
+router.post('/login', createLogin);
 
 //PUT METHOD
 router.patch("/updateList", updateListByListId);

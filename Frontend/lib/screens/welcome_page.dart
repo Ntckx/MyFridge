@@ -9,7 +9,7 @@ class WelcomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final screenWidth = MediaQuery.of(context).size.width;
-    final isSmallScreen = screenWidth < 380; // Adjust the breakpoint as needed
+    final isSmallScreen = screenWidth < 380;
 
     return Scaffold(
       body: Center(
@@ -36,7 +36,12 @@ class WelcomePage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/signin');
+                      debugPrint('Navigating to Signin');
+                      try {
+                        context.go('/signin');
+                      } catch (e) {
+                        debugPrint('Error during navigation: $e');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.darkblue,
@@ -55,7 +60,12 @@ class WelcomePage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      context.go('/signup');
+                      debugPrint('Navigating to Signup');
+                      try {
+                        context.go('/signup');
+                      } catch (e) {
+                        debugPrint('Error during navigation: $e');
+                      }
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.grey,

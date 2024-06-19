@@ -1,44 +1,63 @@
+import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/services/service.dart';
+import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
-import 'package:go_router/go_router.dart';
-import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:go_router/go_router.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  final int userId;
+  const ProfilePage({super.key, required this.userId});
 
   @override
-  ProfilePageState createState() => ProfilePageState();
+  _ProfilePageState createState() => _ProfilePageState();
 }
 
-class ProfilePageState extends State<ProfilePage> {
+class _ProfilePageState extends State<ProfilePage> {
   final Service _service = Service();
   String username = '';
   String email = '';
-  bool isPremium = false;
   final Logger _logger = Logger('ProfilePage');
+  String? token;
 
   @override
   void initState() {
     super.initState();
+    _getToken();
     _fetchUserData();
   }
 
   Future<void> _fetchUserData() async {
     try {
-      final userData = await _service.fetchUserData(_service.userId);
+      final userData = await _service.fetchUserData(widget.userId);
       setState(() {
-        username = userData['Username'];
-        email = userData['Email'];
-        isPremium = userData['isPremium'];
+        username = userData['Username'] ?? 'Unknown User';
+        email = userData['Email'] ?? 'Unknown Email';
       });
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
     }
+  }
+
+  Future<void> _getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      token = prefs.getString('token');
+      if (token != null) {
+        print("TokenData: $token");
+      } else {
+        _logger.severe('Token is null');
+      }
+    });
+  }
+
+  Future<void> logout() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('userId');
   }
 
   void _showLogoutDialog() {
@@ -63,7 +82,6 @@ class ProfilePageState extends State<ProfilePage> {
                   style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                         color: AppColors.white,
                       ),
-                  // textAlign: TextAlign.center,
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -83,26 +101,28 @@ class ProfilePageState extends State<ProfilePage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: WidgetStateProperty.all<BorderSide>(
+                    side: MaterialStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(AppColors.darkblue),
+                        MaterialStateProperty.all<Color>(AppColors.darkblue),
                   ),
-              child: Text("Cancel",
-                  style: Theme.of(context)
-                      .textTheme
-                      .bodyLarge!
-                      .copyWith(color: AppColors.white)),
+              child: Text(
+                "Cancel",
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyLarge!
+                    .copyWith(color: AppColors.white),
+              ),
             ),
             ElevatedButton(
-              onPressed: () {
-                context.go('/welcome');
-                // Perform logout operation here
+              onPressed: () async {
+                await logout();
+                context.go('/');
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(AppColors.white),
+                        MaterialStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Log out",
@@ -120,9 +140,6 @@ class ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
-    String username = this.username;
-    String email = this.email;
-
     return Scaffold(
       appBar: const CustomAppBar(
         title: '',
@@ -136,22 +153,11 @@ class ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Row(
-                    children: [
-                      Text(
-                        username,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: AppColors.white,
-                            ),
-                      ),
-                      const SizedBox(width: 10),
-                      if (isPremium == true)
-                        const Icon(FontAwesomeIcons.crown,
-                            color: AppColors.yellow),
-                    ],
+                  Text(
+                    username,
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: AppColors.white,
+                        ),
                   ),
                   Text(
                     email,
@@ -175,7 +181,7 @@ class ProfilePageState extends State<ProfilePage> {
               ),
               child: Wrapper(
                 child: Padding(
-                  padding: const EdgeInsets.fromLTRB(24, 20, 24, 20),
+                  padding: const EdgeInsets.fromLTRB(24, 10, 24, 20),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -183,7 +189,7 @@ class ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => context.go("/editprofile"),
+                          onPressed: () => context.go("/home/editprofile"),
                           child: Row(
                             children: [
                               const Icon(Icons.edit),
@@ -206,7 +212,7 @@ class ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => context.go("/payment"),
+                          onPressed: () => context.go("/home/payment"),
                           child: Row(
                             children: [
                               const Icon(FontAwesomeIcons.crown),
@@ -235,10 +241,10 @@ class ProfilePageState extends State<ProfilePage> {
                           ),
                           child: Text(
                             'Log out',
-                            style:
-                                Theme.of(context).textTheme.bodyLarge!.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyLarge!
+                                .copyWith(color: AppColors.white),
                           ),
                         ),
                       ),

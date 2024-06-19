@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class PaymentPage extends StatefulWidget {
-  const PaymentPage({super.key});
+  final int userId;
+  const PaymentPage({super.key, required this.userId});
+  
   @override
   PaymentPageState createState() => PaymentPageState();
 }
@@ -25,34 +27,34 @@ class PaymentPageState extends State<PaymentPage> {
     _fetchUserData();
   }
 
-Future<void> _handlePayment(BuildContext context) async {
-  _logger.info('Starting payment process');
-  try {
-    _logger.info('Creating payment intent');
-    final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
-    _logger.info('Payment intent created: $paymentIntent');
+  Future<void> _handlePayment(BuildContext context) async {
+    _logger.info('Starting payment process');
+    try {
+      _logger.info('Creating payment intent');
+      final paymentIntent = await _service.createPaymentIntent('5000', 'thb');
+      _logger.info('Payment intent created: $paymentIntent');
 
-    _logger.info('Initializing payment sheet');
-    await _service.initPaymentSheet(paymentIntent);
-    _logger.info('Payment sheet initialized');
+      _logger.info('Initializing payment sheet');
+      await _service.initPaymentSheet(paymentIntent);
+      _logger.info('Payment sheet initialized');
 
-    _logger.info('Displaying payment sheet');
-    await _service.displayPaymentSheet(context);
-    _logger.info('Payment process completed');
-  } catch (e) {
-    _logger.severe('Error handling payment: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Payment failed: $e'),
-        duration: const Duration(seconds: 3),
-      ),
-    );
+      _logger.info('Displaying payment sheet');
+      await _service.displayPaymentSheet(context, widget.userId);
+      _logger.info('Payment process completed');
+    } catch (e) {
+      _logger.severe('Error handling payment: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Payment failed: $e'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    }
   }
-}
 
   Future<void> _fetchUserData() async {
     try {
-      final userData = await _service.fetchUserData(_service.userId);
+      final userData = await _service.fetchUserData(widget.userId);
       setState(() {
         isPremium = userData['isPremium'];
       });
@@ -126,7 +128,7 @@ Future<void> _handlePayment(BuildContext context) async {
                         ],
                       ),
                       const Spacer(),
-                      isPremium == true
+                      isPremium
                           ? SizedBox(
                               height: 55,
                               width: double.infinity,

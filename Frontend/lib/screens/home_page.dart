@@ -9,7 +9,8 @@ import 'package:myfridgeapp/widget/edititem_homepage.dart';
 import '../api_service.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  final int userId;
+  const HomePage({super.key, required this.userId});
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -27,7 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _fetchItems() async {
     try {
-      final fetchedItems = await _apiService.getAllItems();
+      final fetchedItems = await _apiService.getAllItems(widget.userId);
       print('Fetched items: $fetchedItems');
       setState(() {
         items = fetchedItems;
@@ -48,8 +49,7 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
-  void _addItem(String itemName, String expiryDate, int quantity,
-      String description) async {
+  void _addItem(String itemName, String expiryDate, int quantity, String description) async {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 
@@ -58,19 +58,17 @@ class _HomePageState extends State<HomePage> {
       "Quantity": quantity,
       "ExpirationDate": expiryDate,
       "Description": description,
-      "UserID": 1 // Set the UserID accordingly
     };
 
     try {
-      await _apiService.createItem(newItem);
+      await _apiService.createItem(widget.userId, newItem);
       _fetchItems(); // Refetch items after adding
     } catch (e) {
       print('Error adding item: $e');
     }
   }
 
-  void _updateItem(int index, String itemName, String expiryDate, int quantity,
-      String description) async {
+  void _updateItem(int index, String itemName, String expiryDate, int quantity, String description) async {
     final currentDate = DateTime.now();
     final expDate = DateTime.parse(expiryDate);
 

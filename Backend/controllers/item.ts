@@ -4,8 +4,16 @@ import { PrismaClient } from "@prisma/client";
 const prisma = new PrismaClient();
 
 export const getAllItems = async (req: Request, res: Response) => {
+  const { userId } = req.query;
+
+  if (!userId) {
+    return res.status(400).json({ message: "UserId is required" });
+  }
+
   try {
-    const items = await prisma.item.findMany();
+    const items = await prisma.item.findMany({
+      where: { UserID: parseInt(userId as string) },
+    });
     console.log("Items retrieved:", items);
     res.status(200).json(items);
   } catch (error) {

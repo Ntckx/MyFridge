@@ -6,7 +6,9 @@ import 'package:myfridgeapp/widget/notification_card.dart';
 import 'package:myfridgeapp/api_service.dart';
 
 class NotificationPage extends StatefulWidget {
-  const NotificationPage({super.key});
+  final int userId; // Add this line to accept the user ID
+
+  const NotificationPage({super.key, required this.userId}); // Modify the constructor
 
   @override
   _NotificationPageState createState() => _NotificationPageState();
@@ -18,7 +20,7 @@ class _NotificationPageState extends State<NotificationPage> {
   @override
   void initState() {
     super.initState();
-    notifications = ApiService().getNotifications(ApiService().testUserId);
+    notifications = ApiService().getNotifications(widget.userId); // Use the user ID
   }
 
   @override

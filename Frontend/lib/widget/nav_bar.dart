@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class NavItem {
   Widget icon;
@@ -18,23 +19,28 @@ class BottomNav extends StatelessWidget {
   final String? path;
   const BottomNav({super.key, required this.path});
 
+  Future<int> _getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getInt('userId') ?? 0;
+  }
+
   @override
   Widget build(BuildContext context) {
     final paths = [
       NavItem(
         icon: const Icon(Icons.checklist),
         label: 'Shopping list',
-        path: "/shoppinglist",
+        path: "/home/shoppinglist",
       ),
       NavItem(
           icon: const Icon(Icons.home),
           label: 'Home',
-          path: "/",
+          path: "/home",
           isGo: true),
       NavItem(
           icon: const Icon(Icons.person),
           label: 'Profile',
-          path: "/profile",
+          path: "/home/profile",
           isGo: true),
     ];
 
@@ -47,11 +53,12 @@ class BottomNav extends StatelessWidget {
       return -1;
     }
 
-    void onChangeRoute(int index) {
+    void onChangeRoute(int index) async {
+      final userId = await _getUserId();
       if (paths[index].isGo) {
-        context.go(paths[index].path);
+        context.go(paths[index].path, extra: userId);
       } else {
-        context.push(paths[index].path, extra: true);
+        context.push(paths[index].path, extra: userId);
       }
     }
 

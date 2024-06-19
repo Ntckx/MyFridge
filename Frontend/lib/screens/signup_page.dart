@@ -1,10 +1,12 @@
-import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:go_router/go_router.dart';
+import 'package:dio/dio.dart';
+import 'package:pushy_flutter/pushy_flutter.dart'; // Import Pushy Flutter SDK
+import '../api_service.dart';
+import 'package:flutter/gestures.dart';
+
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -20,58 +22,84 @@ class _SignupState extends State<SignUpPage> {
   bool _isNotValidate = false;
   String _errorMessage = '';
   bool _isChecked = false;
+  final ApiService _apiService = ApiService();
+
+  bool _isMounted = true;
+
+  @override
+  void dispose() {
+    usernameController.dispose();
+    emailController.dispose();
+    passwordController.dispose();
+    confirmPasswordController.dispose();
+    _isMounted = false;
+    super.dispose();
+  }
 
   Future<void> signUp() async {
     if (_formKey.currentState?.validate() ?? false) {
       if (!_isChecked) {
-        setState(() {
-          _errorMessage = "You must accept the terms and conditions";
-        });
+        if (_isMounted) {
+          setState(() {
+            _errorMessage = "You must accept the terms and conditions";
+          });
+        }
         return;
       }
 
       if (passwordController.text != confirmPasswordController.text) {
-        setState(() {
-          _errorMessage = "Passwords do not match";
-        });
+        if (_isMounted) {
+          setState(() {
+            _errorMessage = "Passwords do not match";
+          });
+        }
         return;
       }
 
-      var regBody = {
-        "username": usernameController.text,
-        "email": emailController.text,
-        "password": passwordController.text,
-      };
-
       try {
-        Response response = await Dio().post(
-          'http://10.0.2.2:8000/users',
-          data: jsonEncode(regBody),
-          options: Options(
-            headers: {"content-type": "application/json"},
-          ),
-        );
-        // Handle success
-        print('User created: ${response.data}');
-        context.go('/signin'); 
-      } catch (error) {
-        setState(() {
-          if (error is DioError && error.response != null) {
-            if (error.response?.statusCode == 400) {
-              _errorMessage = error.response?.data['error'];
-            } else {
-              _errorMessage = 'Server error: ${error.response?.statusCode}';
-            }
-          } else {
-            _errorMessage = 'Unexpected error: $error';
+        String? pushyToken = await Pushy.register();
+
+        if (pushyToken == null || pushyToken.isEmpty) {
+          if (_isMounted) {
+            setState(() {
+              _errorMessage = "Failed to register for Pushy notifications.";
+            });
           }
-        });
+          return;
+        }
+
+        final response = await _apiService.signUp(
+          usernameController.text,
+          emailController.text,
+          passwordController.text,
+          pushyToken,
+        );
+        print('User created: $response');
+        if (_isMounted) {
+          context.go('/signin');
+        }
+      } catch (error) {
+        if (_isMounted) {
+          setState(() {
+            if (error is DioException && error.response != null) {
+              if (error.response?.statusCode == 400) {
+                _errorMessage = error.response?.data['msg'];
+              } else {
+                _errorMessage = 'Server error: ${error.response?.statusCode}';
+              }
+            } else {
+              _errorMessage = 'Unexpected error: $error';
+            }
+          });
+        }
         print('Error: $error');
       }
     } else {
-      setState(() {
-        _isNotValidate = true;
-      });
+      if (_isMounted) {
+        setState(() {
+          _isNotValidate = true;
+        });
+      }
     }
   }
 
@@ -83,7 +111,7 @@ class _SignupState extends State<SignUpPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.white),
           onPressed: () {
-            Navigator.of(context).pop();
+            context.go('/welcome');
           },
         ),
       ),
@@ -246,9 +274,11 @@ class _SignupState extends State<SignUpPage> {
                                       Checkbox(
                                         value: _isChecked,
                                         onChanged: (bool? value) {
-                                          setState(() {
-                                            _isChecked = value ?? false;
-                                          });
+                                          if (_isMounted) {
+                                            setState(() {
+                                              _isChecked = value ?? false;
+                                            });
+                                          }
                                         },
                                         activeColor: AppColors.darkblue,
                                       ),
@@ -270,8 +300,7 @@ class _SignupState extends State<SignUpPage> {
                                                               AppColors.green),
                                                 ),
                                                 TextSpan(
-                                                  text:
-                                                      "terms and conditions",
+                                                  text: "terms and conditions",
                                                   style: Theme.of(context)
                                                       .textTheme
                                                       .bodyMedium!

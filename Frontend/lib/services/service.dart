@@ -8,12 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
 
-void setupLogging() {
-  Logger.root.level = Level.ALL;
-  Logger.root.onRecord.listen((record) {
-    print('${record.level.name}: ${record.time}: ${record.message}');
-  });
-}
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Service {
   final String _baseUrl;
@@ -57,7 +52,7 @@ class Service {
   }
 
   // For edit_profile_page
-  Future<void> updateUserProfile(String username) async {
+  Future<void> updateUserProfile(int userId, String username) async {
     try {
       final response = await _dio.patch(
         '/updateUsername',
@@ -78,7 +73,7 @@ class Service {
   }
 
   // For shopping_list_page
-  Future<List<Map<String, dynamic>>> fetchListData() async {
+  Future<List<Map<String, dynamic>>> fetchListData(int userId) async {
     try {
       final response = await _dio.post('/allList', data: {'UserID': userId});
       final listData = response.data;
@@ -95,6 +90,12 @@ class Service {
       rethrow;
     }
   }
+
+  Future<void> logout() async {
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.remove('userId');
+}
+
 
   Future<void> checkBoxChanged(int listId, bool? value) async {
     try {
@@ -113,7 +114,7 @@ class Service {
     }
   }
 
-  Future<void> saveNewItem(String itemName, int quantity) async {
+  Future<void> saveNewItem(int userId, String itemName, int quantity) async {
     try {
       final response = await _dio.post('/createList', data: {
         'UserId': userId,
@@ -148,7 +149,7 @@ class Service {
     }
   }
 
-  Future<void> clearAllItems() async {
+  Future<void> clearAllItems(int userId) async {
     try {
       final response = await _dio.delete('/deleteAllList', data: {
         'UserId': userId,
@@ -165,7 +166,7 @@ class Service {
   }
 
   // For payment_page
-  Future<bool> updateUserPremiumStatus() async {
+  Future<bool> updateUserPremiumStatus(int userId) async {
     try {
       final response = await _dio.patch(
         '/updatePremium',
@@ -187,95 +188,69 @@ class Service {
       return false;
     }
   }
-// Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
-//   _logger.info('Creating payment intent with amount: $amount, currency: $currency');
-//   try {
-//     Map<String, dynamic> body = {
-//       'amount': amount,
-//       'currency': currency,
-//     };
-//     var response = await http.post(
-//       Uri.parse('https://api.stripe.com/v1/payment_intents'),
-//       headers: {
-//         'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET_KEY']}',
-//         'Content-Type': 'application/x-www-form-urlencoded'
-//       },
-//       body: body,
-//     );
-//     _logger.info('Payment intent response: ${response.body}');
-//     return json.decode(response.body);
-//   } catch (err) {
-//     _logger.severe('Error creating payment intent: $err');
-//     throw Exception(err.toString());
-//   }
-// }
 
-Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
-  _logger.info('Creating payment intent with amount: $amount, currency: $currency');
-  
-  // Log the API key for debugging purposes (remove before deploying)
-  _logger.info('Using Stripe Secret Key: ${dotenv.env['STRIPE_SECRET_KEY']}');
-  
-  try {
-    Map<String, dynamic> body = {
-      'amount': amount,
-      'currency': currency,
-    };
-    var response = await http.post(
-      Uri.parse('https://api.stripe.com/v1/payment_intents'),
-      headers: {
-        'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET_KEY']}',
-        'Content-Type': 'application/x-www-form-urlencoded'
-      },
-      body: body,
-    );
-    _logger.info('Payment intent response: ${response.body}');
-    return json.decode(response.body);
-  } catch (err) {
-    _logger.severe('Error creating payment intent: $err');
-    throw Exception(err.toString());
-  }
-}
+  Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
+    _logger.info('Creating payment intent with amount: $amount, currency: $currency');
 
+    // Log the API key for debugging purposes (remove before deploying)
+    _logger.info('Using Stripe Secret Key: ${dotenv.env['STRIPE_SECRET_KEY']}');
 
-
-Future<void> initPaymentSheet(Map<String, dynamic> paymentIntent) async {
-  _logger.info('Initializing payment sheet with payment intent: $paymentIntent');
-  try {
-    await Stripe.instance.initPaymentSheet(
-      paymentSheetParameters: SetupPaymentSheetParameters(
-        paymentIntentClientSecret: paymentIntent['client_secret'],
-        merchantDisplayName: 'MyFridgeApp',
-        googlePay: const PaymentSheetGooglePay(
-          merchantCountryCode: 'TH',
-          currencyCode: 'THB',
-          testEnv: true,
-        ),
-      ),
-    );
-    _logger.info('Payment sheet initialized');
-  } catch (e) {
-    _logger.severe('Error initializing payment sheet: $e');
-    throw Exception('Error initializing payment sheet');
-  }
-}
-
-
- Future<void> displayPaymentSheet(BuildContext context) async {
-  _logger.info('Displaying payment sheet');
-  try {
-    await Stripe.instance.presentPaymentSheet();
-    bool isUpdated = await updateUserPremiumStatus();
-    if (isUpdated) {
-      _logger.info('Payment successfully completed and user premium status updated');
-      context.go("/profile");
-    } else {
-      _logger.warning('Payment completed but failed to update user status');
+    try {
+      Map<String, dynamic> body = {
+        'amount': amount,
+        'currency': currency,
+      };
+      var response = await http.post(
+        Uri.parse('https://api.stripe.com/v1/payment_intents'),
+        headers: {
+          'Authorization': 'Bearer ${dotenv.env['STRIPE_SECRET_KEY']}',
+          'Content-Type': 'application/x-www-form-urlencoded'
+        },
+        body: body,
+      );
+      _logger.info('Payment intent response: ${response.body}');
+      return json.decode(response.body);
+    } catch (err) {
+      _logger.severe('Error creating payment intent: $err');
+      throw Exception(err.toString());
     }
-  } catch (e) {
-    _logger.severe('Error displaying payment sheet: $e');
-    throw Exception('Error displaying payment sheet');
   }
-}
 
+  Future<void> initPaymentSheet(Map<String, dynamic> paymentIntent) async {
+    _logger.info('Initializing payment sheet with payment intent: $paymentIntent');
+    try {
+      await Stripe.instance.initPaymentSheet(
+        paymentSheetParameters: SetupPaymentSheetParameters(
+          paymentIntentClientSecret: paymentIntent['client_secret'],
+          merchantDisplayName: 'MyFridgeApp',
+          googlePay: const PaymentSheetGooglePay(
+            merchantCountryCode: 'TH',
+            currencyCode: 'THB',
+            testEnv: true,
+          ),
+        ),
+      );
+      _logger.info('Payment sheet initialized');
+    } catch (e) {
+      _logger.severe('Error initializing payment sheet: $e');
+      throw Exception('Error initializing payment sheet');
+    }
+  }
+
+  Future<void> displayPaymentSheet(BuildContext context, int userId) async {
+    _logger.info('Displaying payment sheet');
+    try {
+      await Stripe.instance.presentPaymentSheet();
+      bool isUpdated = await updateUserPremiumStatus(userId);
+      if (isUpdated) {
+        _logger.info('Payment successfully completed and user premium status updated');
+        context.go("/home/profile", extra: userId);
+      } else {
+        _logger.warning('Payment completed but failed to update user status');
+      }
+    } catch (e) {
+      _logger.severe('Error displaying payment sheet: $e');
+      throw Exception('Error displaying payment sheet');
+    }
+  }
 }

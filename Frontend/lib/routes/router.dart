@@ -12,39 +12,77 @@ import 'package:myfridgeapp/screens/signup_page.dart';
 import 'package:myfridgeapp/screens/termofservice_page.dart';
 
 final GoRouter router = GoRouter(
-  routes: <RouteBase>[
+  routes: [
     GoRoute(
-      path: "/",
-      builder: (context, state) => const HomePage(),
-      routes: <RouteBase>[
-        GoRoute(path: "welcome", builder: (context, state) => const WelcomePage()),
-        GoRoute(path: "signup", builder: (context, state) =>  SignUpPage()),
-        GoRoute(path: "signin", builder: (context, state) => const SignInPage()),
-        GoRoute(path: "termofservice", builder: (context, state) => const TermofServicePage()),
+      path: '/',
+      builder: (context, state) => const WelcomePage(),
+      routes: [
         GoRoute(
-            path: "shoppinglist",
-            builder: (context, state) => const ShoppingListPage()),
-        GoRoute(
-            path: "profile", builder: (context, state) => const ProfilePage()),
-        GoRoute(
-            path: "notifications",
-            builder: (context, state) => const NotificationPage()),
-        GoRoute(
-            path: "editprofile",
-            builder: (context, state) => const EditProfilePage()),
-        GoRoute(
-          path: "payment",
-          builder: (context, state) => const PaymentPage(),
+          path: 'signin',
+          builder: (context, state) => const SignInPage(),
         ),
-
-        
+        GoRoute(
+          path: 'signup',
+          builder: (context, state) => SignUpPage(),
+        ),
+        GoRoute(
+          path: 'termofservice',
+          builder: (context, state) => const TermofServicePage(),
+        ),
+        GoRoute(
+          path: 'home',
+          builder: (context, state) {
+            final userId = state.extra as int;
+            return HomePage(userId: userId);
+          },
+          routes: [
+            GoRoute(
+              path: 'profile',
+              builder: (context, state) {
+                final userId = state.extra as int;
+                return ProfilePage(userId: userId);
+              },
+            ),
+            GoRoute(
+              path: 'shoppinglist',
+              builder: (context, state) {
+                final userId = state.extra as int;
+                return ShoppingListPage(userId: userId);
+              },
+            ),
+            GoRoute(
+              path: 'notifications',
+              builder: (context, state) {
+                final userId = state.extra as int;
+                return NotificationPage(userId: userId);
+              },
+            ),
+            GoRoute(
+              path: 'editprofile',
+              builder: (context, state) {
+                final userId = state.extra as int;
+                return EditProfilePage(userId: userId);
+              },
+            ),
+            GoRoute(
+              path: 'payment',
+              builder: (context, state) {
+                final userId = state.extra as int;
+                return PaymentPage(userId: userId);
+              },
+            ),
+          ],
+        ),
       ],
     ),
   ],
-  errorBuilder: (context, state) => Scaffold(
-    appBar: AppBar(title: const Text('Error')),
-    body: Center(
-      child: Text('Error: ${state.error}'),
-    ),
-  ),
+  errorBuilder: (context, state) {
+    debugPrint('Error: ${state.error}');
+    return Scaffold(
+      appBar: AppBar(title: const Text('Error')),
+      body: Center(
+        child: Text('Error: ${state.error}'),
+      ),
+    );
+  },
 );

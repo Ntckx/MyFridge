@@ -9,12 +9,15 @@ import 'package:flutter/material.dart';
 import 'package:logging/logging.dart';
 
 class ShoppingListPage extends StatefulWidget {
-  const ShoppingListPage({super.key});
+  final int userId;
+
+  const ShoppingListPage({super.key, required this.userId});
+  
   @override
-  ShoppingListPageState createState() => ShoppingListPageState();
+  _ShoppingListPageState createState() => _ShoppingListPageState();
 }
 
-class ShoppingListPageState extends State<ShoppingListPage> {
+class _ShoppingListPageState extends State<ShoppingListPage> {
   final Service _service = Service();
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -29,7 +32,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
   final Logger _logger = Logger('ShoppingListPage');
   void _fetchListData() async {
     try {
-      final items = await _service.fetchListData();
+      final items = await _service.fetchListData(widget.userId);
       setState(() {
         this.items = items;
       });
@@ -52,7 +55,9 @@ class ShoppingListPageState extends State<ShoppingListPage> {
   void _saveNewItem() async {
     try {
       await _service.saveNewItem(
-          _itemNameController.text, int.parse(_quantityController.text));
+          widget.userId,
+          _itemNameController.text,
+          int.parse(_quantityController.text));
       _fetchListData();
       _itemNameController.clear();
       _quantityController.clear();
@@ -91,7 +96,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
 
   void _clearAllItems() async {
     try {
-      await _service.clearAllItems();
+      await _service.clearAllItems(widget.userId);
       setState(() {
         items.clear();
       });
@@ -129,11 +134,11 @@ class ShoppingListPageState extends State<ShoppingListPage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: WidgetStateProperty.all<BorderSide>(
+                    side: MaterialStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(AppColors.darkblue),
+                        MaterialStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -148,7 +153,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        WidgetStateProperty.all<Color>(AppColors.white),
+                        MaterialStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Clear all",
@@ -170,7 +175,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
         appBar: const CustomAppBar(
           title: 'Shopping List',
         ),
-        bottomNavigationBar: const BottomNav(path: "/shoppinglist"),
+        bottomNavigationBar: BottomNav(path: "/shoppinglist"),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewItem,
           child: const Icon(Icons.add),
