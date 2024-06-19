@@ -204,7 +204,7 @@ class ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => context.go("/home/editprofile"),
+                          onPressed: () => GoRouter.of(context).go('/home/editprofile', extra: widget.userId),
                           child: Row(
                             children: [
                               const Icon(Icons.edit),
