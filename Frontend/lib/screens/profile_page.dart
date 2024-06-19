@@ -21,6 +21,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final Service _service = Service();
   String username = '';
   String email = '';
+  bool isPremium = false;
   final Logger _logger = Logger('ProfilePage');
   String? token;
 
@@ -35,8 +36,9 @@ class _ProfilePageState extends State<ProfilePage> {
     try {
       final userData = await _service.fetchUserData(widget.userId);
       setState(() {
-        username = userData['Username'] ?? 'Unknown User';
-        email = userData['Email'] ?? 'Unknown Email';
+        username = userData['Username'];
+        email = userData['Email'];
+        isPremium = userData['isPremium'];
       });
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
@@ -101,11 +103,11 @@ class _ProfilePageState extends State<ProfilePage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text(
                 "Cancel",
@@ -122,7 +124,7 @@ class _ProfilePageState extends State<ProfilePage> {
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Log out",
@@ -140,6 +142,8 @@ class _ProfilePageState extends State<ProfilePage> {
 
   @override
   Widget build(BuildContext context) {
+    String username = this.username;
+    String email = this.email;
     return Scaffold(
       appBar: const CustomAppBar(
         title: '',
@@ -153,11 +157,22 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    username,
-                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                          color: AppColors.white,
-                        ),
+                  Row(
+                    children: [
+                      Text(
+                        username,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium!
+                            .copyWith(
+                              color: AppColors.white,
+                            ),
+                      ),
+                      const SizedBox(width: 10),
+                      if (isPremium == true)
+                        const Icon(FontAwesomeIcons.crown,
+                            color: AppColors.yellow),
+                    ],
                   ),
                   Text(
                     email,
