@@ -11,7 +11,7 @@ import 'package:logging/logging.dart';
 class PaymentPage extends StatefulWidget {
   final int userId;
   const PaymentPage({super.key, required this.userId});
-  
+
   @override
   PaymentPageState createState() => PaymentPageState();
 }
@@ -54,10 +54,13 @@ class PaymentPageState extends State<PaymentPage> {
 
   Future<void> _fetchUserData() async {
     try {
+      _logger.info('Fetching user data for userId: ${widget.userId}');
       final userData = await _service.fetchUserData(widget.userId);
+      _logger.info('Fetched user data: $userData');
       setState(() {
-        isPremium = userData['isPremium'];
+        isPremium = userData['isPremium'] ?? false;
       });
+      _logger.info('User isPremium status: $isPremium');
     } catch (e) {
       _logger.severe('Error fetching user data: $e');
     }
@@ -73,17 +76,20 @@ class PaymentPageState extends State<PaymentPage> {
       body: Stack(
         children: [
           Wrapper(
-              child: Padding(
-            padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
-            child: Column(children: [
-              Text(
-                'Upgrade',
-                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
-                      color: AppColors.white,
-                    ),
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(20, 50, 0, 0),
+              child: Column(
+                children: [
+                  Text(
+                    'Upgrade',
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: AppColors.white,
+                        ),
+                  ),
+                ],
               ),
-            ]),
-          )),
+            ),
+          ),
           Align(
             alignment: Alignment.bottomCenter,
             child: Container(
@@ -118,8 +124,7 @@ class PaymentPageState extends State<PaymentPage> {
                           ),
                           PlanList(
                             iconData: Icons.check_circle_rounded,
-                            text:
-                                'Unlocked all features choco signature layer custom',
+                            text: 'Unlocked all features choco signature layer custom',
                           ),
                           PlanList(
                             iconData: Icons.check_circle_rounded,
@@ -136,8 +141,7 @@ class PaymentPageState extends State<PaymentPage> {
                                   onPressed: null,
                                   child: Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
+                                    crossAxisAlignment: CrossAxisAlignment.center,
                                     children: [
                                       Text(
                                         'Premium Member',
@@ -169,11 +173,9 @@ class PaymentPageState extends State<PaymentPage> {
                                   print('ElevatedButton pressed');
                                   try {
                                     if (kIsWeb) {
-                                      ScaffoldMessenger.of(context)
-                                          .showSnackBar(
+                                      ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
-                                          content: Text(
-                                              'Payment available only in the mobile app.'),
+                                          content: Text('Payment available only in the mobile app.'),
                                           duration: Duration(seconds: 3),
                                         ),
                                       );
@@ -187,8 +189,7 @@ class PaymentPageState extends State<PaymentPage> {
                                     print('Payment failed: $e');
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(
-                                        content: Text(
-                                            'Payment failed. Please try again.'),
+                                        content: Text('Payment failed. Please try again.'),
                                         duration: Duration(seconds: 3),
                                       ),
                                     );
@@ -196,10 +197,7 @@ class PaymentPageState extends State<PaymentPage> {
                                 },
                                 child: Text(
                                   '50 baht',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyLarge!
-                                      .copyWith(
+                                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                                         color: AppColors.white,
                                       ),
                                 ),
@@ -210,7 +208,7 @@ class PaymentPageState extends State<PaymentPage> {
                 ),
               ),
             ),
-          )
+          ),
         ],
       ),
     );
