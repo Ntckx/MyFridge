@@ -7,7 +7,7 @@ import 'package:myfridgeapp/theme/custom_theme.dart';
 import 'package:pushy_flutter/pushy_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:go_router/go_router.dart';
-import 'pushy_service.dart';
+import 'services/pushy_service.dart';
 
 // Import your pages
 import 'package:myfridgeapp/screens/welcome_page.dart';

@@ -3,7 +3,7 @@ import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/custom_appbar.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/widget/notification_card.dart';
-import 'package:myfridgeapp/api_service.dart';
+import 'package:myfridgeapp/services/api_service.dart';
 
 class NotificationPage extends StatefulWidget {
   final int userId; // Add this line to accept the user ID

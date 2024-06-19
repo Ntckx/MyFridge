@@ -121,7 +121,7 @@ class PaymentPageState extends State<PaymentPage> {
                         ],
                       ),
                       const Spacer(),
-                      isPremium
+                      isPremium == true
                           ? SizedBox(
                               height: 55,
                               width: double.infinity,

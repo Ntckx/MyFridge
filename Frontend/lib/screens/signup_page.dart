@@ -4,7 +4,7 @@ import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:go_router/go_router.dart';
 import 'package:dio/dio.dart';
 import 'package:pushy_flutter/pushy_flutter.dart'; // Import Pushy Flutter SDK
-import '../api_service.dart';
+import '../services/api_service.dart';
 import 'package:flutter/gestures.dart';
 
 

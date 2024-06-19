@@ -6,7 +6,7 @@ import 'package:myfridgeapp/widget/myfridge_item.dart';
 import 'package:myfridgeapp/widget/nav_bar.dart';
 import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
-import '../api_service.dart';
+import '../services/api_service.dart';
 
 class HomePage extends StatefulWidget {
   final int userId;

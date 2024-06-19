@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
-import 'package:myfridgeapp/api_service.dart';
+import 'package:myfridgeapp/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 

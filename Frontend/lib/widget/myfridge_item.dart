@@ -4,7 +4,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
 import 'eaten_card.dart';
 import '../theme/color_theme.dart';
-import '../api_service.dart';
+import '../services/api_service.dart';
 
 class MyFridgeItemCard extends StatefulWidget {
   final int itemId; // Add itemId

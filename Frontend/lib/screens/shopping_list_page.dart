@@ -14,10 +14,10 @@ class ShoppingListPage extends StatefulWidget {
   const ShoppingListPage({super.key, required this.userId});
   
   @override
-  _ShoppingListPageState createState() => _ShoppingListPageState();
+  ShoppingListPageState createState() => ShoppingListPageState();
 }
 
-class _ShoppingListPageState extends State<ShoppingListPage> {
+class ShoppingListPageState extends State<ShoppingListPage> {
   final Service _service = Service();
   final _itemNameController = TextEditingController();
   final _quantityController = TextEditingController();
@@ -134,11 +134,11 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
                 Navigator.of(context).pop();
               },
               style: Theme.of(context).outlinedButtonTheme.style!.copyWith(
-                    side: MaterialStateProperty.all<BorderSide>(
+                    side: WidgetStateProperty.all<BorderSide>(
                       const BorderSide(color: AppColors.white),
                     ),
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.darkblue),
+                        WidgetStateProperty.all<Color>(AppColors.darkblue),
                   ),
               child: Text("Cancel",
                   style: Theme.of(context)
@@ -153,7 +153,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
               },
               style: Theme.of(context).elevatedButtonTheme.style!.copyWith(
                     backgroundColor:
-                        MaterialStateProperty.all<Color>(AppColors.white),
+                        WidgetStateProperty.all<Color>(AppColors.white),
                   ),
               child: Text(
                 "Clear all",
@@ -175,7 +175,7 @@ class _ShoppingListPageState extends State<ShoppingListPage> {
         appBar: const CustomAppBar(
           title: 'Shopping List',
         ),
-        bottomNavigationBar: BottomNav(path: "/shoppinglist"),
+        bottomNavigationBar: const BottomNav(path: "/shoppinglist"),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewItem,
           child: const Icon(Icons.add),
