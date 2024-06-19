@@ -11,19 +11,19 @@ class EditItemInMyFridge extends StatefulWidget {
   final String description;
 
   const EditItemInMyFridge({
-    Key? key,
+    super.key,
     required this.updateItem,
     required this.itemName,
     required this.expiryDate,
     required this.quantity,
     required this.description,
-  }) : super(key: key);
+  });
 
   @override
-  _EditItemInMyFridgeState createState() => _EditItemInMyFridgeState();
+  EditItemInMyFridgeState createState() => EditItemInMyFridgeState();
 }
 
-class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
+class EditItemInMyFridgeState extends State<EditItemInMyFridge> {
   final _formKey = GlobalKey<FormState>();
   late TextEditingController _itemNameController;
   late TextEditingController _expiryDateController;
@@ -49,8 +49,6 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
       final description = _descriptionController.text;
 
       widget.updateItem(itemName, expiryDate, _quantity, description);
-
-      // Close the dialog
       Navigator.of(context).pop();
     }
   }
@@ -73,12 +71,10 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        // Close the dialog when user taps outside
         Navigator.of(context).pop();
       },
       child: Stack(
         children: [
-          // Backdrop filter for the blur effect
           Container(
             color: Colors.black.withOpacity(0.5),
             width: MediaQuery.of(context).size.width,
@@ -90,15 +86,12 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
           ),
           Center(
             child: AlertDialog(
-              backgroundColor:
-                  Colors.white, // Ensure the background color is set correctly
+              backgroundColor: Colors.white,
               title: Text(
                 'Edit',
-                style: TextStyle(
-                  fontWeight: FontWeight.w600,
-                  fontSize: 32,
-                  fontFamily: 'Itim',
-                ),
+                style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                      color: AppColors.darkblue,
+                    ),
               ),
               content: Form(
                 key: _formKey,
@@ -107,15 +100,16 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Container(
-                        margin: EdgeInsets.only(bottom: 16),
+                        margin: const EdgeInsets.only(bottom: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Name',
+                            const Text('Name',
                                 style: TextStyle(color: AppColors.darkblue)),
                             TextFormField(
                               controller: _itemNameController,
-                              decoration: InputDecoration(
+                              style: const TextStyle(color: AppColors.darkblue),
+                              decoration: const InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: AppColors.darkblue),
@@ -130,7 +124,7 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
-                                fillColor: AppColors.whiteSmoke,
+                                fillColor: AppColors.grey,
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -145,95 +139,101 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                       Row(
                         children: [
                           Expanded(
-                            child: Container(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text('Quantity',
-                                      style:
-                                          TextStyle(color: AppColors.darkblue)),
-                                  FormField<int>(
-                                    initialValue: _quantity,
-                                    validator: (value) {
-                                      if (value == null || value <= 0) {
-                                        return 'Invalid quantity';
-                                      }
-                                      return null;
-                                    },
-                                    builder: (FormFieldState<int> state) {
-                                      return Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          SizedBox(
-                                            width:
-                                                150, // Increase width as needed
-                                            child: InputQty.int(
-                                              qtyFormProps: const QtyFormProps(
-                                                cursorColor: Colors.black,
-                                              ),
-                                              decoration:
-                                                  const QtyDecorationProps(
-                                                qtyStyle: QtyStyle.btnOnRight,
-                                                orientation:
-                                                    ButtonOrientation.vertical,
-                                                btnColor: Colors.black,
-                                                fillColor: AppColors.whiteSmoke,
-                                                borderShape:
-                                                    BorderShapeBtn.square,
-                                                plusBtn: Icon(
-                                                  Icons.arrow_drop_up_rounded,
-                                                  size: 30,
-                                                ),
-                                                minusBtn: Icon(
-                                                  Icons.arrow_drop_down_rounded,
-                                                  size: 30,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text('Quantity',
+                                    style:
+                                        TextStyle(color: AppColors.darkblue)),
+                                FormField<int>(
+                                  initialValue: _quantity,
+                                  validator: (value) {
+                                    if (value == null || value <= 0) {
+                                      return 'Invalid quantity';
+                                    }
+                                    return null;
+                                  },
+                                  builder: (FormFieldState<int> state) {
+                                    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        SizedBox(
+                                          width: 150,
+                                          child: InputQty.int(
+                                            qtyFormProps: const QtyFormProps(
+                                                cursorColor: AppColors.darkblue,
+                                                style: TextStyle(
+                                                  color: AppColors.darkblue,
+                                                )),
+                                            decoration: QtyDecorationProps(
+                                              qtyStyle: QtyStyle.btnOnRight,
+                                              orientation:
+                                                  ButtonOrientation.vertical,
+                                              border: OutlineInputBorder(
+                                                borderSide: BorderSide(
+                                                  color: state.hasError
+                                                      ? AppColors.red
+                                                      : AppColors.darkblue,
                                                 ),
                                               ),
-                                              minVal: 1,
-                                              initVal: _quantity,
-                                              onQtyChanged: (val) {
-                                                state.didChange(val);
-                                                setState(() {
-                                                  _quantity = val;
-                                                });
-                                              },
+                                              btnColor: AppColors.darkblue,
+                                              fillColor: AppColors.grey,
+                                              borderShape:
+                                                  BorderShapeBtn.square,
+                                              plusBtn: const Icon(
+                                                Icons.arrow_drop_up_rounded,
+                                                color: AppColors.darkblue,
+                                              ),
+                                              minusBtn: const Icon(
+                                                Icons.arrow_drop_down_rounded,
+                                                color: AppColors.darkblue,
+                                              ),
+                                            ),
+                                            minVal: 1,
+                                            initVal: _quantity,
+                                            onQtyChanged: (val) {
+                                              state.didChange(val);
+                                              setState(() {
+                                                _quantity = val;
+                                              });
+                                            },
+                                          ),
+                                        ),
+                                        if (state.hasError)
+                                          Padding(
+                                            padding: const EdgeInsets.symmetric(
+                                                horizontal: 12),
+                                            child: Text(
+                                              state.errorText!,
+                                              style: const TextStyle(
+                                                  color: AppColors.red,
+                                                  fontSize: 15),
                                             ),
                                           ),
-                                          if (state.hasError)
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12),
-                                              child: Text(
-                                                state.errorText!,
-                                                style: TextStyle(
-                                                    color: AppColors.red,
-                                                    fontSize: 15),
-                                              ),
-                                            ),
-                                        ],
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ],
                             ),
                           ),
                           Expanded(
                             child: Container(
-                              margin: EdgeInsets.only(left: 8),
+                              margin: const EdgeInsets.only(left: 8),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text('EXP:',
+                                  const Text('EXP:',
                                       style:
                                           TextStyle(color: AppColors.darkblue)),
                                   TextFormField(
                                     controller: _expiryDateController,
                                     readOnly: true,
                                     onTap: () => _selectDate(context),
-                                    decoration: InputDecoration(
+                                    style: const TextStyle(
+                                        color: AppColors.darkblue),
+                                    decoration: const InputDecoration(
                                       enabledBorder: OutlineInputBorder(
                                         borderSide: BorderSide(
                                             color: AppColors.darkblue),
@@ -250,15 +250,14 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                                         borderSide:
                                             BorderSide(color: Colors.red),
                                       ),
-                                      fillColor: AppColors.whiteSmoke,
+                                      fillColor: AppColors.grey,
                                     ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Please enter the expiration date';
                                       }
                                       try {
-                                        DateTime.parse(
-                                            value); // Ensure the date can be parsed
+                                        DateTime.parse(value);
                                       } catch (_) {
                                         return 'Invalid date format';
                                       }
@@ -272,16 +271,17 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                         ],
                       ),
                       Container(
-                        margin: EdgeInsets.only(top: 16),
+                        margin: const EdgeInsets.only(top: 16),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Text('Description',
+                            const Text('Description',
                                 style: TextStyle(color: AppColors.darkblue)),
                             TextFormField(
                               controller: _descriptionController,
-                              maxLines: 3, // Make this field multiline
-                              decoration: InputDecoration(
+                              maxLines: 3,
+                              style: const TextStyle(color: AppColors.darkblue),
+                              decoration: const InputDecoration(
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: AppColors.darkblue),
@@ -296,7 +296,7 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                                 focusedErrorBorder: OutlineInputBorder(
                                   borderSide: BorderSide(color: Colors.red),
                                 ),
-                                fillColor: AppColors.whiteSmoke,
+                                fillColor: AppColors.grey,
                               ),
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
@@ -316,12 +316,27 @@ class _EditItemInMyFridgeState extends State<EditItemInMyFridge> {
               actions: [
                 Align(
                   alignment: Alignment.center,
-                  child: ElevatedButton(
-                    onPressed: _submitForm,
-                    child: Text(
-                      'Update',
-                      style: TextStyle(color: Colors.white),
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      OutlinedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(
+                              width: 1, color: AppColors.darkblue),
+                        ),
+                        child: const Text('Cancel'),
+                      ),
+                      ElevatedButton(
+                        onPressed: _submitForm,
+                        child: const Text(
+                          'Update',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

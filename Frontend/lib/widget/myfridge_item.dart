@@ -2,12 +2,13 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
+import 'package:logging/logging.dart';
 import 'eaten_card.dart';
 import '../theme/color_theme.dart';
 import '../services/api_service.dart';
 
 class MyFridgeItemCard extends StatefulWidget {
-  final int itemId; // Add itemId
+  final int itemId;
   final int initialQuantity;
   final String itemName;
   final String expiryDate;
@@ -15,11 +16,11 @@ class MyFridgeItemCard extends StatefulWidget {
   final String description;
   final Function(BuildContext)? deleteItem;
   final Function(BuildContext)? editItem;
-  final Future<void> Function() fetchItems; // Add fetchItems as a parameter
+  final Future<void> Function() fetchItems;
 
   const MyFridgeItemCard({
     super.key,
-    required this.itemId, // Initialize itemId
+    required this.itemId,
     required this.initialQuantity,
     required this.itemName,
     required this.isExpired,
@@ -27,14 +28,14 @@ class MyFridgeItemCard extends StatefulWidget {
     required this.description,
     required this.deleteItem,
     required this.editItem,
-    required this.fetchItems, // Initialize the fetchItems parameter
+    required this.fetchItems,
   });
 
   @override
-  _MyFridgeItemCardState createState() => _MyFridgeItemCardState();
+  MyFridgeItemCardState createState() => MyFridgeItemCardState();
 }
 
-class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
+class MyFridgeItemCardState extends State<MyFridgeItemCard> {
   late int quantity;
   final ApiService _apiService = ApiService();
 
@@ -53,32 +54,32 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       height: 200,
       width: 450,
       child: Slidable(
         endActionPane: ActionPane(
-          motion: ScrollMotion(),
+          motion: const ScrollMotion(),
           children: [
-            SlidableAction(
-              onPressed: (context) {
-                if (widget.editItem != null) {
-                  widget.editItem!(context);
-                }
-              },
-              backgroundColor: Color(0xFF36454F),
-              foregroundColor: Colors.white,
-              icon: Icons.edit,
-              label: 'Edit',
-              borderRadius: BorderRadius.circular(15),
-            ),
+            // SlidableAction(
+            //   onPressed: (context) {
+            //     if (widget.editItem != null) {
+            //       widget.editItem!(context);
+            //     }
+            //   },
+            //   backgroundColor: const Color(0xFF36454F),
+            //   foregroundColor: Colors.white,
+            //   icon: Icons.edit,
+            //   label: 'Edit',
+            //   borderRadius: BorderRadius.circular(15),
+            // ),
             SlidableAction(
               onPressed: (context) {
                 if (widget.deleteItem != null) {
                   widget.deleteItem!(context);
                 }
               },
-              backgroundColor: Color(0xFFEF5350),
+              backgroundColor: const Color(0xFFEF5350),
               foregroundColor: Colors.white,
               icon: Icons.delete,
               label: 'Delete',
@@ -87,8 +88,8 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
           ],
         ),
         child: Card(
-          color: AppColors.whiteSmoke,
-          shape: RoundedRectangleBorder(
+          color: AppColors.grey,
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(15)),
           ),
           child: InkWell(
@@ -117,12 +118,16 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
       children: [
         Text(
           quantity.toString(),
-          style: const TextStyle(color: AppColors.darkblue, fontSize: 30.0),
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: AppColors.darkblue,
+              ),
         ),
         const SizedBox(width: 20),
         Text(
           widget.itemName,
-          style: const TextStyle(color: AppColors.darkblue, fontSize: 30.0),
+          style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                color: AppColors.darkblue,
+              ),
         ),
         const Spacer(),
         IconButton(
@@ -131,17 +136,14 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
               widget.editItem!(context);
             }
           },
-          icon: Icon(Icons.edit, color: AppColors.green),
+          icon: const Icon(Icons.edit, color: AppColors.green),
         )
       ],
     );
   }
 
   Row _buildExpiryRow() {
-    // Parse the date string to DateTime object
     final expirationDate = DateTime.parse(widget.expiryDate);
-
-    // Format the date to show only the date part
     final formattedDate = DateFormat('yyyy-MM-dd').format(expirationDate);
 
     return Row(
@@ -149,14 +151,20 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
       children: [
         Text(
           'EXP: $formattedDate',
-          style: TextStyle(
-            fontSize: 20.0,
-            color: widget.isExpired ? Color(0xffB75050) : AppColors.darkblue,
-          ),
+          style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                color: widget.isExpired
+                    ? const Color(0xffB75050)
+                    : AppColors.darkblue,
+              ),
         ),
         if (widget.isExpired)
-          const Text(' (Expired!!!)',
-              style: TextStyle(color: Color(0xFFB75050), fontSize: 20)),
+          Text(
+            ' (Expired!!!)',
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: const Color(0xFFB75050)),
+          )
       ],
     );
   }
@@ -168,7 +176,10 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
         Flexible(
           child: Text(
             getShortDescription(widget.description),
-            style: const TextStyle(fontSize: 20.0, color: AppColors.green),
+            style: Theme.of(context)
+                .textTheme
+                .bodyLarge!
+                .copyWith(color: AppColors.green),
             softWrap: true,
           ),
         ),
@@ -180,19 +191,10 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
             },
             child: Text(
               'Eaten',
-              style: TextStyle(fontSize: 25),
-            ),
-            style: ButtonStyle(
-              backgroundColor:
-                  MaterialStateProperty.all<Color>(AppColors.darkblue),
-              foregroundColor:
-                  MaterialStateProperty.all<Color>(AppColors.cream),
-              splashFactory: NoSplash.splashFactory,
-              shape: MaterialStateProperty.all(
-                RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: AppColors.grey),
             ),
           ),
         ),
@@ -209,10 +211,9 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
           onEaten: (int qtyEaten) async {
             try {
               await _apiService.markItemAsEaten(widget.itemId, qtyEaten);
-              await widget
-                  .fetchItems(); // Refetch items to get the updated data
+              await widget.fetchItems();
             } catch (e) {
-              print('Error marking item as eaten: $e');
+              Logger('Error marking item as eaten: $e');
             }
           },
         );
@@ -234,30 +235,27 @@ class _MyFridgeItemCardState extends State<MyFridgeItemCard> {
               children: [
                 Text(
                   'Quantity: ${quantity.toString()}',
-                  style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 Text(
                   'EXP: ${widget.expiryDate}',
-                  style: TextStyle(
-                    fontSize: 20.0,
-                    color: widget.isExpired ? Color(0xffB75050) : Colors.black,
-                  ),
+                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                        color: widget.isExpired
+                            ? const Color(0xffB75050)
+                            : Colors.black,
+                      ),
                 ),
                 Text(
                   'Description: ${widget.description}',
-                  style: const TextStyle(color: Colors.black, fontSize: 20.0),
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
                 const SizedBox(height: 10.0),
                 Center(
-                  child: TextButton(
+                  child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: Text(
+                    child: const Text(
                       'Close',
                       style: TextStyle(color: Colors.white),
-                    ),
-                    style: ButtonStyle(
-                      backgroundColor:
-                          MaterialStateProperty.all<Color>(Color(0xFF5E92A3)),
                     ),
                   ),
                 ),

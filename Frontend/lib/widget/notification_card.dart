@@ -4,7 +4,7 @@ import '../theme/color_theme.dart';
 class NotificationCard extends StatelessWidget {
   final String notificationText;
 
-  const NotificationCard({required this.notificationText});
+  const NotificationCard({super.key, required this.notificationText});
 
   @override
   Widget build(BuildContext context) {
@@ -22,12 +22,14 @@ class NotificationCard extends StatelessWidget {
           child: Container(
             height: 80,
             child: Card(
-              margin: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
               child: Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Text(
                   notificationText,
-                  style: TextStyle(fontSize: 16, color: Colors.black),
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        color: AppColors.darkblue,
+                      ),
                 ),
               ),
             ),

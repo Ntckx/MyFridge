@@ -6,17 +6,13 @@ class EatenCard extends StatefulWidget {
   final int initialQuantity;
   final Function(int) onEaten;
 
-  const EatenCard({
-    Key? key,
-    required this.initialQuantity,
-    required this.onEaten,
-  }) : super(key: key);
-
+  const EatenCard(
+      {super.key, required this.initialQuantity, required this.onEaten});
   @override
-  _EatenCardState createState() => _EatenCardState();
+  EatenCardState createState() => EatenCardState();
 }
 
-class _EatenCardState extends State<EatenCard> {
+class EatenCardState extends State<EatenCard> {
   late int inputQty;
 
   @override
@@ -28,7 +24,12 @@ class _EatenCardState extends State<EatenCard> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: const Text('How many have you eaten?'),
+      title: Text(
+        'How many have you eaten?',
+        style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+              color: AppColors.darkblue,
+            ),
+      ),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -39,21 +40,28 @@ class _EatenCardState extends State<EatenCard> {
                 width: 150,
                 child: InputQty.int(
                   qtyFormProps: const QtyFormProps(
-                    cursorColor: Colors.black,
-                  ),
+                      cursorColor: AppColors.darkblue,
+                      style: TextStyle(
+                        color: AppColors.darkblue,
+                      )),
                   decoration: const QtyDecorationProps(
                     qtyStyle: QtyStyle.btnOnRight,
                     orientation: ButtonOrientation.vertical,
-                    btnColor: Colors.black,
-                    fillColor: AppColors.whiteSmoke,
+                    border: OutlineInputBorder(
+                      borderSide: BorderSide(
+                        color: AppColors.darkblue,
+                      ),
+                    ),
+                    btnColor: AppColors.darkblue,
+                    fillColor: AppColors.grey,
                     borderShape: BorderShapeBtn.square,
                     plusBtn: Icon(
                       Icons.arrow_drop_up_rounded,
-                      size: 30,
+                      color: AppColors.darkblue,
                     ),
                     minusBtn: Icon(
                       Icons.arrow_drop_down_rounded,
-                      size: 30,
+                      color: AppColors.darkblue,
                     ),
                   ),
                   minVal: 1,
