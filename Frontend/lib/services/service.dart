@@ -7,12 +7,11 @@ import 'package:logging/logging.dart';
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'dart:convert';
-
 import 'package:shared_preferences/shared_preferences.dart';
 
 class Service {
   final String _baseUrl;
-  final int _userId = 1;
+
   final Logger _logger = Logger('Service');
 
   Service() : _baseUrl = _getBaseUrl();
@@ -27,7 +26,6 @@ class Service {
 
   Dio get _dio => Dio(BaseOptions(baseUrl: _baseUrl));
 
-  int get userId => _userId;
 
   // For profile_page
   Future<Map<String, dynamic>> fetchUserData(int userId) async {
