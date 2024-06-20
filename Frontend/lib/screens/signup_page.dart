@@ -193,16 +193,16 @@ class _SignupState extends State<SignUpPage> {
                                   TextFormField(
                                     controller: usernameController,
                                     keyboardType: TextInputType.text,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Username",
                                     ),
                                     validator: (value) {
                                       if (value == null || value.isEmpty) {
                                         return 'Enter correct name';
                                       }
-                                      if (!RegExp(r'^[a-zA-Z]+$')
+                                       if (!RegExp(r'^[a-zA-Z0-9]+$')
                                           .hasMatch(value)) {
-                                        return 'Only alphabetical characters are allowed';
+                                        return 'Only alphabetical and number';
                                       }
                                       return null;
                                     },
@@ -222,7 +222,7 @@ class _SignupState extends State<SignUpPage> {
                                   TextFormField(
                                     controller: emailController,
                                     keyboardType: TextInputType.emailAddress,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Email",
                                     ),
                                     validator: (value) {
@@ -253,7 +253,7 @@ class _SignupState extends State<SignUpPage> {
                                     controller: passwordController,
                                     keyboardType: TextInputType.text,
                                     obscureText: true,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Password",
                                     ),
                                     validator: (value) {
@@ -261,10 +261,10 @@ class _SignupState extends State<SignUpPage> {
                                         return 'Please enter your password';
                                       }
                                       final RegExp passwordRegExp = RegExp(
-                                        r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$',
+                                        r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&_]{8,}$',
                                       );
                                       if (!passwordRegExp.hasMatch(value)) {
-                                        return 'Password must include at least one letter, one number, and one special character';
+                                        return 'Include at least one letter & no.';
                                       }
                                       return null;
                                     },
