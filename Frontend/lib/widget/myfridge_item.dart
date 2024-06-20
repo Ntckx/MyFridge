@@ -46,9 +46,8 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
   }
 
   String getShortDescription(String fullDescription) {
-    final words = fullDescription.split(' ');
-    if (words.length <= 5) return fullDescription;
-    return '${words.sublist(0, 5).join(' ')}...';
+    if (fullDescription.length <= 30) return fullDescription;
+    return '${fullDescription.substring(0, 30)}...';
   }
 
   String getShortItemName(String fullItemName) {
