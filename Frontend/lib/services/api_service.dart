@@ -100,15 +100,20 @@ class ApiService {
     }
   }
 
-  Future<void> markItemAsEaten(int id, int quantityEaten) async {
-    try {
-      final response = await _dio.put('/items/eaten/$id', data: {'QuantityEaten': quantityEaten});
-      print('Response: ${response.data}');
-    } catch (e) {
-      print('Error marking item as eaten: $e');
-      throw e;
-    }
+Future<int> markItemAsEaten(int id, int quantityEaten) async {
+  try {
+    final response = await _dio.put(
+      '/items/eaten/$id',
+      data: {'QuantityEaten': quantityEaten},
+    );
+    print('Response: ${response.data}');
+    return response.data['remainingQuantity'];
+  } catch (e) {
+    print('Error marking item as eaten: $e');
+    throw e;
   }
+}
+
 
   Future<Map<String, dynamic>> getUserById(int userId) async {
     try {

@@ -51,9 +51,16 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
     return '${words.sublist(0, 5).join(' ')}...';
   }
 
+  String getShortItemName(String fullItemName) {
+    if (fullItemName.length <= 10) return fullItemName;
+    return '${fullItemName.substring(0, 10)}...';
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return  Visibility(
+      visible: quantity > 0, 
+    child:Container(
       margin: const EdgeInsets.symmetric(vertical: 5),
       height: 200,
       width: 450,
@@ -110,7 +117,7 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Row _buildHeader(BuildContext context) {
@@ -124,7 +131,7 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
         ),
         const SizedBox(width: 20),
         Text(
-          widget.itemName,
+          getShortItemName(widget.itemName),
           style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                 color: AppColors.darkblue,
               ),
@@ -204,25 +211,31 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
       ],
     );
   }
-
-  void _showEatenCard() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return EatenCard(
-          initialQuantity: 1,
-          onEaten: (int qtyEaten) async {
-            try {
-              await _apiService.markItemAsEaten(widget.itemId, qtyEaten);
-              await widget.fetchItems();
-            } catch (e) {
-              Logger('Error marking item as eaten: $e');
+void _showEatenCard() {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return EatenCard(
+        initialQuantity: 1,
+        onEaten: (int qtyEaten) async {
+          try {
+            final remainingQuantity = await _apiService.markItemAsEaten(widget.itemId, qtyEaten);
+            if (remainingQuantity == 0) {
+              await widget.fetchItems(); // Refetch items if the quantity is zero
+            } else {
+              setState(() {
+                quantity = remainingQuantity;
+              });
             }
-          },
-        );
-      },
-    );
-  }
+          } catch (e) {
+            Logger('Error marking item as eaten: $e');
+          }
+        },
+      );
+    },
+  );
+}
+
 
   void _showItemDetails(BuildContext context) {
     showDialog(

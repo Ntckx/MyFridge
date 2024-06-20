@@ -29,7 +29,7 @@ class _NotificationPageState extends State<NotificationPage> {
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(80.0),
         child: CustomAppBar(
-          title: ' ',
+          title: 'Notification',
         ),
       ),
       bottomNavigationBar: const BottomNav(path: "/notifications"),
@@ -40,13 +40,13 @@ class _NotificationPageState extends State<NotificationPage> {
             color: AppColors.blue,
             alignment: Alignment.topLeft,
             padding: const EdgeInsets.only(left: 40, bottom:50),
-            child: const Text(
-              'Notification',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 32,
-              ),
-            ),
+            // child: const Text(
+            //   'Notification',
+            //   style: TextStyle(
+            //     color: Colors.white,
+            //     fontSize: 32,
+            //   ),
+            // ),
           ),
           Positioned(
             top: 60,
