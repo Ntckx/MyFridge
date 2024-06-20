@@ -173,6 +173,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const CustomAppBar(
+
           title: 'Shopping List',
         ),
         bottomNavigationBar: const BottomNav(path: "/home/shoppinglist"),

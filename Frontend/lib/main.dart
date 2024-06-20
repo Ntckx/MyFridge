@@ -144,7 +144,7 @@ class MyApp extends StatelessWidget {
                   },
                 ),
                 GoRoute(
-                  path: 'editprofile',
+                  path: 'home/profile/editprofile',
                   builder: (context, state) {
                     final userId = state.extra as int? ?? this.userId;
                     if (userId == null) {
