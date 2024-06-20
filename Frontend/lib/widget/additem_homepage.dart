@@ -2,6 +2,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:input_quantity/input_quantity.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
+import 'package:flutter/services.dart';
 
 class AddItemToMyFridge extends StatefulWidget {
   final Function(String, String, int, String) addItem;
@@ -132,7 +133,9 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                                 FormField<int>(
                                   initialValue: _quantity,
                                   validator: (value) {
-                                    if (value == null || value <= 0) {
+                                    if (value == null ||
+                                        value <= 0 ||
+                                        value > 99) {
                                       return 'Invalid quantity';
                                     }
                                     return null;
@@ -282,6 +285,10 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                                 ),
                                 fillColor: AppColors.grey,
                               ),
+                              inputFormatters: [
+                                FilteringTextInputFormatter.deny(
+                                    RegExp(r'\n')), 
+                              ],
                               validator: (value) {
                                 if (value == null || value.isEmpty) {
                                   return 'Please enter the description';
