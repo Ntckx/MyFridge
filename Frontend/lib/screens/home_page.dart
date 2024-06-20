@@ -159,7 +159,7 @@ Future<void> _fetchUserData() async {
         ),
         
       ),
-      bottomNavigationBar: const BottomNav(path: "/"),
+      bottomNavigationBar: const BottomNav(path: "/home"),
       backgroundColor: AppColors.blue,
       body: Stack(
         children: [

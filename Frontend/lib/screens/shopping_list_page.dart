@@ -175,7 +175,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
         appBar: const CustomAppBar(
           title: 'Shopping List',
         ),
-        bottomNavigationBar: const BottomNav(path: "/shoppinglist"),
+        bottomNavigationBar: const BottomNav(path: "/home/shoppinglist"),
         floatingActionButton: FloatingActionButton(
           onPressed: createNewItem,
           child: const Icon(Icons.add),

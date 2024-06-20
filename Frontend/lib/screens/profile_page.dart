@@ -148,7 +148,7 @@ class ProfilePageState extends State<ProfilePage> {
       appBar: const CustomAppBar(
         title: '',
       ),
-      bottomNavigationBar: const BottomNav(path: "/profile"),
+      bottomNavigationBar: const BottomNav(path: "/home/profile"),
       body: Stack(
         children: [
           Wrapper(
