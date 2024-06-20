@@ -95,6 +95,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                               controller: _itemNameController,
                               style: const TextStyle(color: AppColors.darkblue),
                               decoration: const InputDecoration(
+                                hintText: 'e.g. Milk',
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: AppColors.darkblue),
@@ -269,6 +270,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                               maxLines: 3,
                               style: const TextStyle(color: AppColors.darkblue),
                               decoration: const InputDecoration(
+                                hintText: 'e.g. In the fridge',
                                 enabledBorder: OutlineInputBorder(
                                   borderSide:
                                       BorderSide(color: AppColors.darkblue),

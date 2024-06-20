@@ -171,7 +171,7 @@ Future<void> _fetchUserData() async {
             left: 0,
             right: 0,
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: AppColors.white,
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(60.0),
@@ -180,16 +180,25 @@ Future<void> _fetchUserData() async {
               height: MediaQuery.of(context).size.height - 50,
             ),
           ),
-          Positioned(
+         Positioned(
             top: 0,
             left: 0,
             right: 0,
             bottom: 0,
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                final item = items[index];
-                print('Rendering item: $item');
+            child: items.isEmpty
+              ? const Center(
+                  child: Text(
+                    'No items in the list. Add some items!!',
+                    style: TextStyle(
+                      color: AppColors.darkblue,
+                    ),
+                  ),
+                )
+              : ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    print('Rendering item: $item');
 
                 return Center(
                   child: Container(
