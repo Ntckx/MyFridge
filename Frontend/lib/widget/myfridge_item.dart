@@ -88,7 +88,6 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
               backgroundColor: const Color(0xFFEF5350),
               foregroundColor: Colors.white,
               icon: Icons.delete,
-              label: 'Delete',
               borderRadius: BorderRadius.circular(15),
             ),
           ],
