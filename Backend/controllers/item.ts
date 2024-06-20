@@ -136,12 +136,7 @@ export const markItemAsEaten = async (req: Request, res: Response) => {
       data: { Quantity: updatedQuantity < 0 ? 0 : updatedQuantity },
     });
 
-    // Fetch and return the updated item
-    const refreshedItem = await prisma.item.findUnique({
-      where: { ItemID: parseInt(id) },
-    });
-
-    return res.json(refreshedItem);
+    return res.json({ remainingQuantity: updatedItem.Quantity });
   } catch (e) {
     console.log(e);
     return res.status(500).json(e);

@@ -158,15 +158,19 @@ class ProfilePageState extends State<ProfilePage> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
+                    mainAxisAlignment: MainAxisAlignment.start,
                     children: [
-                      Text(
-                        username,
-                        style: Theme.of(context)
-                            .textTheme
-                            .headlineMedium!
-                            .copyWith(
-                              color: AppColors.white,
-                            ),
+                      Flexible(
+                        child: Text(
+                          username,
+                          style: Theme.of(context)
+                              .textTheme
+                              .headlineMedium!
+                              .copyWith(
+                                color: AppColors.white,
+                              ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
                       ),
                       const SizedBox(width: 10),
                       if (isPremium == true)
@@ -204,7 +208,8 @@ class ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => GoRouter.of(context).go('/home/editprofile', extra: widget.userId),
+                          onPressed: () => GoRouter.of(context)
+                              .go('/home/editprofile', extra: widget.userId),
                           child: Row(
                             children: [
                               const Icon(Icons.edit),
@@ -227,7 +232,8 @@ class ProfilePageState extends State<ProfilePage> {
                         height: 45,
                         width: double.infinity,
                         child: OutlinedButton(
-                          onPressed: () => GoRouter.of(context).go('/home/payment', extra: widget.userId),
+                          onPressed: () => GoRouter.of(context)
+                              .go('/home/payment', extra: widget.userId),
                           child: Row(
                             children: [
                               const Icon(FontAwesomeIcons.crown),
