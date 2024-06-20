@@ -23,11 +23,27 @@ final GoRouter router = GoRouter(
         ),
         GoRoute(
           path: 'signup',
-          builder: (context, state) => SignUpPage(),
+          builder: (context, state) {
+             final extra = state.extra as Map<String, String?>?;
+        return SignUpPage(
+          initialUsername: extra?['username'],
+          initialEmail: extra?['email'],
+          initialPassword: extra?['password'],
+          initialConfirmPassword: extra?['confirmPassword'],
+        );
+          }
         ),
         GoRoute(
           path: 'termofservice',
-          builder: (context, state) => const TermofServicePage(),
+          builder: (context, state) {
+            final extra = state.extra as Map<String, String>;
+        return TermofServicePage(
+          username: extra['username']!,
+          email: extra['email']!,
+          password: extra['password']!,
+          confirmPassword: extra['confirmPassword']!,
+        );
+          }
         ),
         GoRoute(
           path: 'home',

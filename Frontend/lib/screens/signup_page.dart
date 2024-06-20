@@ -7,24 +7,45 @@ import 'package:pushy_flutter/pushy_flutter.dart'; // Import Pushy Flutter SDK
 import '../services/api_service.dart';
 import 'package:flutter/gestures.dart';
 
-
 class SignUpPage extends StatefulWidget {
+  final String? initialUsername;
+  final String? initialEmail;
+  final String? initialPassword;
+  final String? initialConfirmPassword;
+
+  const SignUpPage({
+    Key? key,
+    this.initialUsername,
+    this.initialEmail,
+    this.initialPassword,
+    this.initialConfirmPassword,
+  }) : super(key: key);
+
   @override
   _SignupState createState() => _SignupState();
 }
 
 class _SignupState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  TextEditingController usernameController = TextEditingController();
-  TextEditingController emailController = TextEditingController();
-  TextEditingController passwordController = TextEditingController();
-  TextEditingController confirmPasswordController = TextEditingController();
+  late TextEditingController usernameController;
+  late TextEditingController emailController;
+  late TextEditingController passwordController;
+  late TextEditingController confirmPasswordController;
   bool _isNotValidate = false;
   String _errorMessage = '';
   bool _isChecked = false;
   final ApiService _apiService = ApiService();
 
   bool _isMounted = true;
+
+  @override
+  void initState() {
+    super.initState();
+    usernameController = TextEditingController(text: widget.initialUsername);
+    emailController = TextEditingController(text: widget.initialEmail);
+    passwordController = TextEditingController(text: widget.initialPassword);
+    confirmPasswordController = TextEditingController(text: widget.initialConfirmPassword);
+  }
 
   @override
   void dispose() {
@@ -111,7 +132,7 @@ class _SignupState extends State<SignUpPage> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: AppColors.white),
           onPressed: () {
-            context.go('/welcome');
+            context.go('/');
           },
         ),
       ),
@@ -236,7 +257,7 @@ class _SignupState extends State<SignUpPage> {
                                       hintText: "Password",
                                     ),
                                     validator: (value) {
-                                      if (value == null || value.isEmpty) {
+                                       if (value == null || value.isEmpty) {
                                         return 'Please enter your password';
                                       }
                                       final RegExp passwordRegExp = RegExp(
@@ -313,20 +334,26 @@ class _SignupState extends State<SignUpPage> {
                                                 ),
                                                 TextSpan(
                                                   text: "terms and conditions",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyMedium!
-                                                      .copyWith(
-                                                        color: AppColors.green,
-                                                        decoration:
-                                                            TextDecoration
-                                                                .underline,
-                                                      ),
+                                                 style: Theme.of(context)
+                                            .textTheme
+                                            .bodyMedium!
+                                            .copyWith(
+                                              color: AppColors.green,
+                                              decoration: TextDecoration.underline,
+                                              decorationColor: AppColors.green,
+                                            ),
                                                   recognizer:
                                                       TapGestureRecognizer()
                                                         ..onTap = () {
-                                                          context.go(
-                                                              '/termofservice');
+                                                          context.push(
+                                                            '/termofservice',
+                                                            extra: {
+                                                              'username': usernameController.text,
+                                                              'email': emailController.text,
+                                                              'password': passwordController.text,
+                                                              'confirmPassword': confirmPasswordController.text,
+                                                            },
+                                                          );
                                                         },
                                                 ),
                                               ],

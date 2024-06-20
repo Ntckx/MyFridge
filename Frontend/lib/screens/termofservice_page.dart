@@ -5,7 +5,18 @@ import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 
 class TermofServicePage extends StatelessWidget {
-  const TermofServicePage({Key? key}) : super(key: key);
+  final String username;
+  final String email;
+  final String password;
+  final String confirmPassword;
+
+  const TermofServicePage({
+    Key? key,
+    required this.username,
+    required this.email,
+    required this.password,
+    required this.confirmPassword,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +49,7 @@ class TermofServicePage extends StatelessWidget {
               Expanded(
                 child: SingleChildScrollView(
                   child: Text(
-                    'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                    'By using MyFridge, you agree to our Terms of Service. You are responsible for verifying food expiration dates, as the app assists but does not guarantee accuracy or safety. Freemium users manage up to five items; premium users have unlimited access. We collect and use data per our Privacy Policy, with security measures in place. MyFridge and its content are protected by intellectual property laws and provided "as is" without warranties. We are not liable for any damages from app use. Terms may change, and continued use indicates acceptance. Contact support@myfridgeapp.com for questions.',
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                           color: AppColors.darkblue,
                         ),
@@ -53,18 +64,19 @@ class TermofServicePage extends StatelessWidget {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: () {
-                    // Handle the button press
+                    context.go(
+                      '/signup',
+                      extra: {
+                        'username': username,
+                        'email': email,
+                        'password': password,
+                        'confirmPassword': confirmPassword,
+                      },
+                    );
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.darkblue,
                   ),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      context.go('/signup');
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: AppColors.darkblue,
-                    ),
                   child: Text(
                     'Understood',
                     style: Theme.of(context)
@@ -73,7 +85,6 @@ class TermofServicePage extends StatelessWidget {
                         .copyWith(color: AppColors.white),
                   ),
                 ),
-                )
               ),
             ],
           ),
