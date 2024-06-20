@@ -40,13 +40,13 @@ const createLogin = async (req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { Email: email } });
 
         if (!user) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Enter wrong username" });
         }
 
         const isMatch = await bcrypt.compare(password, user.Password);
 
         if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
+            return res.status(400).json({ message: "Enter wrong password" });
         }
         const secretKey = process.env.SECRET_KEY;
         if (!secretKey) {

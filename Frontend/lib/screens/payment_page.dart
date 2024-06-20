@@ -110,13 +110,12 @@ class PaymentPageState extends State<PaymentPage> {
                             iconData: Icons.check_circle_rounded,
                             text: 'Create unlimited item in your inventory',
                           ),
-                          PlanList(
-                            iconData: Icons.check_circle_rounded,
-                            text: 'Unlocked all features choco signature layer custom',
+                          SizedBox(
+                           height:7,
                           ),
                           PlanList(
                             iconData: Icons.check_circle_rounded,
-                            text: 'Unlimited storage',
+                            text: 'One-time payment of 50 baht will get you eternal access to a premium service.',
                           ),
                         ],
                       ),
