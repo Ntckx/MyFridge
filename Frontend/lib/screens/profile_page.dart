@@ -194,6 +194,7 @@ class ProfilePageState extends State<ProfilePage> {
               margin: const EdgeInsets.only(top: 130),
               decoration: const BoxDecoration(
                 color: AppColors.white,
+                
                 borderRadius: BorderRadius.vertical(
                   top: Radius.circular(30),
                 ),
