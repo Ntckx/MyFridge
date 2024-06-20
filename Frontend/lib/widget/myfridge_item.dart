@@ -136,13 +136,16 @@ class MyFridgeItemCardState extends State<MyFridgeItemCard> {
               ),
         ),
         const Spacer(),
-        IconButton(
-          onPressed: () {
-            if (widget.editItem != null) {
-              widget.editItem!(context);
-            }
-          },
-          icon: const Icon(Icons.edit, color: AppColors.green),
+      Visibility(
+          visible: !widget.isExpired,
+          child: IconButton(
+            onPressed: () {
+              if (widget.editItem != null) {
+                widget.editItem!(context);
+              }
+            },
+            icon: const Icon(Icons.edit, color: AppColors.green),
+          ),
         )
       ],
     );
