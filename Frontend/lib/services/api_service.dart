@@ -55,7 +55,8 @@ class ApiService {
 
   Future<List<Map<String, dynamic>>> getAllItems(int userId) async {
     try {
-      final response = await _dio.get('/items', queryParameters: {'userId': userId});
+      final response =
+          await _dio.get('/items', queryParameters: {'userId': userId});
       final items = List<Map<String, dynamic>>.from(response.data);
 
       final currentDate = DateTime.now();
@@ -72,13 +73,18 @@ class ApiService {
     }
   }
 
+  bool _isCreatingItem = false;
+
   Future<void> createItem(int userId, Map<String, dynamic> item) async {
+    if (_isCreatingItem) return;
+    _isCreatingItem = true;
     try {
-      item['UserID'] = userId; // Add UserID to the item data
+      item['UserID'] = userId;
       await _dio.post('/items', data: item);
     } catch (e) {
-      print('Error creating item: $e');
       throw e;
+    } finally {
+      _isCreatingItem = false;
     }
   }
 
@@ -100,20 +106,19 @@ class ApiService {
     }
   }
 
-Future<int> markItemAsEaten(int id, int quantityEaten) async {
-  try {
-    final response = await _dio.put(
-      '/items/eaten/$id',
-      data: {'QuantityEaten': quantityEaten},
-    );
-    print('Response: ${response.data}');
-    return response.data['remainingQuantity'];
-  } catch (e) {
-    print('Error marking item as eaten: $e');
-    throw e;
+  Future<int> markItemAsEaten(int id, int quantityEaten) async {
+    try {
+      final response = await _dio.put(
+        '/items/eaten/$id',
+        data: {'QuantityEaten': quantityEaten},
+      );
+      print('Response: ${response.data}');
+      return response.data['remainingQuantity'];
+    } catch (e) {
+      print('Error marking item as eaten: $e');
+      throw e;
+    }
   }
-}
-
 
   Future<Map<String, dynamic>> getUserById(int userId) async {
     try {

@@ -6,28 +6,41 @@ import 'package:myfridgeapp/widget/notification_card.dart';
 import 'package:myfridgeapp/services/api_service.dart';
 
 class NotificationPage extends StatefulWidget {
-  final int userId; // Add this line to accept the user ID
+  final int userId;
 
-  const NotificationPage({super.key, required this.userId}); // Modify the constructor
+  const NotificationPage({super.key, required this.userId});
 
   @override
-  _NotificationPageState createState() => _NotificationPageState();
+  NotificationPageState createState() => NotificationPageState();
 }
 
-class _NotificationPageState extends State<NotificationPage> {
+class NotificationPageState extends State<NotificationPage> {
   late Future<List<Map<String, dynamic>>> notifications;
 
   @override
   void initState() {
     super.initState();
-    notifications = ApiService().getNotifications(widget.userId); // Use the user ID
+    notifications = ApiService().getNotifications(widget.userId);
+  }
+
+  List<Map<String, dynamic>> deduplicateNotifications(List<Map<String, dynamic>> notifications) {
+    final seenMessages = <String>{};
+    return notifications.where((notification) {
+      final message = notification['message'];
+      if (seenMessages.contains(message)) {
+        return false;
+      } else {
+        seenMessages.add(message);
+        return true;
+      }
+    }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80.0),
+      appBar: const PreferredSize(
+        preferredSize: Size.fromHeight(80.0),
         child: CustomAppBar(
           title: 'Notification',
         ),
@@ -39,14 +52,7 @@ class _NotificationPageState extends State<NotificationPage> {
           Container(
             color: AppColors.blue,
             alignment: Alignment.topLeft,
-            padding: const EdgeInsets.only(left: 40, bottom:50),
-            // child: const Text(
-            //   'Notification',
-            //   style: TextStyle(
-            //     color: Colors.white,
-            //     fontSize: 32,
-            //   ),
-            // ),
+            padding: const EdgeInsets.only(left: 40, bottom: 50),
           ),
           Positioned(
             top: 60,
@@ -62,8 +68,7 @@ class _NotificationPageState extends State<NotificationPage> {
               ),
               height: MediaQuery.of(context).size.height - 150,
               child: Padding(
-                padding: const EdgeInsets.symmetric(
-                    vertical: 50.0, horizontal: 20.0),
+                padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 20.0),
                 child: FutureBuilder<List<Map<String, dynamic>>>(
                   future: notifications,
                   builder: (context, snapshot) {
@@ -73,13 +78,18 @@ class _NotificationPageState extends State<NotificationPage> {
                       return Center(child: Text('Error: ${snapshot.error}'));
                     } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
                       return const Center(
-                          child: Text('No notifications found.',
-                          style: TextStyle(color: AppColors.darkblue),));
+                        child: Text(
+                          'No notifications found.',
+                          style: TextStyle(color: AppColors.darkblue),
+                        ),
+                      );
                     } else {
+                      final uniqueNotifications = deduplicateNotifications(snapshot.data!);
+
                       return ListView.builder(
-                        itemCount: snapshot.data!.length,
+                        itemCount: uniqueNotifications.length,
                         itemBuilder: (context, index) {
-                          final notification = snapshot.data![index];
+                          final notification = uniqueNotifications[index];
                           return NotificationCard(
                             notificationText: notification['message'],
                           );

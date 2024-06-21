@@ -37,6 +37,8 @@ export const createItem = async (req: Request, res: Response) => {
   try {
     const expiration = new Date(ExpirationDate);
 
+    console.log('Creating item:', { ItemName, Quantity, ExpirationDate, Description, UserID });
+
     const newItem = await prisma.item.create({
       data: {
         ItemName,
@@ -48,6 +50,7 @@ export const createItem = async (req: Request, res: Response) => {
     });
 
     res.status(201).json(newItem);
+    console.log('Item created successfully:', newItem);
   } catch (error) {
     if (error instanceof Error) {
       console.error("Error creating item:", error.message);
@@ -58,6 +61,7 @@ export const createItem = async (req: Request, res: Response) => {
     }
   }
 };
+
 
 export const getItemById = async (req: Request, res: Response) => {
   try {
