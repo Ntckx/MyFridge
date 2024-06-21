@@ -1,17 +1,18 @@
 import 'package:dio/dio.dart';
 import 'dart:io';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logging/logging.dart';
 
 class ApiService {
   final String _baseUrl;
-
+  final Logger _logger = Logger('ApiService');
   ApiService() : _baseUrl = _getBaseUrl();
 
   static String _getBaseUrl() {
     if (Platform.isAndroid) {
-      return 'http://10.0.2.2:8000'; // Android emulator
+      return 'http://10.0.2.2:8000';
     } else {
-      return 'http://localhost:8000'; // Local development
+      return 'http://localhost:8000';
     }
   }
 
@@ -25,14 +26,13 @@ class ApiService {
       });
       final data = response.data;
 
-      // Store the token and user ID in SharedPreferences
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('token', data['token']);
       await prefs.setInt('userId', data['userId']);
 
       return data;
     } catch (e) {
-      print('Error signing in: $e');
+      _logger.severe('Error signing up: $e');
       rethrow;
     }
   }
@@ -48,7 +48,8 @@ class ApiService {
       });
       return response.data;
     } catch (e) {
-      print('Error signing up: $e');
+      _logger.severe('Error signing up: $e');
+
       rethrow;
     }
   }
@@ -64,12 +65,12 @@ class ApiService {
         final expDate = DateTime.parse(item['ExpirationDate']);
         item['isExpired'] = expDate.isBefore(currentDate);
       }
-      print('Items processed: $items');
+      _logger.info('Items processed: $items');
 
       return items;
     } catch (e) {
-      print('Error fetching items: $e');
-      throw e;
+      _logger.severe('Error fetching items: $e');
+      rethrow;
     }
   }
 
@@ -82,7 +83,8 @@ class ApiService {
       item['UserID'] = userId;
       await _dio.post('/items', data: item);
     } catch (e) {
-      throw e;
+      _logger.severe('Error creating item: $e');
+      rethrow;
     } finally {
       _isCreatingItem = false;
     }
@@ -92,8 +94,8 @@ class ApiService {
     try {
       await _dio.put('/items/$id', data: item);
     } catch (e) {
-      print('Error updating item: $e');
-      throw e;
+      _logger.severe('Error updating item: $e');
+      rethrow;
     }
   }
 
@@ -101,8 +103,8 @@ class ApiService {
     try {
       await _dio.delete('/items/$id');
     } catch (e) {
-      print('Error deleting item: $e');
-      throw e;
+      _logger.severe('Error deleting item: $e');
+      rethrow;
     }
   }
 
@@ -112,11 +114,11 @@ class ApiService {
         '/items/eaten/$id',
         data: {'QuantityEaten': quantityEaten},
       );
-      print('Response: ${response.data}');
+      _logger.info('Response: ${response.data}');
       return response.data['remainingQuantity'];
     } catch (e) {
-      print('Error marking item as eaten: $e');
-      throw e;
+      _logger.severe('Error marking item as eaten: $e');
+      rethrow;
     }
   }
 
@@ -125,8 +127,8 @@ class ApiService {
       final response = await _dio.get('/users/$userId');
       return response.data;
     } catch (e) {
-      print('Error fetching user: $e');
-      throw e;
+      _logger.severe('Error fetching user: $e');
+      rethrow;
     }
   }
 
@@ -135,8 +137,8 @@ class ApiService {
       final response = await _dio.get('/notifications/$userId');
       return List<Map<String, dynamic>>.from(response.data);
     } catch (e) {
-      print('Error fetching notifications: $e');
-      throw e;
+      _logger.severe('Error fetching notifications: $e');
+      rethrow;
     }
   }
 }
