@@ -1,19 +1,22 @@
 import 'package:flutter/material.dart';
 import 'package:pushy_flutter/pushy_flutter.dart';
-import 'package:dio/dio.dart';
+import 'package:logging/logging.dart';
+
 
 class PushyService {
   static final GlobalKey<NavigatorState> navigatorKey =
       GlobalKey<NavigatorState>();
+  static final Logger _logger = Logger('ProfilePage');
+  
 
   static Future<void> initialize() async {
     try {
       // Register the device for push notifications
       String? deviceToken = await Pushy.register();
-      if (deviceToken == null || deviceToken.isEmpty) {
+      if ( deviceToken.isEmpty) {
         throw Exception('Device token is null or empty');
       }
-      print(
+      _logger.info(
           'Pushy device token: $deviceToken'); // Log the device token for verification
 
       // Optionally send the token to your backend
@@ -23,18 +26,18 @@ class PushyService {
       Pushy.setNotificationListener(backgroundNotificationListener);
       Pushy.setNotificationClickListener(notificationClickListener);
     } catch (e) {
-      print('Pushy registration failed: $e');
+      _logger.severe('Pushy registration failed: $e');
     }
   }
 
-  static String _getBackendUrl(String endpoint) {
+  static String getBackendUrl(String endpoint) {
     return 'http://10.0.2.2:8000$endpoint'; // Android emulator
   }
 
   @pragma('vm:entry-point')
   static void backgroundNotificationListener(Map<String, dynamic> data) {
     // Print notification payload data
-    print('Received notification: $data');
+    _logger.info('Received notification: $data');
 
     // Notification title
     String notificationTitle = 'MyApp';
@@ -53,7 +56,7 @@ class PushyService {
   @pragma('vm:entry-point')
   static void notificationClickListener(Map<String, dynamic> data) {
     // Print notification payload data
-    print('Notification click: $data');
+    _logger.info('Notification click: $data');
 
     // Extract notification message
     String message = data['message'] ?? 'Hello World!';
@@ -62,7 +65,7 @@ class PushyService {
     showDialog(
       context: navigatorKey.currentContext!,
       builder: (context) => AlertDialog(
-        title: Text('Notification click'),
+        title: const Text('Notification click'),
         content: Text(message),
         actions: <Widget>[
           TextButton(

@@ -1,25 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:myfridgeapp/services/api_service.dart';
 import 'package:dio/dio.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
+import 'package:logging/logging.dart';
 
 class SignInPage extends StatefulWidget {
   const SignInPage({super.key});
 
   @override
-  _SignInState createState() => _SignInState();
+  SignInState createState() => SignInState();
 }
 
-class _SignInState extends State<SignInPage> {
+class SignInState extends State<SignInPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool _isNotValidate = false;
   String _errorMessage = '';
   final ApiService _apiService = ApiService();
+  final Logger _logger = Logger('ProfilePage');
 
   bool _isMounted = true;
 
@@ -56,7 +57,7 @@ class _SignInState extends State<SignInPage> {
             }
           });
         }
-        print('Error: $error');
+        _logger.severe('Error: $error');
       }
     } else {
       if (_isMounted) {
@@ -163,7 +164,7 @@ class _SignInState extends State<SignInPage> {
                                     controller: passwordController,
                                     keyboardType: TextInputType.text,
                                     obscureText: true,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Password",
                                     ),
                                     validator: (value) {

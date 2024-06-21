@@ -8,10 +8,12 @@ import 'package:myfridgeapp/widget/additem_homepage.dart';
 import 'package:myfridgeapp/widget/edititem_homepage.dart';
 import '../services/api_service.dart';
 import 'package:myfridgeapp/services/service.dart';
+import 'package:logging/logging.dart';
 
 class HomePage extends StatefulWidget {
   final int userId;
   const HomePage({super.key, required this.userId});
+  
 
   @override
   State<HomePage> createState() => _HomePageState();
@@ -22,6 +24,7 @@ class _HomePageState extends State<HomePage> {
   final Service _service = Service();
   List<Map<String, dynamic>> items = [];
   bool isPremium = false;
+  final Logger _logger = Logger('ProfilePage');
 
   @override
   void initState() {
@@ -32,12 +35,12 @@ class _HomePageState extends State<HomePage> {
   Future<void> _fetchItems() async {
     try {
       final fetchedItems = await _apiService.getAllItems(widget.userId);
-      print('Fetched items: $fetchedItems');
+      _logger.info('Fetched items: $fetchedItems');
       setState(() {
         items = fetchedItems;
       });
     } catch (e) {
-      print('Error fetching items: $e');
+      _logger.severe('Error fetching items: $e');
     }
   }
 
@@ -48,13 +51,11 @@ class _HomePageState extends State<HomePage> {
         items.removeAt(index);
       });
     } catch (e) {
-      print('Error deleting item: $e');
+      _logger.severe('Error deleting item: $e');
     }
   }
 
   void _addItem(String itemName, String expiryDate, int quantity, String description) async {
-    final currentDate = DateTime.now();
-    final expDate = DateTime.parse(expiryDate);
 
     final newItem = {
       "ItemName": itemName,
@@ -67,13 +68,11 @@ class _HomePageState extends State<HomePage> {
       await _apiService.createItem(widget.userId, newItem);
       _fetchItems(); // Refetch items after adding
     } catch (e) {
-      print('Error adding item: $e');
+      _logger.severe('Error adding item: $e');
     }
   }
 
   void _updateItem(int index, String itemName, String expiryDate, int quantity, String description) async {
-    final currentDate = DateTime.now();
-    final expDate = DateTime.parse(expiryDate);
 
     final updatedItem = {
       "ItemName": itemName,
@@ -86,7 +85,7 @@ class _HomePageState extends State<HomePage> {
       await _apiService.updateItem(items[index]['ItemID'], updatedItem);
       _fetchItems(); // Refetch items after updating
     } catch (e) {
-      print('Error updating item: $e');
+      _logger.severe('Error updating item: $e');
     }
   }
 
@@ -113,7 +112,7 @@ class _HomePageState extends State<HomePage> {
       },
     );
   } catch (e) {
-    print('Error fetching user data: $e');
+    _logger.severe('Error fetching user data: $e');
   }
 }
 
@@ -128,7 +127,7 @@ Future<void> _fetchUserData() async {
       // Update other user-related state if necessary
     });
   } catch (e) {
-    print('Error fetching user data: $e');
+    _logger.severe('Error fetching user data: $e');
   }
 }
 
@@ -198,7 +197,7 @@ Future<void> _fetchUserData() async {
                   itemCount: items.length,
                   itemBuilder: (context, index) {
                     final item = items[index];
-                    print('Rendering item: $item');
+                    _logger.severe('Rendering item: $item');
 
                 return Center(
                   child: Container(

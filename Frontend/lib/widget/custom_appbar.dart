@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:logging/logging.dart';
+
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  static final Logger _logger = Logger('ProfilePage');
 
   const CustomAppBar({
     super.key,
@@ -17,7 +20,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   bool _isHomePage(GoRouter router) {
-    final location = router.routerDelegate.currentConfiguration?.uri.toString();
+    final location = router.routerDelegate.currentConfiguration.uri.toString();
     return location == '/home';
   }
 
@@ -49,7 +52,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: () async {
             final userId = await _getUserId();
-            print('Navigating to notifications for user: $userId');
+            _logger.info('Navigating to notifications for user: $userId');
             GoRouter.of(context).go('/home/notifications', extra: userId);
           },
           icon: const Icon(Icons.notifications, color: AppColors.white),
@@ -67,6 +70,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 
 class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   final String title;
+  static final Logger _logger = Logger('ProfilePage');
 
   const CustomAppBar2({
     super.key,
@@ -79,7 +83,7 @@ class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
   }
 
   bool _isHomePage(GoRouter router) {
-    final location = router.routerDelegate.currentConfiguration?.uri.toString();
+    final location = router.routerDelegate.currentConfiguration.uri.toString();
     return location == '/home';
   }
 
@@ -100,7 +104,7 @@ class CustomAppBar2 extends StatelessWidget implements PreferredSizeWidget {
         IconButton(
           onPressed: () async {
             final userId = await _getUserId();
-            print('Navigating to notifications for user: $userId');
+            _logger.info('Navigating to notifications for user: $userId');
             GoRouter.of(context).go('/home/notifications', extra: userId);
           },
           icon: const Icon(Icons.notifications, color: AppColors.white),

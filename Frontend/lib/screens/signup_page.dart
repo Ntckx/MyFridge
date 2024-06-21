@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:pushy_flutter/pushy_flutter.dart'; // Import Pushy Flutter SDK
 import '../services/api_service.dart';
 import 'package:flutter/gestures.dart';
+import 'package:logging/logging.dart';
 
 class SignUpPage extends StatefulWidget {
   final String? initialUsername;
@@ -14,18 +15,17 @@ class SignUpPage extends StatefulWidget {
   final String? initialConfirmPassword;
 
   const SignUpPage({
-    Key? key,
+    super.key, 
     this.initialUsername,
     this.initialEmail,
     this.initialPassword,
-    this.initialConfirmPassword,
-  }) : super(key: key);
+    this.initialConfirmPassword,});
 
   @override
-  _SignupState createState() => _SignupState();
+  SignupState createState() => SignupState();
 }
 
-class _SignupState extends State<SignUpPage> {
+class SignupState extends State<SignUpPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   late TextEditingController usernameController;
   late TextEditingController emailController;
@@ -35,6 +35,7 @@ class _SignupState extends State<SignUpPage> {
   String _errorMessage = '';
   bool _isChecked = false;
   final ApiService _apiService = ApiService();
+   final Logger _logger = Logger('ProfilePage');
 
   bool _isMounted = true;
 
@@ -80,7 +81,7 @@ class _SignupState extends State<SignUpPage> {
       try {
         String? pushyToken = await Pushy.register();
 
-        if (pushyToken == null || pushyToken.isEmpty) {
+        if (pushyToken.isEmpty) {
           if (_isMounted) {
             setState(() {
               _errorMessage = "Failed to register for Pushy notifications.";
@@ -95,7 +96,7 @@ class _SignupState extends State<SignUpPage> {
           passwordController.text,
           pushyToken,
         );
-        print('User created: $response');
+        _logger.info('User created: $response');
         if (_isMounted) {
           context.go('/signin');
         }
@@ -113,7 +114,7 @@ class _SignupState extends State<SignUpPage> {
             }
           });
         }
-        print('Error: $error');
+        _logger.severe('Error: $error');
       }
     } else {
       if (_isMounted) {
@@ -285,7 +286,7 @@ class _SignupState extends State<SignUpPage> {
                                     controller: confirmPasswordController,
                                     keyboardType: TextInputType.text,
                                     obscureText: true,
-                                    decoration: InputDecoration(
+                                    decoration: const InputDecoration(
                                       hintText: "Confirm Password",
                                     ),
                                     validator: (value) {
@@ -317,7 +318,7 @@ class _SignupState extends State<SignUpPage> {
                                       ),
                                       Expanded(
                                         child: Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               horizontal: 8.0),
                                           child: RichText(
                                             text: TextSpan(

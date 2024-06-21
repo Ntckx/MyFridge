@@ -222,7 +222,9 @@ void _showEatenCard() {
           try {
             final remainingQuantity = await _apiService.markItemAsEaten(widget.itemId, qtyEaten);
             if (remainingQuantity == 0) {
-              await widget.fetchItems(); // Refetch items if the quantity is zero
+              await _apiService.deleteItem(widget.itemId);
+              await widget.fetchItems();
+               // Refetch items if the quantity is zero
             } else {
               setState(() {
                 quantity = remainingQuantity;
