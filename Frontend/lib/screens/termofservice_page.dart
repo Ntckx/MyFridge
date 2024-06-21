@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:go_router/go_router.dart';
 import 'package:myfridgeapp/widget/wrapper.dart';
 import 'package:myfridgeapp/theme/color_theme.dart';
@@ -11,12 +10,12 @@ class TermofServicePage extends StatelessWidget {
   final String confirmPassword;
 
   const TermofServicePage({
-    Key? key,
+    super.key,
     required this.username,
     required this.email,
     required this.password,
     required this.confirmPassword,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +24,7 @@ class TermofServicePage extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: AppColors.white,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: AppColors.darkblue),
+          icon: const Icon(Icons.arrow_back, color: AppColors.darkblue),
           onPressed: () {
             Navigator.of(context).pop();
           },
