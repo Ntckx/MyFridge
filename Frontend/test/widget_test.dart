@@ -15,7 +15,7 @@ void main() {
     const int testUserId = 1;
 
     // Build our app and trigger a frame.
-    await tester.pumpWidget(MyApp(userId: testUserId));
+    await tester.pumpWidget(const MyApp(userId: testUserId));
 
     // Verify that our counter starts at 0.
     expect(find.text('0'), findsOneWidget);

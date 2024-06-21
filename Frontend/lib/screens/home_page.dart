@@ -154,7 +154,7 @@ Future<void> _fetchUserData() async {
     return Scaffold(
       appBar: const PreferredSize(
         preferredSize: Size.fromHeight(80.0),
-        child: CustomAppBar(
+        child: CustomAppBar2(
           title:'Your inventory',
         ),
         

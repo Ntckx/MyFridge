@@ -7,13 +7,13 @@ import 'package:flutter/services.dart';
 class AddItemToMyFridge extends StatefulWidget {
   final Function(String, String, int, String) addItem;
 
-  const AddItemToMyFridge({Key? key, required this.addItem}) : super(key: key);
+  const AddItemToMyFridge({super.key, required this.addItem});
 
   @override
-  _AddItemToMyFridgeState createState() => _AddItemToMyFridgeState();
+  AddItemToMyFridgeState createState() => AddItemToMyFridgeState();
 }
 
-class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
+class AddItemToMyFridgeState extends State<AddItemToMyFridge> {
   final _formKey = GlobalKey<FormState>();
   final _itemNameController = TextEditingController();
   final _expiryDateController = TextEditingController();
@@ -288,8 +288,7 @@ class _AddItemToMyFridgeState extends State<AddItemToMyFridge> {
                                 fillColor: AppColors.grey,
                               ),
                               inputFormatters: [
-                                FilteringTextInputFormatter.deny(
-                                    RegExp(r'\n')), 
+                                FilteringTextInputFormatter.deny(RegExp(r'\n')),
                               ],
                               validator: (value) {
                                 if (value == null || value.isEmpty) {

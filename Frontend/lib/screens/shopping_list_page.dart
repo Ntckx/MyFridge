@@ -12,7 +12,7 @@ class ShoppingListPage extends StatefulWidget {
   final int userId;
 
   const ShoppingListPage({super.key, required this.userId});
-  
+
   @override
   ShoppingListPageState createState() => ShoppingListPageState();
 }
@@ -54,9 +54,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
 
   void _saveNewItem() async {
     try {
-      await _service.saveNewItem(
-          widget.userId,
-          _itemNameController.text,
+      await _service.saveNewItem(widget.userId, _itemNameController.text,
           int.parse(_quantityController.text));
       _fetchListData();
       _itemNameController.clear();
@@ -74,7 +72,7 @@ class ShoppingListPageState extends State<ShoppingListPage> {
         return DialogBox(
           itemNameController: _itemNameController,
           quantityController: _quantityController,
-          onSaved:  _saveNewItem,
+          onSaved: _saveNewItem,
           onCanceled: () {
             Navigator.of(context).pop();
           },
@@ -173,7 +171,6 @@ class ShoppingListPageState extends State<ShoppingListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: const CustomAppBar(
-
           title: 'Shopping List',
         ),
         bottomNavigationBar: const BottomNav(path: "/home/shoppinglist"),

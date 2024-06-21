@@ -188,11 +188,6 @@ class Service {
   }
 
   Future<Map<String, dynamic>> createPaymentIntent(String amount, String currency) async {
-    _logger.info('Creating payment intent with amount: $amount, currency: $currency');
-
-    // Log the API key for debugging purposes (remove before deploying)
-    _logger.info('Using Stripe Secret Key: ${dotenv.env['STRIPE_SECRET_KEY']}');
-
     try {
       Map<String, dynamic> body = {
         'amount': amount,
@@ -215,7 +210,6 @@ class Service {
   }
 
   Future<void> initPaymentSheet(Map<String, dynamic> paymentIntent) async {
-    _logger.info('Initializing payment sheet with payment intent: $paymentIntent');
     try {
       await Stripe.instance.initPaymentSheet(
         paymentSheetParameters: SetupPaymentSheetParameters(
@@ -236,7 +230,6 @@ class Service {
   }
 
   Future<void> displayPaymentSheet(BuildContext context, int userId) async {
-    _logger.info('Displaying payment sheet');
     try {
       await Stripe.instance.presentPaymentSheet();
       bool isUpdated = await updateUserPremiumStatus(userId);

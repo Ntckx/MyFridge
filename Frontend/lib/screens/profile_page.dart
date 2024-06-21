@@ -50,7 +50,7 @@ class ProfilePageState extends State<ProfilePage> {
     setState(() {
       token = prefs.getString('token');
       if (token != null) {
-        print("TokenData: $token");
+        _logger.info('Token is $token');
       } else {
         _logger.severe('Token is null');
       }

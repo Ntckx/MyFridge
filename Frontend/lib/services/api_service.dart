@@ -6,6 +6,7 @@ import 'package:logging/logging.dart';
 class ApiService {
   final String _baseUrl;
   final Logger _logger = Logger('ApiService');
+
   ApiService() : _baseUrl = _getBaseUrl();
 
   static String _getBaseUrl() {
@@ -32,7 +33,7 @@ class ApiService {
 
       return data;
     } catch (e) {
-      _logger.severe('Error signing up: $e');
+      _logger.severe('Error signing in: $e');
       rethrow;
     }
   }
@@ -49,7 +50,6 @@ class ApiService {
       return response.data;
     } catch (e) {
       _logger.severe('Error signing up: $e');
-
       rethrow;
     }
   }
@@ -85,8 +85,6 @@ class ApiService {
     } catch (e) {
       _logger.severe('Error creating item: $e');
       rethrow;
-    } finally {
-      _isCreatingItem = false;
     }
   }
 
