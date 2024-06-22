@@ -258,17 +258,23 @@ class SignupState extends State<SignUpPage> {
                                       hintText: "Password",
                                     ),
                                     validator: (value) {
-                                       if (value == null || value.isEmpty) {
-                                        return 'Please enter your password';
-                                      }
-                                      final RegExp passwordRegExp = RegExp(
-                                        r'^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&_]{8,}$',
-                                      );
-                                      if (!passwordRegExp.hasMatch(value)) {
-                                        return 'Include at least one letter & no.';
-                                      }
-                                      return null;
-                                    },
+                                        if (value == null || value.isEmpty) {
+                                           return 'Please enter your password';
+                                        }
+                                        if (value.length < 8) {
+                                           return 'Must include at least 8 characters';
+                                        }
+                                        if (!RegExp(r'[A-Za-z]').hasMatch(value)) {
+                                           return 'Must include at least one letter';
+                                        }
+                                        if (!RegExp(r'\d').hasMatch(value)) {
+                                           return 'Must include at least one number';
+                                        }
+                                        if (!RegExp(r'[@$!%*#?&]').hasMatch(value)) {
+                                           return 'At least one special character';
+                                        }
+                                           return null;
+                                        },
                                     style: const TextStyle(
                                     color: AppColors.darkblue,
                                     ),

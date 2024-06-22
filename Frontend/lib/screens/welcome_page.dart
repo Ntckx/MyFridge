@@ -16,7 +16,7 @@ class WelcomePage extends StatelessWidget {
         child: Wrapper(
           child: SingleChildScrollView(
             child: Padding(
-              padding: const EdgeInsets.fromLTRB(48, 20, 48, 20),
+              padding: const EdgeInsets.fromLTRB(48, 50, 48, 20),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -25,13 +25,13 @@ class WelcomePage extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 50, color: Color(0xFFFFFFFF)),
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 60),
                   Image(
-                    image: const AssetImage('assets/LogoMyFridge.png'),
-                    height: isSmallScreen ? 200 : 400,
-                    width: isSmallScreen ? 200 : 400,
+                    image: const AssetImage('assets/logo3.png'),
+                    height: isSmallScreen ? 200 : 320,
+                    width: isSmallScreen ? 200 : 320,
                   ),
-                  const SizedBox(height: 50),
+                  const SizedBox(height: 65),
                   SizedBox(
                     height: 45,
                     width: double.infinity,

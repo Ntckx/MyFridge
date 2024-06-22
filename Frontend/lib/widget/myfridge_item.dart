@@ -247,7 +247,12 @@ void _showEatenCard() {
         return BackdropFilter(
           filter: ImageFilter.blur(sigmaX: 5, sigmaY: 5),
           child: AlertDialog(
-            title: Text(widget.itemName),
+           title: Text(
+                widget.itemName,
+                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                 color: AppColors.darkblue,
+                  ),
+                ),
             content: Column(
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -272,9 +277,11 @@ void _showEatenCard() {
                 Center(
                   child: ElevatedButton(
                     onPressed: () => Navigator.pop(context),
-                    child: const Text(
-                      'Close',
-                      style: TextStyle(color: Colors.white),
+                    child: Text(
+                          'Close',
+                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.white,
+                        )
                     ),
                   ),
                 ),

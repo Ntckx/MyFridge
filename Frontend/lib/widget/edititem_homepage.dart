@@ -337,9 +337,11 @@ class EditItemInMyFridgeState extends State<EditItemInMyFridge> {
                       ),
                       ElevatedButton(
                         onPressed: _submitForm,
-                        child: const Text(
+                        child:Text(
                           'Update',
-                          style: TextStyle(color: Colors.white),
+                        style:Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: AppColors.white,
+                         )
                         ),
                       ),
                     ],

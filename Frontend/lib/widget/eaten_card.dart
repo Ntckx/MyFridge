@@ -89,7 +89,13 @@ class EatenCardState extends State<EatenCard> {
             widget.onEaten(inputQty);
             Navigator.of(context).pop();
           },
-          child: const Text('Save'),
+          child:Text(
+            'Save',
+            style:Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: AppColors.white,
+            )
+            ),
+          
         ),
       ],
     );
