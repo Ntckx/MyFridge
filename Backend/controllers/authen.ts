@@ -40,7 +40,7 @@ const createLogin = async (req: Request, res: Response) => {
         const user = await prisma.user.findUnique({ where: { Email: email } });
 
         if (!user) {
-            return res.status(400).json({ message: "Enter wrong username" });
+            return res.status(400).json({ message: "Enter wrong email" });
         }
 
         const isMatch = await bcrypt.compare(password, user.Password);
