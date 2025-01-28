@@ -66,12 +66,12 @@
 **Backend**: Node.js with Express. <br>
 **Database**: MySQL
 
----
-
 ## Expected Benefits
 - Reduced household food waste.
 - Improved sustainable consumption through better food management.
 - Positive social and environmental impact, contributing to SDG 2 (Zero Hunger) and SDG 12 (Responsible Consumption and Production).
+
+---
 
 ## Contributors
 - Nontakorn Chatkoonsathien
