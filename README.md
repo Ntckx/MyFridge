@@ -2,7 +2,7 @@
 
 ## Overview
 
-MyFridge is a mobile application designed to reduce household food waste and encourage sustainable consumption. It allows users to effectively manage their food inventory, receive expiration alerts, and create shopping lists. By improving food tracking and reducing waste, MyFridge supports United Nations Sustainable Development Goals (SDG) 2 (Zero Hunger) and SDG 12 (Responsible Consumption and Production).
+**MyFridge** is a mobile application designed to reduce household food waste and encourage sustainable consumption. It allows users to effectively manage their food inventory, receive expiration alerts, and create shopping lists. By improving food tracking and reducing waste, MyFridge supports United Nations Sustainable Development Goals (SDG) 2 (Zero Hunger) and SDG 12 (Responsible Consumption and Production).
 
 ---
 
