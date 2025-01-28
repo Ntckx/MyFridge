@@ -62,8 +62,8 @@ MyFridge is a mobile application designed to reduce household food waste and enc
 
 ## Technologies Used
 
-**Frontend**: Flutter for mobile app development.
-**Backend**: Node.js with Express.
+**Frontend**: Flutter for mobile app development. <br>
+**Backend**: Node.js with Express. <br>
 **Database**: MySQL
 
 ---
@@ -74,6 +74,6 @@ MyFridge is a mobile application designed to reduce household food waste and enc
 - Positive social and environmental impact, contributing to SDG 2 (Zero Hunger) and SDG 12 (Responsible Consumption and Production).
 
 ## Contributors
-Nontakorn Chatkoonsathien
-Watsawadee Saeyong
-Virunpat Theeranuluk
+- Nontakorn Chatkoonsathien
+- Watsawadee Saeyong
+- Virunpat Theeranuluk
